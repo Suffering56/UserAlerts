@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<panel name="DarkGreyPanel">
+	<layout type="FormLayout" columns="f:p:g" rows="f:p:g" />
+
+	<tabbedpane constraints="1,1" titles="Новости, Котировки">
+		<!-- ============================ Новости ============================= -->
+		<panel>
+			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
+
+			<panel constraints="2,2">
+				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p" rows="f:p" />
+
+				<button constraints="1,1" name="alerts.main_button" text="Редактировать" />
+				<button constraints="3,1" name="alerts.main_button" text="Удалить" />
+				<button constraints="5,1" name="alerts.main_button" text="Создать новый" />
+			</panel>
+
+
+			<scrollpane constraints="2,4">
+				<table id="newsTable" />
+			</scrollpane>
+		</panel>
+
+		<!-- ============================ Котировки ============================= -->
+		<panel>
+			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
+
+			<panel constraints="2,2">
+				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p, p:g" rows="f:p" />
+
+				<button constraints="1,1" name="alerts.main_button" text="Редактировать1" />
+				<button constraints="3,1" name="alerts.main_button" text="Удалить1" />
+				<button constraints="5,1" name="alerts.main_button" text="Создать новый1" />
+			</panel>
+
+
+			<scrollpane constraints="2,4">
+				<table />
+			</scrollpane>
+		</panel>
+	</tabbedpane>
+</panel>
