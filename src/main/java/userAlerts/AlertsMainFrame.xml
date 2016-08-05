@@ -10,11 +10,10 @@
 			<panel constraints="2,2">
 				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p" rows="f:p" />
 
-				<button constraints="1,1" name="alerts.main_button" text="Редактировать" />
-				<button constraints="3,1" name="alerts.main_button" text="Удалить" />
-				<button constraints="5,1" name="alerts.main_button" text="Создать новый" />
+				<button constraints="1,1" name="alerts.main_button" text="Редактировать" action="EDIT_NEWS_ALERT" />
+				<button constraints="3,1" name="alerts.main_button" text="Удалить" action="DELETE_NEWS_ALERT" />
+				<button constraints="5,1" name="alerts.main_button" text="Создать новый" action="CREATE_NEWS_ALERT" />
 			</panel>
-
 
 			<scrollpane constraints="2,4">
 				<table id="newsTable" />
@@ -28,11 +27,10 @@
 			<panel constraints="2,2">
 				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p, p:g" rows="f:p" />
 
-				<button constraints="1,1" name="alerts.main_button" text="Редактировать1" />
-				<button constraints="3,1" name="alerts.main_button" text="Удалить1" />
-				<button constraints="5,1" name="alerts.main_button" text="Создать новый1" />
+				<button constraints="1,1" name="alerts.main_button" text="Редактировать" action="EDIT_QUOTES_ALERT" />
+				<button constraints="3,1" name="alerts.main_button" text="Удалить" action="DELETE_QUOTES_ALERT" />
+				<button constraints="5,1" name="alerts.main_button" text="Создать новый" action="CREATE_QUOTES_ALERT" />
 			</panel>
-
 
 			<scrollpane constraints="2,4">
 				<table />

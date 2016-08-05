@@ -2,7 +2,12 @@ package gui.panel.userAlerts.data;
 
 public class AlertEntity {
 
-	public AlertEntity() {
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -29,6 +34,7 @@ public class AlertEntity {
 		this.lastEventDate = lastEventDate;
 	}
 
+	private int id;
 	private String name;
 	private String creationDate;
 	private String lastEventDate;

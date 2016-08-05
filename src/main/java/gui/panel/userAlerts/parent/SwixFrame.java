@@ -33,7 +33,7 @@ public abstract class SwixFrame {
 		beforeRenderInit();
 
 		try {
-			rootPanel = (JPanel) swix.render(xmlPath);
+			rootPanel = (JPanel) swix.render(xmlPath + ".xml");
 			frame.setContentPane(rootPanel);
 			frame.setResizable(true);
 		} catch (Exception e) {

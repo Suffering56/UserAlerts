@@ -5,12 +5,12 @@ import java.net.URL;
 import javax.swing.UIManager;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 
-import gui.panel.userAlerts.control.AlertsFrame;
+import gui.panel.userAlerts.control.AlertsMainFrame;
 
 public class Main {
 	public static void main(String[] args) {
 		setLookAndFeel();
-		new AlertsFrame().show();
+		new AlertsMainFrame().show();
 	}
 
 	private static void setLookAndFeel() {
