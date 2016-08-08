@@ -1,5 +1,7 @@
 package gui.panel.userAlerts.parent;
 
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -28,14 +30,15 @@ public abstract class SwixFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	protected void render(String xmlPath, boolean pack) {
-		
+	private void render(String xmlPath, boolean pack) {
+
 		beforeRenderInit();
 
 		try {
 			rootPanel = (JPanel) swix.render(xmlPath + ".xml");
 			frame.setContentPane(rootPanel);
 			frame.setResizable(true);
+
 		} catch (Exception e) {
 			App.appLogger.error("Frame creating error", e);
 		}
@@ -45,13 +48,13 @@ public abstract class SwixFrame {
 		if (pack) {
 			pack();
 		}
+		frame.setLocationRelativeTo(null);
 	}
 
 	protected void pack() {
+		frame.setMinimumSize(new Dimension(0, 0));
 		frame.pack();
 		frame.setMinimumSize(frame.getSize());
-		frame.setLocationRelativeTo(null);
-
 	}
 
 	public void show() {

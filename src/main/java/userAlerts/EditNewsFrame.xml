@@ -1,87 +1,97 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <panel name="DarkGreyPanel">
-	<layout type="FormLayout" columns="10px:g, f:p, 10px, f:p, 10px:g" rows="10px:g, f:p, 10px:g" />
+	<layout type="FormLayout" columns="10px:g, f:p, 10px, 120px, 10px:g" rows="10px:g, f:p, 10px:g" />
 
 	<panel constraints="2,2" id="contentPanel">
-		<layout type="FormLayout" columns="f:p, p:g, r:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p" />
+		<layout type="FormLayout" columns="f:p, p:g, f:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, 1px, 10px, f:p" />
 
 		<label constraints="1,1" text="Название алерта" />
-		<label constraints="3,1" text="Новости страхования" />
+		<combobox constraints="3,1" id="alertNameComboBox" editable="true" />
 
 		<checkbox constraints="1,3" text="Выводить все 'красные' новости" />
 
 		<panel constraints="1,5,3,1">
-			<layout type="FormLayout" columns="f:p:g" rows="f:p, f:p, f:p, f:p" />
+			<layout type="FormLayout" columns="f:p:g" rows="1px, 10px, f:p, f:p, f:p, f:p, 10px, 1px" />
 
-			<panel constraints="1,1" background="DARK_GRAY" opaque="true">
-				<layout type="FormLayout" columns="10px, f:p, f:p, 10px:g, f:p, 10px:g, f:p, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
+			<separator constraints="1,1" orientation="HORIZONTAL" />
 
-				<label constraints="2,2" text="Ключевая фраза №1" />
-				<label constraints="7,2" text="Ключевая фраза №2" />
+			<panel constraints="1,3">
+				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p, 10px, 1px" />
 
-				<panel constraints="2,4,2,1">
-					<layout type="FormLayout" columns="p:g, r:p" rows="f:p" />
-					<label constraints="2,1" text="combobox1" />
-				</panel>
+				<label constraints="1,2" text="Ключевая фраза 1" />
+				<combobox constraints="1,4" id="firstKeyWordComboBox" editable="true" />
 
-				<label constraints="5,4" text="нет" />
-				<panel constraints="7,4,2,1">
-					<layout type="FormLayout" columns="p:g, r:p" rows="f:p" />
-					<label constraints="2,1" text="combobox2" />
-				</panel>
-			</panel>
+				<combobox constraints="3,4" />
 
-			<panel constraints="1,2">
-				<layout type="FormLayout" columns="p:g, f:p, 20px, f:p, p:g" rows="10px, f:p, 10px" />
-
-				<radiobutton constraints="2,2" text="По релевантности" />
-				<radiobutton constraints="4,2" text="Точное совпадение" />
-			</panel>
-
-			<panel constraints="1,3" background="DARK_GRAY" opaque="true">
-				<layout type="FormLayout" columns="10px, f:p, f:p, 10px:g, f:p, 10px:g, f:p, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
-
-				<label constraints="2,2" text="Исключить слова №1" />
-				<label constraints="7,2" text="Исключить слова №2" />
-
-				<panel constraints="2,4,2,1">
-					<layout type="FormLayout" columns="p:g, r:p" rows="f:p" />
-					<label constraints="2,1" text="combobox1" />
-				</panel>
-
-				<label constraints="5,4" text="нет" />
-				<panel constraints="7,4,2,1">
-					<layout type="FormLayout" columns="p:g, r:p" rows="f:p" />
-					<label constraints="2,1" text="combobox2" />
-				</panel>
+				<label constraints="5,2" text="Ключевая фраза 2" />
+				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" />
+				
+				<separator constraints="1,6,5,1" orientation="HORIZONTAL" />
 			</panel>
 
 			<panel constraints="1,4">
+				<layout type="FormLayout" columns="p:g, f:p, 20px, f:p, p:g" rows="10px, f:p, 10px, 1px" />
+
+				<buttongroup>
+					<radiobutton constraints="2,2" text="По релевантности" selected="true"/>
+					<radiobutton constraints="4,2" text="Точное совпадение" />
+				</buttongroup>
+				
+				<separator constraints="1,4,5,1" orientation="HORIZONTAL" />
+			</panel>
+
+			<panel constraints="1,5">
+				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p, 10px, 1px" />
+
+				<label constraints="1,2" text="Исключить слова 1" />
+				<combobox constraints="1,4" id="firstExcludeKeyWordComboBox" editable="true" />
+
+				<combobox constraints="3,4" />
+
+				<label constraints="5,2" text="Исключить слова 2" />
+				<combobox constraints="5,4" id="secondExcludeKeyWordComboBox" editable="true" />
+				
+				<separator constraints="1,6,5,1" orientation="HORIZONTAL" />
+			</panel>
+
+			<panel constraints="1,6">
 				<layout type="FormLayout" columns="p:g, f:p, p:g" rows="10px, f:p, 10px, f:p, 10px, f:p, 10px" />
 
-				<radiobutton constraints="2,2" text="Искать везде" />
-				<radiobutton constraints="2,4" text="Искать только в заголовках" />
-				<radiobutton constraints="2,6" text="Искать только в 'красных' новостях" />
+				<buttongroup>
+					<radiobutton constraints="2,2" text="Искать везде" selected="true"/>
+					<radiobutton constraints="2,4" text="Искать только в заголовках" />
+					<radiobutton constraints="2,6" text="Искать только в 'красных' новостях" />
+				</buttongroup>
 			</panel>
+
+			<separator constraints="1,8" orientation="HORIZONTAL" />
 		</panel>
 
 		<checkbox constraints="1,7" text="Информировать по e-mail" />
-		<label constraints="3,7" text="myemail@gmail.om" />
+		<combobox constraints="3,7" id="emailComboBox" editable="true" />
 
 		<checkbox constraints="1,9" text="Информировать по SMS" />
-		<label constraints="3,9" text="+79617662390" />
+		<combobox constraints="3,9" id="phoneComboBox" editable="true" />
 
 		<checkbox constraints="1,11" text="Звуковой сигнал" />
-		<label constraints="3,11" text="Мелодия №1" />
+		<combobox constraints="3,11" id="melodyComboBox" editable="true" />
 
 		<checkbox constraints="1,13" text="Цвет строки новости" />
-		<label constraints="3,13" text="Выбрать цвет" />
+		<button constraints="3,13" name="alerts.main_button" id="chooseColorBtn" text="Выбрать цвет"/>
 
 		<checkbox constraints="1,15" text="Всплывающее окно" />
 
+		<separator constraints="1,17,3,1" orientation="HORIZONTAL" />
+
+		<panel constraints="1,19,3,1">
+			<layout type="FormLayout" columns="p:g, f:p, 10px, f:p, p:g" rows="f:p" />
+			<button constraints="2,1" name="alerts.main_button" text="Применить" />
+			<button constraints="4,1" name="alerts.main_button" text="Отменить" />
+		</panel>
+
 	</panel>
 
-	<panel constraints="4,2" id="treePanel">
+	<panel constraints="4,2" id="treePanel" layout="FlowLayout(FlowLayout.LEFT)">
 		<tree />
 	</panel>
 </panel>

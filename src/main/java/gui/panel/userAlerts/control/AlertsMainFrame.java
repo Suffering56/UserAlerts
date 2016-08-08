@@ -77,7 +77,7 @@ public class AlertsMainFrame extends SwixFrame {
 	public Action EDIT_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
-				// do something
+				new EditQuotesFrame().show();
 			}
 		}
 	};
@@ -93,7 +93,7 @@ public class AlertsMainFrame extends SwixFrame {
 	public Action CREATE_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
-				// do something
+				new EditQuotesFrame().show();
 			}
 		}
 	};
