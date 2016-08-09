@@ -8,7 +8,7 @@
 		<label constraints="1,1" text="Название алерта" />
 		<combobox constraints="3,1" id="alertNameComboBox" editable="true" />
 
-		<checkbox constraints="1,3" text="Выводить все 'красные' новости" />
+		<checkbox constraints="1,3" id="onlyRedNewsCheckBox" text="Выводить все 'красные' новости" />
 
 		<panel constraints="1,5,3,1">
 			<layout type="FormLayout" columns="f:p:g" rows="1px, 10px, f:p, f:p, f:p, f:p, 10px, 1px" />
@@ -16,77 +16,73 @@
 			<separator constraints="1,1" orientation="HORIZONTAL" />
 
 			<panel constraints="1,3">
-				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p, 10px, 1px" />
+				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p" />
 
 				<label constraints="1,2" text="Ключевая фраза 1" />
 				<combobox constraints="1,4" id="firstKeyWordComboBox" editable="true" />
 
-				<combobox constraints="3,4" />
+				<combobox constraints="3,4" id="keyWordExpressionComboBox" initclass="gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel" />
 
 				<label constraints="5,2" text="Ключевая фраза 2" />
-				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" />
-				
-				<separator constraints="1,6,5,1" orientation="HORIZONTAL" />
+				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" enabled="false" />
 			</panel>
 
 			<panel constraints="1,4">
 				<layout type="FormLayout" columns="p:g, f:p, 20px, f:p, p:g" rows="10px, f:p, 10px, 1px" />
 
-				<buttongroup>
-					<radiobutton constraints="2,2" text="По релевантности" selected="true"/>
-					<radiobutton constraints="4,2" text="Точное совпадение" />
+				<buttongroup id="keyWordButtonGroup">
+					<radiobutton constraints="2,2" id="byRelevanceRadioBtn" text="По релевантности" selected="true" />
+					<radiobutton constraints="4,2" id="exactMatchRadioBtn" text="Точное совпадение" />
 				</buttongroup>
-				
+
 				<separator constraints="1,4,5,1" orientation="HORIZONTAL" />
 			</panel>
 
 			<panel constraints="1,5">
-				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p, 10px, 1px" />
+				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p" />
 
 				<label constraints="1,2" text="Исключить слова 1" />
-				<combobox constraints="1,4" id="firstExcludeKeyWordComboBox" editable="true" />
+				<combobox constraints="1,4" id="firstExcludeWordComboBox" editable="true" />
 
-				<combobox constraints="3,4" />
+				<combobox constraints="3,4" id="excludeWordExpressionComboBox" initclass="gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel" />
 
 				<label constraints="5,2" text="Исключить слова 2" />
-				<combobox constraints="5,4" id="secondExcludeKeyWordComboBox" editable="true" />
-				
-				<separator constraints="1,6,5,1" orientation="HORIZONTAL" />
+				<combobox constraints="5,4" id="secondExcludeWordComboBox" editable="true" enabled="false" />
 			</panel>
 
 			<panel constraints="1,6">
-				<layout type="FormLayout" columns="p:g, f:p, p:g" rows="10px, f:p, 10px, f:p, 10px, f:p, 10px" />
+				<layout type="FormLayout" columns="p:g, f:p, p:g" rows="10px, f:p, 10px, f:p, 10px, f:p" />
 
-				<buttongroup>
-					<radiobutton constraints="2,2" text="Искать везде" selected="true"/>
-					<radiobutton constraints="2,4" text="Искать только в заголовках" />
-					<radiobutton constraints="2,6" text="Искать только в 'красных' новостях" />
+				<buttongroup id="excludeWordButtonGroup">
+					<radiobutton id="everywhereRadioBtn" constraints="2,2" text="Искать везде" selected="true" />
+					<radiobutton id="titlesOnlyRadioBtn" constraints="2,4" text="Искать только в заголовках" />
+					<radiobutton id="redNewsOnlyRadioBtn" constraints="2,6" text="Искать только в 'красных' новостях" />
 				</buttongroup>
 			</panel>
 
 			<separator constraints="1,8" orientation="HORIZONTAL" />
 		</panel>
 
-		<checkbox constraints="1,7" text="Информировать по e-mail" />
+		<checkbox constraints="1,7" id="emailCheckBox" text="Информировать по e-mail" />
 		<combobox constraints="3,7" id="emailComboBox" editable="true" />
 
-		<checkbox constraints="1,9" text="Информировать по SMS" />
+		<checkbox constraints="1,9" id="phoneCheckBox" text="Информировать по SMS" />
 		<combobox constraints="3,9" id="phoneComboBox" editable="true" />
 
-		<checkbox constraints="1,11" text="Звуковой сигнал" />
+		<checkbox constraints="1,11" id="melodyCheckBox" text="Звуковой сигнал" />
 		<combobox constraints="3,11" id="melodyComboBox" editable="true" />
 
-		<checkbox constraints="1,13" text="Цвет строки новости" />
-		<button constraints="3,13" name="alerts.main_button" id="chooseColorBtn" text="Выбрать цвет"/>
+		<checkbox constraints="1,13" id="newsLineColorCheckBox" text="Цвет строки новости" />
+		<button constraints="3,13" id="chooseColorBtn" name="alerts.main_button" text="Выбрать цвет" />
 
-		<checkbox constraints="1,15" text="Всплывающее окно" />
+		<checkbox constraints="1,15" id="popupWindowCheckBox" text="Всплывающее окно" />
 
 		<separator constraints="1,17,3,1" orientation="HORIZONTAL" />
 
 		<panel constraints="1,19,3,1">
 			<layout type="FormLayout" columns="p:g, f:p, 10px, f:p, p:g" rows="f:p" />
-			<button constraints="2,1" name="alerts.main_button" text="Применить" />
-			<button constraints="4,1" name="alerts.main_button" text="Отменить" />
+			<button constraints="2,1" name="alerts.main_button" text="Применить" action="APPLY" />
+			<button constraints="4,1" name="alerts.main_button" text="Отменить" action="CANCEL" />
 		</panel>
 
 	</panel>

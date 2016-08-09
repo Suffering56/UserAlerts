@@ -34,10 +34,10 @@ public class AlertsMainFrame extends SwixFrame {
 
 	List<AlertEntity> rows = new ArrayList<AlertEntity>();
 	{
-		AlertEntity entity = new AlertEntity();
-		rows.add(entity);
-		rows.add(entity);
-		rows.add(entity);
+		AlertEntity alert = new AlertEntity("Alert name", AlertEntity.NEWS);
+		rows.add(alert);
+		rows.add(alert);
+		rows.add(alert);
 	}
 
 	private void initTable() {

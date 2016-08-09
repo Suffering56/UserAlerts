@@ -73,6 +73,10 @@ public abstract class SwixFrame {
 		frame.setEnabled(false);
 	}
 
+	public void dispose() {
+		frame.dispose();
+	}
+
 	// main
 	protected SwingEngine swix;
 	protected JFrame frame;
