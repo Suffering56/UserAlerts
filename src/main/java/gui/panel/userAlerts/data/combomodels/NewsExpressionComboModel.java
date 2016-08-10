@@ -1,6 +1,7 @@
 package gui.panel.userAlerts.data.combomodels;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 
 import gui.panel.userAlerts.data.AlertEntity;
 
@@ -13,16 +14,18 @@ public class NewsExpressionComboModel extends DefaultComboBoxModel {
 		addElement(and);
 	}
 
-	public String convertToNormalValue(String displayValue) {
+	public static String getNormalValue(JComboBox box) {
+		String displayValue = box.getSelectedItem().toString();
+
 		if (displayValue.equals(not)) {
-			return AlertEntity.NOT;
+			return AlertEntity.EXPRESSION_NOT;
 		} else if (displayValue.equals(or)) {
-			return AlertEntity.OR;
+			return AlertEntity.EXPRESSION_OR;
 		} else if (displayValue.equals(and)) {
-			return AlertEntity.AND;
+			return AlertEntity.EXPRESSION_AND;
 		} else {
-			//default
-			return AlertEntity.NOT;
+			// default
+			return AlertEntity.EXPRESSION_NOT;
 		}
 	}
 

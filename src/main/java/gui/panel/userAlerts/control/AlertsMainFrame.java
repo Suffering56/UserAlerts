@@ -12,32 +12,42 @@ import javax.swing.table.JTableHeader;
 import gui.panel.userAlerts.control.tableRenderers.HeaderRenderer;
 import gui.panel.userAlerts.data.AlertEntity;
 import gui.panel.userAlerts.data.AlertsNewsTableModel;
+import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 
 @SuppressWarnings("serial")
-public class AlertsMainFrame extends SwixFrame {
+public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 	public AlertsMainFrame() {
+		instance = this;
+		stock = new Stock();
+
 		frame.setTitle("Алерты");
 		renderPrimary("userAlerts/AlertsMainFrame");
 	}
 
 	@Override
 	protected void beforeRenderInit() {
-		// do nothing
+		stock = new Stock();
 	}
 
 	@Override
 	protected void afterRenderInit() {
 		initTable();
+		
+		addAlert(new AlertEntity(AlertEntity.TYPE_NEWS));
+		addAlert(new AlertEntity(AlertEntity.TYPE_NEWS));
+		addAlert(new AlertEntity(AlertEntity.TYPE_NEWS));
+		
+		for (AlertEntity a : stock.getAlertsList()) {
+			System.out.println(a);
+		}
 	}
 
-	List<AlertEntity> rows = new ArrayList<AlertEntity>();
-	{
-		AlertEntity alert = new AlertEntity("Alert name", AlertEntity.NEWS);
-		rows.add(alert);
-		rows.add(alert);
-		rows.add(alert);
+	public void addAlert(AlertEntity alert) {
+		stock.add(alert);
+		newsModel.update(stock.getAlertsList());
 	}
 
 	private void initTable() {
@@ -47,13 +57,12 @@ public class AlertsMainFrame extends SwixFrame {
 		newsHeader.setDefaultRenderer(new HeaderRenderer(newsHeader));
 
 		newsTable.setModel(newsModel);
-		newsModel.update(rows);
 	}
 
 	public Action EDIT_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
-				new EditNewsFrame().show();
+				new EditNewsFrame(instance).show();
 			}
 		}
 	};
@@ -69,7 +78,7 @@ public class AlertsMainFrame extends SwixFrame {
 	public Action CREATE_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
-				new EditNewsFrame().show();
+				new EditNewsFrame(instance).show();
 			}
 		}
 	};
@@ -98,7 +107,10 @@ public class AlertsMainFrame extends SwixFrame {
 		}
 	};
 
+	private AlertsMainFrame instance;
 	private JTable newsTable;
 	private JTableHeader newsHeader;
 	private AlertsNewsTableModel newsModel;
+
+	private Stock stock;
 }

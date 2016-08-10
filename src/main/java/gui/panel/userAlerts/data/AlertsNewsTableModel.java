@@ -11,6 +11,7 @@ public class AlertsNewsTableModel extends AbstractTableModel {
 
 	public void update(List<AlertEntity> rows) {
 		this.rows = rows;
+		fireTableDataChanged();
 	}
 
 	@Override

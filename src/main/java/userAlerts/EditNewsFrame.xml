@@ -30,7 +30,7 @@
 			<panel constraints="1,4">
 				<layout type="FormLayout" columns="p:g, f:p, 20px, f:p, p:g" rows="10px, f:p, 10px, 1px" />
 
-				<buttongroup id="keyWordButtonGroup">
+				<buttongroup>
 					<radiobutton constraints="2,2" id="byRelevanceRadioBtn" text="По релевантности" selected="true" />
 					<radiobutton constraints="4,2" id="exactMatchRadioBtn" text="Точное совпадение" />
 				</buttongroup>
@@ -53,7 +53,7 @@
 			<panel constraints="1,6">
 				<layout type="FormLayout" columns="p:g, f:p, p:g" rows="10px, f:p, 10px, f:p, 10px, f:p" />
 
-				<buttongroup id="excludeWordButtonGroup">
+				<buttongroup>
 					<radiobutton id="everywhereRadioBtn" constraints="2,2" text="Искать везде" selected="true" />
 					<radiobutton id="titlesOnlyRadioBtn" constraints="2,4" text="Искать только в заголовках" />
 					<radiobutton id="redNewsOnlyRadioBtn" constraints="2,6" text="Искать только в 'красных' новостях" />
@@ -72,10 +72,10 @@
 		<checkbox constraints="1,11" id="melodyCheckBox" text="Звуковой сигнал" />
 		<combobox constraints="3,11" id="melodyComboBox" editable="true" />
 
-		<checkbox constraints="1,13" id="newsLineColorCheckBox" text="Цвет строки новости" />
-		<button constraints="3,13" id="chooseColorBtn" name="alerts.main_button" text="Выбрать цвет" />
+		<checkbox constraints="1,13" id="newsColorCheckBox" text="Цвет строки новости" />
+		<button constraints="3,13" id="newsColorChooseBtn" name="alerts.main_button" text="Выбрать цвет" />
 
-		<checkbox constraints="1,15" id="popupWindowCheckBox" text="Всплывающее окно" />
+		<checkbox constraints="1,15" id="windowPopupCheckBox" text="Всплывающее окно" />
 
 		<separator constraints="1,17,3,1" orientation="HORIZONTAL" />
 

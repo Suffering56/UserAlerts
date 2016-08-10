@@ -28,6 +28,15 @@ public class ComboBoxUtils {
 		});
 	}
 
+	public static String getText(JComboBox box) {
+		final JTextComponent textComponent = (JTextComponent) box.getEditor().getEditorComponent();
+		return textComponent.getText();
+	}
+
+	public static boolean isEmpty(JComboBox box) {
+		return getText(box).isEmpty();
+	}
+
 	public interface Handler {
 		public void handle(JTextComponent textComponent);
 	}
