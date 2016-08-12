@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 public class AlertsNewsTableModel extends AbstractTableModel {
 
-	public void update(List<AlertEntity> rows) {
+	public void update(List<NewsAlert> rows) {
 		this.rows = rows;
 		fireTableDataChanged();
 	}
@@ -52,7 +52,16 @@ public class AlertsNewsTableModel extends AbstractTableModel {
 		return false;
 	}
 
-	private List<AlertEntity> rows;
+	public NewsAlert getAlertByRowNumber(int rowNumber) {
+		if ((rowNumber < rows.size()) && (rowNumber >= 0)) {
+			return rows.get(rowNumber);
+		} else {
+			System.out.println("uncorrect rowNumber");
+			return null;
+		}
+	}
+
+	private List<NewsAlert> rows;
 
 	public static final int NAME = 0;
 	public static final int CREATION_DATE = 1;

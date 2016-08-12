@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Stock {
 
-	public void add(AlertEntity alert) {
+	public void add(NewsAlert alert) {
 		int id = alert.getId();
 		
 		if (alert.getId() == -1) {
@@ -26,10 +26,6 @@ public class Stock {
 //		System.out.println(alert);
 	}
 
-	public void removeByIndex(int index) {
-		alertsList.remove(index);
-	}
-
 	public boolean removeById(int id) {
 		int removeIndex = -1;
 		for (int i = 0; i < alertsList.size(); i++) {
@@ -45,7 +41,7 @@ public class Stock {
 	}
 
 	public boolean containsId(int id) {
-		for (AlertEntity alert : alertsList) {
+		for (NewsAlert alert : alertsList) {
 			if (alert.getId() == id) {
 				return true;
 			}
@@ -53,13 +49,9 @@ public class Stock {
 		return false;
 	}
 
-	public boolean containsIndex(int index) {
-		return index < alertsList.size();
-	}
-
-	public List<AlertEntity> getAlertsList() {
+	public List<NewsAlert> getNewsAlertsList() {
 		return alertsList;
 	}
 
-	private final List<AlertEntity> alertsList = new ArrayList<AlertEntity>();
+	private final List<NewsAlert> alertsList = new ArrayList<NewsAlert>();
 }

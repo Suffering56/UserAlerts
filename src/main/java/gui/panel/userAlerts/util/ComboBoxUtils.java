@@ -33,11 +33,30 @@ public class ComboBoxUtils {
 		return textComponent.getText();
 	}
 
+	public static void setText(JComboBox box, String text) {
+		final JTextComponent textComponent = (JTextComponent) box.getEditor().getEditorComponent();
+		textComponent.setText(text);
+	}
+
 	public static boolean isEmpty(JComboBox box) {
 		return getText(box).isEmpty();
 	}
 
 	public interface Handler {
 		public void handle(JTextComponent textComponent);
+	}
+
+	public static void addItem(JComboBox box, String value) {
+		addItem(box, value, true);
+	}
+
+	public static void addItem(JComboBox box, String value, boolean enableChecking) {
+		if (enableChecking) {
+			if (!value.isEmpty()) {
+				box.addItem(value);
+			}
+		} else {
+			box.addItem(value);
+		}
 	}
 }

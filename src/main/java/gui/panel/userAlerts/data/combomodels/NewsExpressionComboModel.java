@@ -3,7 +3,7 @@ package gui.panel.userAlerts.data.combomodels;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.AlertEntity;
+import gui.panel.userAlerts.data.NewsAlert.Expression;
 
 @SuppressWarnings("serial")
 public class NewsExpressionComboModel extends DefaultComboBoxModel {
@@ -14,22 +14,38 @@ public class NewsExpressionComboModel extends DefaultComboBoxModel {
 		addElement(and);
 	}
 
-	public static String getNormalValue(JComboBox box) {
+	public static Expression getExpressionValue(JComboBox box) {
 		String displayValue = box.getSelectedItem().toString();
 
 		if (displayValue.equals(not)) {
-			return AlertEntity.EXPRESSION_NOT;
+			return Expression.NOT;
 		} else if (displayValue.equals(or)) {
-			return AlertEntity.EXPRESSION_OR;
+			return Expression.OR;
 		} else if (displayValue.equals(and)) {
-			return AlertEntity.EXPRESSION_AND;
+			return Expression.AND;
 		} else {
 			// default
-			return AlertEntity.EXPRESSION_NOT;
+			return Expression.NOT;
+		}
+	}
+
+	public static void setValue(JComboBox box, Expression expressionValue) {
+		if (expressionValue == Expression.NOT) {
+			box.setSelectedIndex(not_index);
+		} else if (expressionValue == Expression.OR) {
+			box.setSelectedIndex(or_index);
+		} else if (expressionValue == Expression.AND) {
+			box.setSelectedIndex(and_index);
+		} else {
+			box.setSelectedIndex(not_index);
 		}
 	}
 
 	public static final String not = "нет";
 	public static final String or = "или";
 	public static final String and = "и";
+
+	public static final int not_index = 0;
+	public static final int or_index = 1;
+	public static final int and_index = 2;
 }

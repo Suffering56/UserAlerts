@@ -1,9 +1,38 @@
 package gui.panel.userAlerts.data;
 
-public class AlertEntity {
+import java.util.Calendar;
 
-	public AlertEntity(String type) {
-		this.type = type;
+public class NewsAlert {
+
+	public NewsAlert() {
+		// empty constructor
+	}
+
+	public NewsAlert(int id, String name, boolean onlyRedNews, String firstKeyWord, String secondKeyWord,
+			Expression keyWordExpression, FilterKey keyWordFilterType, String firstExcludeWord,
+			String secondExcludeWord, Expression excludeWordExpression, FilterExclude excludeWordFilterType,
+			boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
+			boolean newsColorOn, String newsColor, boolean windowPopupOn) {
+		this.id = id;
+		this.name = name;
+		this.onlyRedNews = onlyRedNews;
+		this.firstKeyWord = firstKeyWord;
+		this.secondKeyWord = secondKeyWord;
+		this.keyWordExpression = keyWordExpression;
+		this.keyWordFilterType = keyWordFilterType;
+		this.firstExcludeWord = firstExcludeWord;
+		this.secondExcludeWord = secondExcludeWord;
+		this.excludeWordExpression = excludeWordExpression;
+		this.excludeWordFilterType = excludeWordFilterType;
+		this.emailOn = emailOn;
+		this.email = email;
+		this.phoneSmsOn = phoneSmsOn;
+		this.phoneSms = phoneSms;
+		this.melodyOn = melodyOn;
+		this.melody = melody;
+		this.newsColorOn = newsColorOn;
+		this.newsColor = newsColor;
+		this.windowPopupOn = windowPopupOn;
 	}
 
 	public int getId() {
@@ -20,10 +49,6 @@ public class AlertEntity {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getType() {
-		return type;
 	}
 
 	public boolean isOnlyRedNews() {
@@ -50,19 +75,19 @@ public class AlertEntity {
 		this.secondKeyWord = secondKeyWord;
 	}
 
-	public String getKeyWordExpression() {
+	public Expression getKeyWordExpression() {
 		return keyWordExpression;
 	}
 
-	public void setKeyWordExpression(String keyWordExpression) {
+	public void setKeyWordExpression(Expression keyWordExpression) {
 		this.keyWordExpression = keyWordExpression;
 	}
 
-	public String getKeyWordFilterType() {
+	public FilterKey getKeyWordFilterType() {
 		return keyWordFilterType;
 	}
 
-	public void setKeyWordFilterType(String keyWordFilterType) {
+	public void setKeyWordFilterType(FilterKey keyWordFilterType) {
 		this.keyWordFilterType = keyWordFilterType;
 	}
 
@@ -82,19 +107,19 @@ public class AlertEntity {
 		this.secondExcludeWord = secondExcludeWord;
 	}
 
-	public String getExcludeWordExpression() {
+	public Expression getExcludeWordExpression() {
 		return excludeWordExpression;
 	}
 
-	public void setExcludeWordExpression(String excludeWordExpression) {
+	public void setExcludeWordExpression(Expression excludeWordExpression) {
 		this.excludeWordExpression = excludeWordExpression;
 	}
 
-	public String getExcludeWordFilterType() {
+	public FilterExclude getExcludeWordFilterType() {
 		return excludeWordFilterType;
 	}
 
-	public void setExcludeWordFilterType(String excludeWordFilterType) {
+	public void setExcludeWordFilterType(FilterExclude excludeWordFilterType) {
 		this.excludeWordFilterType = excludeWordFilterType;
 	}
 
@@ -188,23 +213,21 @@ public class AlertEntity {
 
 	@Override
 	public String toString() {
-		return "AlertEntity [id=" + id + ", name=" + name + ", type=" + type + ", onlyRedNews=" + onlyRedNews
-				+ ", firstKeyWord=" + firstKeyWord + ", secondKeyWord=" + secondKeyWord + ", keyWordExpression="
-				+ keyWordExpression + ", keyWordFilterType=" + keyWordFilterType + ", firstExcludeWord="
-				+ firstExcludeWord + ", secondExcludeWord=" + secondExcludeWord + ", excludeWordExpression="
-				+ excludeWordExpression + ", excludeWordFilterType=" + excludeWordFilterType + ", newsColorOn="
-				+ newsColorOn + ", newsColor=" + newsColor + ", emailOn=" + emailOn + ", email=" + email
-				+ ", phoneSmsOn=" + phoneSmsOn + ", phoneSms=" + phoneSms + ", melodyOn=" + melodyOn + ", melody="
-				+ melody + ", windowPopupOn=" + windowPopupOn + ", creationDate=" + creationDate + ", lastEventDate="
-				+ lastEventDate + "]";
+		return "AlertEntity [id=" + id + ", name=" + name + ", onlyRedNews=" + onlyRedNews + ", firstKeyWord="
+				+ firstKeyWord + ", secondKeyWord=" + secondKeyWord + ", keyWordExpression=" + keyWordExpression
+				+ ", keyWordFilterType=" + keyWordFilterType + ", firstExcludeWord=" + firstExcludeWord
+				+ ", secondExcludeWord=" + secondExcludeWord + ", excludeWordExpression=" + excludeWordExpression
+				+ ", excludeWordFilterType=" + excludeWordFilterType + ", newsColorOn=" + newsColorOn + ", newsColor="
+				+ newsColor + ", emailOn=" + emailOn + ", email=" + email + ", phoneSmsOn=" + phoneSmsOn + ", phoneSms="
+				+ phoneSms + ", melodyOn=" + melodyOn + ", melody=" + melody + ", windowPopupOn=" + windowPopupOn
+				+ ", creationDate=" + creationDate + ", lastEventDate=" + lastEventDate + "]";
 	}
 
 	/**************************************
 	 ************** Основные **************
 	 **************************************/
 	private int id = -1;
-	private String name = "EMPTY NAME";
-	private final String type;
+	private String name = "";
 
 	/**************************************
 	 ************** Новости ***************
@@ -217,35 +240,40 @@ public class AlertEntity {
 	// Ключевая фраза 2
 	private String secondKeyWord = "";
 	// Выражение(нет/или/и)
-	private String keyWordExpression = EXPRESSION_NOT;
+	private Expression keyWordExpression = Expression.NOT;
 	// Фильтр (По релевантности / Точное совпадение)
-	private String keyWordFilterType = KEY_FILTER_BY_RELEVANCE;
+	private FilterKey keyWordFilterType = FilterKey.BY_RELEVANCE;
 
-	// По релевантности
-	public static final String KEY_FILTER_BY_RELEVANCE = "BY_RELEVANCE";
-	// Точное совпадение
-	public static final String KEY_FILTER_EXACT_MATCH = "EXACT_MATCH";
+	// // По релевантности
+	// public static final String KEY_FILTER_BY_RELEVANCE = "BY_RELEVANCE";
+	// // Точное совпадение
+	// public static final String KEY_FILTER_BY_RELEVANCE = "EXACT_MATCH";
+
+	public enum FilterKey {
+		BY_RELEVANCE, EXACT_MATCH
+	}
+
+	public enum FilterExclude {
+		EVERYWERE, TITLES_ONLY, RED_ONLY
+	}
 
 	// Исключить слова 1
 	private String firstExcludeWord = "";
 	// Исключить слова 1
 	private String secondExcludeWord = "";
 	// Выражение(нет/или/и)
-	private String excludeWordExpression = EXPRESSION_NOT;
+	private Expression excludeWordExpression = Expression.NOT;
 	// Фильтр (Искать везде / Искать только в заголовках / Искать только в
 	// "красных" новостях)
-	private String excludeWordFilterType = EXCLUDE_FILTER_EVERYWHERE;
-
-	// Искать везде
-	public static final String EXCLUDE_FILTER_EVERYWHERE = "EVERYWHERE";
-	// Искать только в заголовках
-	public static final String EXCLUDE_FILTER_TITLES_ONLY = "TITLES_ONLY";
-	// Искать только в "красных" новостях
-	public static final String EXCLUDE_FILTER_RED_NEWS_ONLY = "RED_NEWS_ONLY";
-	
-	/**************************************
-	 ************* Котировки **************
-	 **************************************/
+	private FilterExclude excludeWordFilterType = FilterExclude.EVERYWERE;
+	//
+	// // Искать везде
+	// public static final String EXCLUDE_FILTER_EVERYWHERE = "EVERYWHERE";
+	// // Искать только в заголовках
+	// public static final String EXCLUDE_FILTER_TITLES_ONLY = "TITLES_ONLY";
+	// // Искать только в "красных" новостях
+	// public static final String EXCLUDE_FILTER_RED_NEWS_ONLY =
+	// "RED_NEWS_ONLY";
 
 	/**************************************
 	 *************** Общие ****************
@@ -266,19 +294,17 @@ public class AlertEntity {
 	private boolean windowPopupOn;
 
 	// Дата создания
-	private String creationDate = "01.01.2016";
+	private String creationDate = Calendar.getInstance().getTime().toLocaleString();
 	// Дата последнего срабатывания
-	private String lastEventDate = "05.01.2016";
+	private String lastEventDate = "-";
 
-	// Новости
-	public static final String TYPE_NEWS = "NEWS";
-	// Котировки
-	public static final String TYPE_QUOTES = "QUOTES";
-	
-	// Нет
-	public static final String EXPRESSION_NOT = "not";
-	// И
-	public static final String EXPRESSION_OR = "or";
-	// Или
-	public static final String EXPRESSION_AND = "and";
+	public enum Expression {
+		NOT, OR, AND
+	}
+	// // Нет
+	// public static final String EXPRESSION_NOT = "not";
+	// // И
+	// public static final String EXPRESSION_OR = "or";
+	// // Или
+	// public static final String EXPRESSION_AND = "and";
 }

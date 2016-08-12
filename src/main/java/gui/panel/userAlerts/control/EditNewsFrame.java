@@ -2,6 +2,9 @@ package gui.panel.userAlerts.control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Calendar;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -10,21 +13,33 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 
-import gui.panel.userAlerts.data.AlertEntity;
+import gui.panel.userAlerts.data.NewsAlert;
+import gui.panel.userAlerts.data.NewsAlert.Expression;
+import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
+import gui.panel.userAlerts.data.NewsAlert.FilterKey;
+import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.ComboBoxUtils;
 
+@SuppressWarnings({ "unused" })
 public class EditNewsFrame extends SwixFrame {
 
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
-		this(primaryFrame, new AlertEntity(AlertEntity.TYPE_NEWS));
+		this(primaryFrame, null);
 	}
 
-	public EditNewsFrame(PrimaryFrame primaryFrame, AlertEntity alert) {
+	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
 		this.primaryFrame = primaryFrame;
-		this.alert = alert;
+		this.stock = primaryFrame.getStock();
+		if (alert == null) {
+			this.alert = new NewsAlert();
+			TYPE = TYPE_CREATE;
+		} else {
+			this.alert = alert;
+			TYPE = TYPE_EDIT;
+		}
 
 		frame.setTitle("Настройка алерта для новостей");
 		render("userAlerts/EditNewsFrame");
@@ -32,38 +47,43 @@ public class EditNewsFrame extends SwixFrame {
 
 	@Override
 	protected void beforeRenderInit() {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	protected void afterRenderInit() {
+		initComboBoxModels();
 		initComboBoxListeners();
+		initCheckBoxListeners();
+		initOtherListeners();
 
-		onlyRedNewsCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				boolean enabled = !onlyRedNewsCheckBox.isSelected();
-				firstKeyWordComboBox.setEnabled(enabled);
-				keyWordExpressionComboBox.setEnabled(enabled);
-				firstExcludeWordComboBox.setEnabled(enabled);
-				excludeWordExpressionComboBox.setEnabled(enabled);
+		if (TYPE == TYPE_EDIT) {
+			fillFields();
+		}
+	}
 
-				byRelevanceRadioBtn.setEnabled(enabled);
-				exactMatchRadioBtn.setEnabled(enabled);
-				everywhereRadioBtn.setEnabled(enabled);
-				titlesOnlyRadioBtn.setEnabled(enabled);
-				redNewsOnlyRadioBtn.setEnabled(enabled);
+	private void initComboBoxModels() {
+		addComboItems(alert, false);
 
-				if (enabled) {
-					setSecondComboBoxState(keyWordExpressionComboBox, secondKeyWordComboBox);
-					setSecondComboBoxState(excludeWordExpressionComboBox, secondExcludeWordComboBox);
-				} else {
-					secondKeyWordComboBox.setEnabled(enabled);
-					secondExcludeWordComboBox.setEnabled(enabled);
-				}
+		for (NewsAlert alertItem : stock.getNewsAlertsList()) {
+			if (alert != alertItem) {
+				addComboItems(alertItem, true);
 			}
-		});
+		}
+	}
 
+	private void addComboItems(NewsAlert alertItem, boolean enableChecking) {
+		ComboBoxUtils.addItem(alertNameComboBox, alertItem.getName(), enableChecking);
+
+		ComboBoxUtils.addItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), enableChecking);
+		ComboBoxUtils.addItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), enableChecking);
+
+		ComboBoxUtils.addItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), enableChecking);
+		ComboBoxUtils.addItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), enableChecking);
+
+		ComboBoxUtils.addItem(emailComboBox, alertItem.getEmail(), enableChecking);
+		ComboBoxUtils.addItem(phoneComboBox, alertItem.getPhoneSms(), enableChecking);
+		ComboBoxUtils.addItem(melodyComboBox, alertItem.getMelody(), enableChecking);
 	}
 
 	private void initComboBoxListeners() {
@@ -90,27 +110,99 @@ public class EditNewsFrame extends SwixFrame {
 		});
 	}
 
-	private boolean setSecondComboBoxState(JComboBox expressionBox, JComboBox secondBox) {
-		if (expressionBox.getSelectedItem().equals(NewsExpressionComboModel.not)) {
-			secondBox.setEnabled(false);
+	private void initCheckBoxListeners() {
+		onlyRedNewsCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setOnlyRedNews();
+			}
+		});
+	}
+
+	private void initOtherListeners() {
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				primaryFrame.enable();
+			}
+		});
+	}
+
+	private void setOnlyRedNews() {
+		boolean enabled = !onlyRedNewsCheckBox.isSelected();
+
+		firstKeyWordComboBox.setEnabled(enabled);
+		keyWordExpressionComboBox.setEnabled(enabled);
+		firstExcludeWordComboBox.setEnabled(enabled);
+		excludeWordExpressionComboBox.setEnabled(enabled);
+
+		byRelevanceRadioBtn.setEnabled(enabled);
+		exactMatchRadioBtn.setEnabled(enabled);
+		everywhereRadioBtn.setEnabled(enabled);
+		titlesOnlyRadioBtn.setEnabled(enabled);
+		redNewsOnlyRadioBtn.setEnabled(enabled);
+
+		if (enabled) {
+			setSecondComboBoxState(keyWordExpressionComboBox, secondKeyWordComboBox);
+			setSecondComboBoxState(excludeWordExpressionComboBox, secondExcludeWordComboBox);
 		} else {
-			secondBox.setEnabled(true);
+			secondKeyWordComboBox.setEnabled(false);
+			secondExcludeWordComboBox.setEnabled(false);
 		}
-		return secondBox.isEnabled();
+	}
+
+	private void setSecondComboBoxState(JComboBox expressionBox, JComboBox secondBox) {
+		boolean enabled = !expressionBox.getSelectedItem().equals(NewsExpressionComboModel.not);
+		secondBox.setEnabled(enabled);
+	}
+
+	private void fillFields() {
+		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNews());
+		setOnlyRedNews();
+
+		NewsExpressionComboModel.setValue(keyWordExpressionComboBox, alert.getKeyWordExpression());
+
+		if (alert.getKeyWordFilterType() == FilterKey.BY_RELEVANCE) {
+			byRelevanceRadioBtn.setSelected(true);
+		} else {
+			exactMatchRadioBtn.setSelected(true);
+		}
+
+		NewsExpressionComboModel.setValue(excludeWordExpressionComboBox, alert.getExcludeWordExpression());
+
+		if (alert.getExcludeWordFilterType() == FilterExclude.EVERYWERE) {
+			everywhereRadioBtn.setSelected(true);
+		} else if (alert.getExcludeWordFilterType() == FilterExclude.TITLES_ONLY) {
+			titlesOnlyRadioBtn.setSelected(true);
+		} else {
+			redNewsOnlyRadioBtn.setSelected(true);
+		}
+
+		emailCheckBox.setSelected(alert.isEmailOn());
+		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
+		melodyCheckBox.setSelected(alert.isMelodyOn());
+		newsColorCheckBox.setSelected(alert.isNewsColorOn());
+		// set color
+		windowPopupCheckBox.setSelected(alert.isWindowPopupOn());
 	}
 
 	private boolean apply() {
 		boolean success = inputValidation();
 		if (success) {
-			System.out.println("success validation");
-			AlertEntity alert = createAlert();
-			primaryFrame.addAlert(alert);
+			fillAlert();
+
+			if (TYPE == TYPE_CREATE) {
+				primaryFrame.createAlert(alert);
+			} else {
+				primaryFrame.updateAlert(alert);
+			}
+
 		} else {
 			System.out.println("error validation");
 		}
 		return success;
 	}
-	
+
 	private boolean inputValidation() {
 		if (ComboBoxUtils.isEmpty(alertNameComboBox)) {
 			return false;
@@ -148,32 +240,32 @@ public class EditNewsFrame extends SwixFrame {
 		return true;
 	}
 
-	private AlertEntity createAlert() {
+	private void fillAlert() {
 		alert.setName(ComboBoxUtils.getText(alertNameComboBox));
 		alert.setOnlyRedNews(onlyRedNewsCheckBox.isSelected());
 
 		alert.setFirstKeyWord(ComboBoxUtils.getText(firstKeyWordComboBox));
 		alert.setSecondKeyWord(ComboBoxUtils.getText(secondKeyWordComboBox));
 
-		String keyExpression = NewsExpressionComboModel.getNormalValue(keyWordExpressionComboBox);
+		Expression keyExpression = NewsExpressionComboModel.getExpressionValue(keyWordExpressionComboBox);
 		alert.setKeyWordExpression(keyExpression);
 
 		if (byRelevanceRadioBtn.isSelected()) {
-			alert.setKeyWordFilterType(AlertEntity.KEY_FILTER_BY_RELEVANCE);
+			alert.setKeyWordFilterType(FilterKey.BY_RELEVANCE);
 		} else {
-			alert.setKeyWordFilterType(AlertEntity.KEY_FILTER_EXACT_MATCH);
+			alert.setKeyWordFilterType(FilterKey.EXACT_MATCH);
 		}
 
 		alert.setFirstExcludeWord(ComboBoxUtils.getText(firstExcludeWordComboBox));
 		alert.setSecondExcludeWord(ComboBoxUtils.getText(secondExcludeWordComboBox));
-		String excludeExpression = NewsExpressionComboModel.getNormalValue(excludeWordExpressionComboBox);
+		Expression excludeExpression = NewsExpressionComboModel.getExpressionValue(excludeWordExpressionComboBox);
 		alert.setExcludeWordExpression(excludeExpression);
 		if (everywhereRadioBtn.isSelected()) {
-			alert.setExcludeWordFilterType(AlertEntity.EXCLUDE_FILTER_EVERYWHERE);
+			alert.setExcludeWordFilterType(FilterExclude.EVERYWERE);
 		} else if (titlesOnlyRadioBtn.isSelected()) {
-			alert.setExcludeWordFilterType(AlertEntity.EXCLUDE_FILTER_TITLES_ONLY);
+			alert.setExcludeWordFilterType(FilterExclude.TITLES_ONLY);
 		} else {
-			alert.setExcludeWordFilterType(AlertEntity.EXCLUDE_FILTER_RED_NEWS_ONLY);
+			alert.setExcludeWordFilterType(FilterExclude.RED_ONLY);
 		}
 
 		alert.setEmailOn(emailCheckBox.isSelected());
@@ -190,11 +282,18 @@ public class EditNewsFrame extends SwixFrame {
 
 		alert.setWindowPopupOn(windowPopupCheckBox.isSelected());
 
-		return alert;
+		if (TYPE == TYPE_CREATE) {
+			alert.setCreationDate(Calendar.getInstance().getTime().toLocaleString());
+		}
 	}
 
 	private PrimaryFrame primaryFrame;
-	private AlertEntity alert;
+	private NewsAlert alert;
+	private Stock stock;
+
+	private int TYPE;
+	private static final int TYPE_CREATE = 0;
+	private static final int TYPE_EDIT = 1;
 
 	private JComboBox alertNameComboBox;
 	private JCheckBox onlyRedNewsCheckBox;
@@ -234,6 +333,7 @@ public class EditNewsFrame extends SwixFrame {
 				boolean success = apply();
 				if (success) {
 					dispose();
+					primaryFrame.enable();
 				}
 			}
 		}
@@ -243,6 +343,7 @@ public class EditNewsFrame extends SwixFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
 				dispose();
+				primaryFrame.enable();
 			}
 		}
 	};
