@@ -2,6 +2,7 @@ package gui.panel.userAlerts.data;
 
 import java.util.Calendar;
 
+@SuppressWarnings("deprecation")
 public class NewsAlert {
 
 	public NewsAlert() {

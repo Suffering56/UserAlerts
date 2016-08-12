@@ -24,7 +24,6 @@ public class NewsExpressionComboModel extends DefaultComboBoxModel {
 		} else if (displayValue.equals(and)) {
 			return Expression.AND;
 		} else {
-			// default
 			return Expression.NOT;
 		}
 	}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <panel name="DarkGreyPanel">
-	<layout type="FormLayout" columns="10px:g, f:p, 10px, 120px, 10px:g" rows="10px:g, f:p, 10px:g" />
+	<layout type="FormLayout" columns="10px:g, f:p, 10px, 300px, 10px:g" rows="10px:g, f:p, 10px:g" />
 
 	<panel constraints="2,2" id="contentPanel">
 		<layout type="FormLayout" columns="f:p, p:g, f:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, 1px, 10px, f:p" />
@@ -88,6 +88,6 @@
 	</panel>
 
 	<panel constraints="4,2" id="treePanel" layout="FlowLayout(FlowLayout.LEFT)">
-		<tree />
+		<tree id="tree" />
 	</panel>
 </panel>

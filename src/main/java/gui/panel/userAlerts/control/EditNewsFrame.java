@@ -12,7 +12,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
+import gui.panel.userAlerts.App;
+import gui.panel.userAlerts.data.AlertNewsTreeModel;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
@@ -21,9 +25,10 @@ import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
+import gui.panel.userAlerts.remote.NewsCategoryDownloader;
 import gui.panel.userAlerts.util.ComboBoxUtils;
 
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({ "serial", "unused", "deprecation" })
 public class EditNewsFrame extends SwixFrame {
 
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
@@ -33,6 +38,8 @@ public class EditNewsFrame extends SwixFrame {
 	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
 		this.primaryFrame = primaryFrame;
 		this.stock = primaryFrame.getStock();
+		
+
 		if (alert == null) {
 			this.alert = new NewsAlert();
 			TYPE = TYPE_CREATE;
@@ -56,11 +63,16 @@ public class EditNewsFrame extends SwixFrame {
 		initComboBoxListeners();
 		initCheckBoxListeners();
 		initOtherListeners();
+	
+		stock.setTree(tree);
+		newsCategoryDownloader = new NewsCategoryDownloader(stock);
 
 		if (TYPE == TYPE_EDIT) {
 			fillFields();
 		}
 	}
+	
+	
 
 	private void initComboBoxModels() {
 		addComboItems(alert, false);
@@ -91,7 +103,7 @@ public class EditNewsFrame extends SwixFrame {
 		// {
 		// @Override
 		// public void handle(JTextComponent textComponent) {
-		// System.out.println("docUpdateText: " + textComponent.getText());
+		// App.appLogger.info("docUpdateText: " + textComponent.getText());
 		// }
 		// });
 
@@ -198,7 +210,7 @@ public class EditNewsFrame extends SwixFrame {
 			}
 
 		} else {
-			System.out.println("error validation");
+			App.appLogger.info("error validation");
 		}
 		return success;
 	}
@@ -295,6 +307,9 @@ public class EditNewsFrame extends SwixFrame {
 	private static final int TYPE_CREATE = 0;
 	private static final int TYPE_EDIT = 1;
 
+	private JTree tree;
+	private NewsCategoryDownloader newsCategoryDownloader;
+	
 	private JComboBox alertNameComboBox;
 	private JCheckBox onlyRedNewsCheckBox;
 

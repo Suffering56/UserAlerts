@@ -12,16 +12,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 
 import gui.panel.userAlerts.control.tableRenderers.HeaderRenderer;
+import gui.panel.userAlerts.data.AlertsNewsTableModel;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
 import gui.panel.userAlerts.data.NewsAlert.FilterKey;
-import gui.panel.userAlerts.data.AlertsNewsTableModel;
 import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
+import gui.panel.userAlerts.remote.NewsCategoryDownloader;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "unused"})
 public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 	public AlertsMainFrame() {
@@ -43,18 +44,18 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 		createAlert(new NewsAlert(1, "Alert_1", false, "key1", "key2", Expression.OR, FilterKey.BY_RELEVANCE,
 				"exclude1", "exclude2", Expression.OR, FilterExclude.EVERYWERE, true, "1@mail.ru", true, "111111", true,
-				"mp1", true, "null_color", true));
+				"mp3", true, "null_color", true));
 
 		createAlert(new NewsAlert(2, "Alert_2", true, "", "", Expression.NOT, FilterKey.BY_RELEVANCE, "", "",
-				Expression.NOT, FilterExclude.TITLES_ONLY, false, "2@mail.ru", false, "222222", false, "mp2", false,
+				Expression.NOT, FilterExclude.TITLES_ONLY, false, "2@mail.ru", false, "222222", true, "mp3", false,
 				"null_color", false));
 
 		createAlert(new NewsAlert(3, "Alert_3", false, "key111", "", Expression.NOT, FilterKey.EXACT_MATCH, "", "",
-				Expression.NOT, FilterExclude.RED_ONLY, false, "", false, "", false, "", false, "null_color", false));
+				Expression.NOT, FilterExclude.RED_ONLY, false, "", false, "", true, "mp3", false, "null_color", false));
 
-		for (NewsAlert a : stock.getNewsAlertsList()) {
-			// System.out.println(a);
-		}
+		// for (NewsAlert alert : stock.getNewsAlertsList()) {
+		// App.appLogger.info(alert);
+		// }
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		stock.add(alert);
 		newsModel.update(stock.getNewsAlertsList());
 
-		// System.out.println(alert);
+		// App.appLogger.info(alert);
 	}
 
 	@Override

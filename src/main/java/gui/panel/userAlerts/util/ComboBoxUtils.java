@@ -1,5 +1,8 @@
 package gui.panel.userAlerts.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JComboBox;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -51,12 +54,23 @@ public class ComboBoxUtils {
 	}
 
 	public static void addItem(JComboBox box, String value, boolean enableChecking) {
-		if (enableChecking) {
-			if (!value.isEmpty()) {
+		List<Object> itemsList = getItemsList(box);
+		if (!itemsList.contains(value)) {
+			if (enableChecking) {
+				if (!value.isEmpty()) {
+					box.addItem(value);
+				}
+			} else {
 				box.addItem(value);
 			}
-		} else {
-			box.addItem(value);
 		}
+	}
+
+	public static List<Object> getItemsList(JComboBox box) {
+		List<Object> itemsList = new ArrayList<Object>();
+		for (int i = 0; i < box.getItemCount(); i++) {
+			itemsList.add(box.getItemAt(i));
+		}
+		return itemsList;
 	}
 }

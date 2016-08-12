@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import gui.panel.userAlerts.parent.SwixFrame;
 
+@SuppressWarnings("serial")
 public class EditQuotesFrame extends SwixFrame {
 
 	public EditQuotesFrame() {
