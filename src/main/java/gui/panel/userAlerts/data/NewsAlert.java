@@ -245,11 +245,6 @@ public class NewsAlert {
 	// Фильтр (По релевантности / Точное совпадение)
 	private FilterKey keyWordFilterType = FilterKey.BY_RELEVANCE;
 
-	// // По релевантности
-	// public static final String KEY_FILTER_BY_RELEVANCE = "BY_RELEVANCE";
-	// // Точное совпадение
-	// public static final String KEY_FILTER_BY_RELEVANCE = "EXACT_MATCH";
-
 	public enum FilterKey {
 		BY_RELEVANCE, EXACT_MATCH
 	}
@@ -264,17 +259,8 @@ public class NewsAlert {
 	private String secondExcludeWord = "";
 	// Выражение(нет/или/и)
 	private Expression excludeWordExpression = Expression.NOT;
-	// Фильтр (Искать везде / Искать только в заголовках / Искать только в
-	// "красных" новостях)
+	// Фильтр (Искать везде / Искать только в заголовках / ...)
 	private FilterExclude excludeWordFilterType = FilterExclude.EVERYWERE;
-	//
-	// // Искать везде
-	// public static final String EXCLUDE_FILTER_EVERYWHERE = "EVERYWHERE";
-	// // Искать только в заголовках
-	// public static final String EXCLUDE_FILTER_TITLES_ONLY = "TITLES_ONLY";
-	// // Искать только в "красных" новостях
-	// public static final String EXCLUDE_FILTER_RED_NEWS_ONLY =
-	// "RED_NEWS_ONLY";
 
 	/**************************************
 	 *************** Общие ****************
@@ -302,10 +288,4 @@ public class NewsAlert {
 	public enum Expression {
 		NOT, OR, AND
 	}
-	// // Нет
-	// public static final String EXPRESSION_NOT = "not";
-	// // И
-	// public static final String EXPRESSION_OR = "or";
-	// // Или
-	// public static final String EXPRESSION_AND = "and";
 }

@@ -20,7 +20,7 @@ import gui.panel.userAlerts.data.NewsAlert.FilterKey;
 import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
-import gui.panel.userAlerts.remote.NewsCategoryDownloader;
+import gui.panel.userAlerts.remote.NewsTreeDownloader;
 
 @SuppressWarnings({"serial", "unused"})
 public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
@@ -35,7 +35,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 	@Override
 	protected void beforeRenderInit() {
-		stock = new Stock();
+		//do nothing
 	}
 
 	@Override

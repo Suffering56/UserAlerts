@@ -21,7 +21,7 @@
 				<label constraints="1,2" text="Ключевая фраза 1" />
 				<combobox constraints="1,4" id="firstKeyWordComboBox" editable="true" />
 
-				<combobox constraints="3,4" id="keyWordExpressionComboBox" initclass="gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel" />
+				<combobox constraints="3,4" id="keyWordExpressionComboBox" initclass="gui.panel.userAlerts.data.NewsExpressionComboModel" />
 
 				<label constraints="5,2" text="Ключевая фраза 2" />
 				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" enabled="false" />
@@ -44,7 +44,7 @@
 				<label constraints="1,2" text="Исключить слова 1" />
 				<combobox constraints="1,4" id="firstExcludeWordComboBox" editable="true" />
 
-				<combobox constraints="3,4" id="excludeWordExpressionComboBox" initclass="gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel" />
+				<combobox constraints="3,4" id="excludeWordExpressionComboBox" initclass="gui.panel.userAlerts.data.NewsExpressionComboModel" />
 
 				<label constraints="5,2" text="Исключить слова 2" />
 				<combobox constraints="5,4" id="secondExcludeWordComboBox" editable="true" enabled="false" />

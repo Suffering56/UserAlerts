@@ -3,11 +3,16 @@ package gui.panel.userAlerts.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import gui.panel.userAlerts.parent.TreeUpdateListener;
+import gui.panel.userAlerts.remote.NewsTreeDownloader;
+
 public class Stock {
+
+	public Stock() {
+		newsTreeDownloader = new NewsTreeDownloader(this);
+	}
 
 	public void add(NewsAlert alert) {
 		int id = alert.getId();
@@ -26,8 +31,6 @@ public class Stock {
 
 		alert.setId(id);
 		alertsList.add(alert);
-
-		// System.out.println(alert);
 	}
 
 	public boolean removeById(int id) {
@@ -57,28 +60,41 @@ public class Stock {
 		return alertsList;
 	}
 
+	public void updateNewsTree(final TreeNode root) {
+		this.newsTreeRoot = root;
+		new Runnable() {
+			public void run() {
+				boolean success = false;
+				while (success == false) {
+					if (newsTreeUpdateListener != null) {
+						success = newsTreeUpdateListener.updateTree(root);
+					}
+					sleep();
+				}
+			}
+		}.run();
+	}
+
+	private void sleep() {
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setNewsTreeUpdateListener(TreeUpdateListener newsTreeUpdateListener) {
+		this.newsTreeUpdateListener = newsTreeUpdateListener;
+	}
+
 	public TreeNode getNewsTreeRoot() {
-		return root;
+		return newsTreeRoot;
 	}
 
-	public void setNewsTreeRoot(DefaultMutableTreeNode root) {
-		this.root = root;
-	}
-
-	public JTree getTree() {
-		return tree;
-	}
-
-	public void setTree(JTree tree) {
-		this.tree = tree;
-	}
-
-	public void updateTree(DefaultMutableTreeNode root) {
-		this.root = root;
-		tree.setModel(new AlertNewsTreeModel(root));
-	}
-
-	private DefaultMutableTreeNode root;
-	private JTree tree;
 	private final List<NewsAlert> alertsList = new ArrayList<NewsAlert>();
+
+	@SuppressWarnings("unused")
+	private NewsTreeDownloader newsTreeDownloader;
+	private TreeNode newsTreeRoot;
+	private TreeUpdateListener newsTreeUpdateListener;
 }

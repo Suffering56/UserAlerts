@@ -1,9 +1,8 @@
 package gui.panel.userAlerts.remote;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.data.tree.CheckableTreeNode;
 import prime_tass.connect.BadParametersException;
 import prime_tass.connect.client_api.ConnectionClientAPI;
 import prime_tass.connect.client_api.ConnectionClientAPI.TYPE;
@@ -15,9 +14,9 @@ import pt.news.client_api.assets.xml.NewsDatabase;
 import pt.news.client_api.interf.INewsConfigListener;
 import pt.news.client_api.interf.INewsStatusInterface;
 
-public class NewsCategoryDownloader {
+public class NewsTreeDownloader {
 
-	public NewsCategoryDownloader(Stock stock) {
+	public NewsTreeDownloader(Stock stock) {
 		this.stock = stock;
 
 		initStatusInterfaces();
@@ -34,9 +33,7 @@ public class NewsCategoryDownloader {
 			}
 
 			public void configurationUpdate(byte[] config) {
-				// App.appLogger.info("Successfuly arrived news database!");
 				createTreeNode(config);
-				// x(config);
 			}
 		};
 
@@ -56,60 +53,31 @@ public class NewsCategoryDownloader {
 	private void createTreeNode(byte[] config) {
 		NewsDatabase[] nd = pTNewsClientAPI.getParseNewsConfig(config);
 
-		newsTreeRoot = new DefaultMutableTreeNode("root");
-		DefaultMutableTreeNode section;
-		DefaultMutableTreeNode division;
-		DefaultMutableTreeNode topic;
+		CheckableTreeNode root = new CheckableTreeNode("Новости");
+		CheckableTreeNode section;
+		// DefaultMutableTreeNode division;
+		CheckableTreeNode topic;
 
 		for (int j = 0; j < nd.length; j++) {
 			NewsDatabase db = nd[j];
-			section = new DefaultMutableTreeNode(db.getCommonName());
+			section = new CheckableTreeNode(db.getCommonName());
 
 			Div[] dm = db.getDivs();
 			for (int i = 0; i < dm.length; i++) {
-				division = new DefaultMutableTreeNode(dm[i].getName());
+				// division = new DefaultMutableTreeNode(dm[i].getName());
 
 				for (Pair<Integer, String> p : dm[i].getTopics()) {
-					topic = new DefaultMutableTreeNode(p.snd);
-					division.add(topic);
+					topic = new CheckableTreeNode(p.snd);
+					section.add(topic);
 				}
-				
-				section.add(division);
+
+				// section.add(division);
 			}
 
-			newsTreeRoot.add(section);
+			root.add(section);
 		}
-
-		stock.updateTree(newsTreeRoot);
-	}
-
-	void x(byte[] config) {
-		System.out.println("Successfuly arrived news database!");
-
-		// now parsing
-		NewsDatabase[] nd = pTNewsClientAPI.getParseNewsConfig(config);
-
-		System.out.println("loaded " + nd.length + " news databases.");
-
-		NewsDatabase db = nd[0];
-		System.out.println("database 0:\r\nname=" + db.getName());
-		System.out.println("common name=" + db.getCommonName());
-		System.out.println("database have " + db.getDivsAmmount() + " divisions ammount");
-
-		Div[] dm = db.getDivs();
-		for (int i = 0; i < dm.length; i++) {
-			System.out.println("    Division[" + i + "] name=" + dm[i].getName() + " contains "
-					+ dm[i].getTopicsAmmount() + " topics:");
-
-			for (Pair<Integer, String> p : dm[i].getTopics()) {
-				System.out.println("         topic id=" + p.fst + "    name=" + p.snd);
-			}
-		}
-
-		System.out.println("database have " + db.getDirsAmmount() + " directions");
-		for (Pair<Integer, String> p : db.getDirs()) {
-			System.out.println("    direction id=" + p.fst + "    name=" + p.snd);
-		}
+		
+		stock.updateNewsTree(root);
 	}
 
 	private void initStatusInterfaces() {
@@ -147,7 +115,6 @@ public class NewsCategoryDownloader {
 	}
 
 	private final Stock stock;
-	private DefaultMutableTreeNode newsTreeRoot = new DefaultMutableTreeNode("root");
 
 	private INewsStatusInterface iNewsStatusInterface;
 	private INetworkStatusInterface iNetworkStatusInterface;

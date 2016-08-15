@@ -13,23 +13,29 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JTree;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import gui.panel.userAlerts.App;
-import gui.panel.userAlerts.data.AlertNewsTreeModel;
 import gui.panel.userAlerts.data.NewsAlert;
+import gui.panel.userAlerts.data.NewsExpressionComboModel;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
 import gui.panel.userAlerts.data.NewsAlert.FilterKey;
+import gui.panel.userAlerts.data.tree.AlertNewsTreeModel;
+import gui.panel.userAlerts.data.tree.CheckableTreeNode;
+import gui.panel.userAlerts.data.tree.CheckableTreeRenderer;
 import gui.panel.userAlerts.data.Stock;
-import gui.panel.userAlerts.data.combomodels.NewsExpressionComboModel;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
-import gui.panel.userAlerts.remote.NewsCategoryDownloader;
+import gui.panel.userAlerts.parent.TreeUpdateListener;
+import gui.panel.userAlerts.remote.NewsTreeDownloader;
 import gui.panel.userAlerts.util.ComboBoxUtils;
 
 @SuppressWarnings({ "serial", "unused", "deprecation" })
-public class EditNewsFrame extends SwixFrame {
+public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
 		this(primaryFrame, null);
@@ -38,7 +44,6 @@ public class EditNewsFrame extends SwixFrame {
 	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
 		this.primaryFrame = primaryFrame;
 		this.stock = primaryFrame.getStock();
-		
 
 		if (alert == null) {
 			this.alert = new NewsAlert();
@@ -62,17 +67,46 @@ public class EditNewsFrame extends SwixFrame {
 		initComboBoxModels();
 		initComboBoxListeners();
 		initCheckBoxListeners();
+		initTreeListeners();
 		initOtherListeners();
-	
-		stock.setTree(tree);
-		newsCategoryDownloader = new NewsCategoryDownloader(stock);
 
 		if (TYPE == TYPE_EDIT) {
 			fillFields();
 		}
+
+		tree.setModel(new AlertNewsTreeModel(stock.getNewsTreeRoot()));
+		stock.setNewsTreeUpdateListener(this);
+		tree.setCellRenderer(new CheckableTreeRenderer());
 	}
-	
-	
+
+	@Override
+	public boolean updateTree(TreeNode root) {
+		if (tree == null) {
+			return false;
+		}
+		tree.setModel(new AlertNewsTreeModel(root));
+		pack();
+		return true;
+	}
+
+	private void initTreeListeners() {
+		tree.addTreeExpansionListener(new TreeExpansionListener() {
+
+			@Override
+			public void treeExpanded(TreeExpansionEvent e) {
+				System.out.println("expand: " + e.getPath() + " row: " + tree.getRowForPath(e.getPath()));
+				pack();
+			}
+
+			@Override
+			public void treeCollapsed(TreeExpansionEvent e) {
+				System.out.println("collapse: " + e.getPath() + " row: " + tree.getRowForPath(e.getPath()));
+				int row = tree.getRowForPath(e.getPath());
+				CheckableTreeNode root = (CheckableTreeNode) tree.getModel().getRoot();
+				pack();
+			}
+		});
+	}
 
 	private void initComboBoxModels() {
 		addComboItems(alert, false);
@@ -308,8 +342,7 @@ public class EditNewsFrame extends SwixFrame {
 	private static final int TYPE_EDIT = 1;
 
 	private JTree tree;
-	private NewsCategoryDownloader newsCategoryDownloader;
-	
+
 	private JComboBox alertNameComboBox;
 	private JCheckBox onlyRedNewsCheckBox;
 
