@@ -2,7 +2,9 @@ package gui.panel.userAlerts.remote;
 
 import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.data.Stock;
-import gui.panel.userAlerts.data.tree.CheckableTreeNode;
+import gui.panel.userAlerts.overridden.model.CheckableTreeNode;
+import gui.panel.userAlerts.overridden.model.PTNewsTreeNode;
+import gui.panel.userAlerts.overridden.model.PTNewsTreeNode.NodeType;
 import prime_tass.connect.BadParametersException;
 import prime_tass.connect.client_api.ConnectionClientAPI;
 import prime_tass.connect.client_api.ConnectionClientAPI.TYPE;
@@ -53,30 +55,30 @@ public class NewsTreeDownloader {
 	private void createTreeNode(byte[] config) {
 		NewsDatabase[] nd = pTNewsClientAPI.getParseNewsConfig(config);
 
-		CheckableTreeNode root = new CheckableTreeNode("Новости");
-		CheckableTreeNode section;
-		// DefaultMutableTreeNode division;
-		CheckableTreeNode topic;
+		PTNewsTreeNode root = new PTNewsTreeNode(NodeType.ROOT, "Новости");
+		PTNewsTreeNode database;
+		PTNewsTreeNode division;
+		PTNewsTreeNode topic;
 
 		for (int j = 0; j < nd.length; j++) {
 			NewsDatabase db = nd[j];
-			section = new CheckableTreeNode(db.getCommonName());
-
+			database = new PTNewsTreeNode(NodeType.DATABASE, db.getCommonName());
 			Div[] dm = db.getDivs();
 			for (int i = 0; i < dm.length; i++) {
-				// division = new DefaultMutableTreeNode(dm[i].getName());
+				division = new PTNewsTreeNode(NodeType.DIVISION, dm[i].getName());
 
 				for (Pair<Integer, String> p : dm[i].getTopics()) {
-					topic = new CheckableTreeNode(p.snd);
-					section.add(topic);
+					System.out.println(p.fst);
+//					topic = new PTNewsTreeNode(NodeType.TOPIC, p.snd, p.fst);
+//					division.add(topic);
 				}
 
-				// section.add(division);
+				database.add(division);
 			}
 
-			root.add(section);
+			root.add(database);
 		}
-		
+
 		stock.updateNewsTree(root);
 	}
 
@@ -89,19 +91,19 @@ public class NewsTreeDownloader {
 
 		iNetworkStatusInterface = new INetworkStatusInterface() {
 			public void connectionEstablished() {
-				System.out.println("connectionEstablished");
+				App.appLogger.info("connectionEstablished");
 			}
 
 			public void networkActivity() {
-				// System.out.println("networkActivity");
+				// App.appLogger.info("networkActivity");
 			}
 
 			public void wrongCredentials() {
-				System.out.println("wrongCredentials");
+				App.appLogger.info("wrongCredentials");
 			}
 
 			public void disconnectedFromServer() {
-				System.out.println("disconnectedFromServer");
+				App.appLogger.info("disconnectedFromServer");
 			}
 
 			public void serverAcceptedCredentials() {
@@ -115,7 +117,6 @@ public class NewsTreeDownloader {
 	}
 
 	private final Stock stock;
-
 	private INewsStatusInterface iNewsStatusInterface;
 	private INetworkStatusInterface iNetworkStatusInterface;
 	private final PTNewsClientAPI pTNewsClientAPI;

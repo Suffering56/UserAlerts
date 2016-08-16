@@ -1,10 +1,13 @@
-package gui.panel.userAlerts.data;
+package gui.panel.userAlerts.overridden.model;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
+
+import gui.panel.userAlerts.App;
+import gui.panel.userAlerts.data.NewsAlert;
 
 @SuppressWarnings("serial")
 public class AlertsNewsTableModel extends AbstractTableModel {
@@ -56,7 +59,7 @@ public class AlertsNewsTableModel extends AbstractTableModel {
 		if ((rowNumber < rows.size()) && (rowNumber >= 0)) {
 			return rows.get(rowNumber);
 		} else {
-			System.out.println("uncorrect rowNumber");
+			App.appLogger.info("uncorrect rowNumber");
 			return null;
 		}
 	}

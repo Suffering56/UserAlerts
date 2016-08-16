@@ -1,4 +1,4 @@
-package gui.panel.userAlerts.data;
+package gui.panel.userAlerts.overridden.model;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;

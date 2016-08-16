@@ -3,8 +3,7 @@ package gui.panel.userAlerts.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.tree.TreeNode;
-
+import gui.panel.userAlerts.overridden.model.CheckableTreeNode;
 import gui.panel.userAlerts.parent.TreeUpdateListener;
 import gui.panel.userAlerts.remote.NewsTreeDownloader;
 
@@ -56,11 +55,7 @@ public class Stock {
 		return false;
 	}
 
-	public List<NewsAlert> getNewsAlertsList() {
-		return alertsList;
-	}
-
-	public void updateNewsTree(final TreeNode root) {
+	public void updateNewsTree(final CheckableTreeNode root) {
 		this.newsTreeRoot = root;
 		new Runnable() {
 			public void run() {
@@ -83,11 +78,15 @@ public class Stock {
 		}
 	}
 
+	public List<NewsAlert> getNewsAlertsList() {
+		return alertsList;
+	}
+
 	public void setNewsTreeUpdateListener(TreeUpdateListener newsTreeUpdateListener) {
 		this.newsTreeUpdateListener = newsTreeUpdateListener;
 	}
 
-	public TreeNode getNewsTreeRoot() {
+	public CheckableTreeNode getNewsTreeRoot() {
 		return newsTreeRoot;
 	}
 
@@ -95,6 +94,6 @@ public class Stock {
 
 	@SuppressWarnings("unused")
 	private NewsTreeDownloader newsTreeDownloader;
-	private TreeNode newsTreeRoot;
+	private CheckableTreeNode newsTreeRoot;
 	private TreeUpdateListener newsTreeUpdateListener;
 }

@@ -16,7 +16,7 @@
 			</panel>
 
 			<scrollpane constraints="2,4">
-				<table id="newsTable" />
+				<table id="newsTable" name="alerts.tablestyle"/>
 			</scrollpane>
 		</panel>
 

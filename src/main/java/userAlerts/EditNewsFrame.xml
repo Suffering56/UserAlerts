@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <panel name="DarkGreyPanel">
-	<layout type="FormLayout" columns="10px:g, f:p, 10px, 300px, 10px:g" rows="10px:g, f:p, 10px:g" />
+	<layout type="FormLayout" columns="10px:g, f:p, 10px, f:p, 10px:g" rows="10px:g, f:p, 10px:g" />
 
 	<panel constraints="2,2" id="contentPanel">
 		<layout type="FormLayout" columns="f:p, p:g, f:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, 1px, 10px, f:p" />
@@ -21,7 +21,7 @@
 				<label constraints="1,2" text="Ключевая фраза 1" />
 				<combobox constraints="1,4" id="firstKeyWordComboBox" editable="true" />
 
-				<combobox constraints="3,4" id="keyWordExpressionComboBox" initclass="gui.panel.userAlerts.data.NewsExpressionComboModel" />
+				<combobox constraints="3,4" id="keyWordExpressionComboBox" initclass="gui.panel.userAlerts.overridden.model.NewsExpressionComboModel" />
 
 				<label constraints="5,2" text="Ключевая фраза 2" />
 				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" enabled="false" />
@@ -44,7 +44,7 @@
 				<label constraints="1,2" text="Исключить слова 1" />
 				<combobox constraints="1,4" id="firstExcludeWordComboBox" editable="true" />
 
-				<combobox constraints="3,4" id="excludeWordExpressionComboBox" initclass="gui.panel.userAlerts.data.NewsExpressionComboModel" />
+				<combobox constraints="3,4" id="excludeWordExpressionComboBox" initclass="gui.panel.userAlerts.overridden.model.NewsExpressionComboModel" />
 
 				<label constraints="5,2" text="Исключить слова 2" />
 				<combobox constraints="5,4" id="secondExcludeWordComboBox" editable="true" enabled="false" />

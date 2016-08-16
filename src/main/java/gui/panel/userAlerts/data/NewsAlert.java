@@ -1,6 +1,8 @@
 package gui.panel.userAlerts.data;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class NewsAlert {
@@ -212,16 +214,17 @@ public class NewsAlert {
 		this.lastEventDate = lastEventDate;
 	}
 
+	public List<String> getTopicList() {
+		return topicList;
+	}
+
+	public void setTopicList(List<String> topicList) {
+		this.topicList = topicList;
+	}
+
 	@Override
 	public String toString() {
-		return "AlertEntity [id=" + id + ", name=" + name + ", onlyRedNews=" + onlyRedNews + ", firstKeyWord="
-				+ firstKeyWord + ", secondKeyWord=" + secondKeyWord + ", keyWordExpression=" + keyWordExpression
-				+ ", keyWordFilterType=" + keyWordFilterType + ", firstExcludeWord=" + firstExcludeWord
-				+ ", secondExcludeWord=" + secondExcludeWord + ", excludeWordExpression=" + excludeWordExpression
-				+ ", excludeWordFilterType=" + excludeWordFilterType + ", newsColorOn=" + newsColorOn + ", newsColor="
-				+ newsColor + ", emailOn=" + emailOn + ", email=" + email + ", phoneSmsOn=" + phoneSmsOn + ", phoneSms="
-				+ phoneSms + ", melodyOn=" + melodyOn + ", melody=" + melody + ", windowPopupOn=" + windowPopupOn
-				+ ", creationDate=" + creationDate + ", lastEventDate=" + lastEventDate + "]";
+		return "NewsAlert [id=" + id + ", name=" + name + ", creationDate=" + creationDate + "]";
 	}
 
 	/**************************************
@@ -229,6 +232,7 @@ public class NewsAlert {
 	 **************************************/
 	private int id = -1;
 	private String name = "";
+	private List<String> topicList = new ArrayList<String>();
 
 	/**************************************
 	 ************** Новости ***************
@@ -244,14 +248,6 @@ public class NewsAlert {
 	private Expression keyWordExpression = Expression.NOT;
 	// Фильтр (По релевантности / Точное совпадение)
 	private FilterKey keyWordFilterType = FilterKey.BY_RELEVANCE;
-
-	public enum FilterKey {
-		BY_RELEVANCE, EXACT_MATCH
-	}
-
-	public enum FilterExclude {
-		EVERYWERE, TITLES_ONLY, RED_ONLY
-	}
 
 	// Исключить слова 1
 	private String firstExcludeWord = "";
@@ -287,5 +283,13 @@ public class NewsAlert {
 
 	public enum Expression {
 		NOT, OR, AND
+	}
+
+	public enum FilterKey {
+		BY_RELEVANCE, EXACT_MATCH
+	}
+
+	public enum FilterExclude {
+		EVERYWERE, TITLES_ONLY, RED_ONLY
 	}
 }

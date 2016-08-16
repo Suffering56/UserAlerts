@@ -11,18 +11,19 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 
-import gui.panel.userAlerts.control.tableRenderers.HeaderRenderer;
-import gui.panel.userAlerts.data.AlertsNewsTableModel;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
 import gui.panel.userAlerts.data.NewsAlert.FilterKey;
+import gui.panel.userAlerts.overridden.model.AlertsNewsTableModel;
+import gui.panel.userAlerts.overridden.renderer.TableHeaderRenderer;
+import gui.panel.userAlerts.overridden.renderer.TableMainRenderer;
 import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.remote.NewsTreeDownloader;
 
-@SuppressWarnings({"serial", "unused"})
+@SuppressWarnings({ "serial", "unused" })
 public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 	public AlertsMainFrame() {
@@ -35,7 +36,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 	@Override
 	protected void beforeRenderInit() {
-		//do nothing
+		// do nothing
 	}
 
 	@Override
@@ -88,8 +89,9 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		newsModel = new AlertsNewsTableModel();
 		newsHeader = newsTable.getTableHeader();
 
-		newsHeader.setDefaultRenderer(new HeaderRenderer(newsHeader));
+		newsHeader.setDefaultRenderer(new TableHeaderRenderer(newsHeader));
 
+//		newsTable.setDefaultRenderer(Object.class, new TableMainRenderer());
 		newsTable.setModel(newsModel);
 
 		newsTable.addMouseListener(new MouseAdapter() {

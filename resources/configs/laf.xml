@@ -4575,4 +4575,19 @@
 	<style id="alerts.table.header" clone="ec.table.header" />
 	<bind style="alerts.table.header" type="name" key="alerts.table.header" />
 
+	<style id="alerts.table.main">
+		<opaque value="true" />
+		<font name="Arial" style="BOLD" size="12" />
+		<insets top="2" left="5" right="5" bottom="2" />
+		<state id="state.alerts.table.main">
+			<color value="#242424" type="BACKGROUND" />
+			<color value="#FFFFFF" type="TEXT_FOREGROUND" />
+		</state>
+
+		<state value="DISABLED">
+			<color value="#777777" type="BACKGROUND" />
+			<color value="#FFFFFF" type="TEXT_FOREGROUND" />
+		</state>
+	</style>
+	<bind style="alerts.table.main" type="name" key="alerts.table.main" />
 </synth>

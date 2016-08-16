@@ -1,4 +1,4 @@
-package gui.panel.userAlerts.control.tableRenderers;
+package gui.panel.userAlerts.overridden.renderer;
 
 import java.awt.Component;
 
@@ -10,10 +10,10 @@ import javax.swing.table.TableCellRenderer;
 
 import gui.panel.userAlerts.styles.AlertsFrameStyles;
 
-public class HeaderRenderer implements TableCellRenderer {
+public class TableHeaderRenderer implements TableCellRenderer {
 
-	public HeaderRenderer(JTableHeader header) {
-		header.setName(AlertsFrameStyles.TABLE_HEADER);
+	public TableHeaderRenderer(JTableHeader header) {
+		header.setName(AlertsFrameStyles.TABLE_HEADER_RENDERER);
 		renderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
 		renderer.setHorizontalAlignment(JLabel.CENTER);
 	}
