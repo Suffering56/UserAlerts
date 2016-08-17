@@ -16,7 +16,7 @@
 			</panel>
 
 			<scrollpane constraints="2,4">
-				<table id="newsTable" name="alerts.tablestyle"/>
+				<table id="newsTable" selectionMode="ListSelectionModel.SINGLE_SELECTION"/>
 			</scrollpane>
 		</panel>
 

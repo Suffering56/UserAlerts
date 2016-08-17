@@ -5,5 +5,7 @@ public class AlertsFrameStyles {
 	public static final String TABLE_HEADER_RENDERER = AlertsGeneralStyles.MAIN_PREFIX + ".table.header";
 	
 	public static final String TABLE_MAIN_RENDERER = AlertsGeneralStyles.MAIN_PREFIX + ".table.main";
+	
+	public static final String TABLE_SELECTED_RENDERER = AlertsGeneralStyles.MAIN_PREFIX + ".table.selected";
 
 }

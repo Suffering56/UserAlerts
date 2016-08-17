@@ -91,7 +91,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 		newsHeader.setDefaultRenderer(new TableHeaderRenderer(newsHeader));
 
-//		newsTable.setDefaultRenderer(Object.class, new TableMainRenderer());
+		newsTable.setDefaultRenderer(Object.class, new TableMainRenderer());
 		newsTable.setModel(newsModel);
 
 		newsTable.addMouseListener(new MouseAdapter() {

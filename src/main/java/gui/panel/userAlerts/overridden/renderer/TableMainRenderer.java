@@ -17,6 +17,12 @@ public class TableMainRenderer extends JLabel implements TableCellRenderer {
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int col) {
+		
+		if (isSelected) {
+			this.setName(AlertsFrameStyles.TABLE_SELECTED_RENDERER);
+		} else {
+			this.setName(AlertsFrameStyles.TABLE_MAIN_RENDERER);
+		}
 
 		if (value == null) {
 			this.setText("null");
