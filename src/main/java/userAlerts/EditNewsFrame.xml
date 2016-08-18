@@ -87,7 +87,12 @@
 
 	</panel>
 
-	<panel constraints="4,2" id="treePanel" layout="FlowLayout(FlowLayout.LEFT)">
+	<panel constraints="4,2" id="treePanel" layout="FlowLayout(FlowLayout.LEFT)" visible="false">
 		<tree id="tree" />
+	</panel>
+
+	<panel constraints="4,2" id="treeLoadingPanel" visible="true">
+		<layout type="FormLayout" columns="p:g, f:p, p:g" rows="10px, f:p, p:g" />
+		<label constraints="2,2" name="upper" icon="configs/GRAPHITE/style/img/anim_wait.gif" text="Загрузка.." />
 	</panel>
 </panel>

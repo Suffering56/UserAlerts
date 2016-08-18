@@ -1,10 +1,10 @@
 package gui.panel.userAlerts.remote;
 
 import gui.panel.userAlerts.App;
+import gui.panel.userAlerts.data.NewsProperties;
 import gui.panel.userAlerts.data.Stock;
-import gui.panel.userAlerts.overridden.model.CheckableTreeNode;
+import gui.panel.userAlerts.overridden.model.AbstractPTNewsTreeNode.NodeType;
 import gui.panel.userAlerts.overridden.model.PTNewsTreeNode;
-import gui.panel.userAlerts.overridden.model.PTNewsTreeNode.NodeType;
 import prime_tass.connect.BadParametersException;
 import prime_tass.connect.client_api.ConnectionClientAPI;
 import prime_tass.connect.client_api.ConnectionClientAPI.TYPE;
@@ -52,34 +52,46 @@ public class NewsTreeDownloader {
 		cc.assignSink(pTNewsClientAPI.getNetworkInterface());
 	}
 
+	/**
+	 * 
+	 * @param config
+	 */
 	private void createTreeNode(byte[] config) {
 		NewsDatabase[] nd = pTNewsClientAPI.getParseNewsConfig(config);
-
 		PTNewsTreeNode root = new PTNewsTreeNode(NodeType.ROOT, "Новости");
+
+		for (int j = 0; j < nd.length; j++) {
+			NewsDatabase db = nd[j];
+			if (!NewsProperties.getInstance().getExcludeNewsSet().contains(db.getCommonName())) {
+				databaseHandle(db, root);
+			}
+		}
+		
+		stock.updateNewsTree(root);
+	}
+
+	/**
+	 * 
+	 */
+	private void databaseHandle(NewsDatabase db, PTNewsTreeNode root) {
 		PTNewsTreeNode database;
 		PTNewsTreeNode division;
 		PTNewsTreeNode topic;
 
-		for (int j = 0; j < nd.length; j++) {
-			NewsDatabase db = nd[j];
-			database = new PTNewsTreeNode(NodeType.DATABASE, db.getCommonName());
-			Div[] dm = db.getDivs();
-			for (int i = 0; i < dm.length; i++) {
-				division = new PTNewsTreeNode(NodeType.DIVISION, dm[i].getName());
+		database = new PTNewsTreeNode(NodeType.DATABASE, db.getCommonName(), db.getName());
+		Div[] dm = db.getDivs();
+		for (int i = 0; i < dm.length; i++) {
+			division = new PTNewsTreeNode(NodeType.DIVISION, dm[i].getName());
 
-				for (Pair<Integer, String> p : dm[i].getTopics()) {
-					System.out.println(p.fst);
-//					topic = new PTNewsTreeNode(NodeType.TOPIC, p.snd, p.fst);
-//					division.add(topic);
-				}
-
-				database.add(division);
+			for (Pair<Integer, String> p : dm[i].getTopics()) {
+				int id = Integer.valueOf("" + p.fst);
+				topic = new PTNewsTreeNode(NodeType.TOPIC, p.snd, id);
+				division.add(topic);
 			}
 
-			root.add(database);
+			database.add(division);
 		}
-
-		stock.updateNewsTree(root);
+		root.add(database);
 	}
 
 	private void initStatusInterfaces() {

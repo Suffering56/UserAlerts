@@ -1,13 +1,18 @@
 package gui.panel.userAlerts.parent;
 
 import java.awt.Dimension;
+import java.awt.Image;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.swixml.SwingEngine;
 
 import gui.panel.userAlerts.App;
+import gui.panel.userAlerts.Main;
+import gui.panel.userAlerts.constants.AlertsGeneralConstants;
 
 public abstract class SwixFrame {
 
@@ -39,6 +44,8 @@ public abstract class SwixFrame {
 			frame.setContentPane(rootPanel);
 			frame.setResizable(true);
 
+			setPrimeIcon();
+
 		} catch (Exception e) {
 			App.appLogger.error("Frame creating error", e);
 		}
@@ -49,6 +56,15 @@ public abstract class SwixFrame {
 			pack();
 		}
 		frame.setLocationRelativeTo(null);
+	}
+
+	private void setPrimeIcon() {
+		try {
+			Image iconImage = ImageIO.read(Main.class.getResource(AlertsGeneralConstants.PRIME_ICON_PATH));
+			frame.setIconImage(iconImage);
+		} catch (IOException e) {
+			App.appLogger.error("Prime icon image download error", e);
+		}
 	}
 
 	protected void pack() {
@@ -67,6 +83,7 @@ public abstract class SwixFrame {
 
 	public void enable() {
 		frame.setEnabled(true);
+		frame.setVisible(true);
 	}
 
 	public void disable() {

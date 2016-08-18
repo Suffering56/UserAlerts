@@ -8,7 +8,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
-import gui.panel.userAlerts.styles.AlertsFrameStyles;
+import gui.panel.userAlerts.constants.AlertsFrameStyles;
 
 public class TableHeaderRenderer implements TableCellRenderer {
 

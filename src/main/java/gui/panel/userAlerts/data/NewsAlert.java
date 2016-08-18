@@ -1,8 +1,6 @@
 package gui.panel.userAlerts.data;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class NewsAlert {
@@ -15,7 +13,7 @@ public class NewsAlert {
 			Expression keyWordExpression, FilterKey keyWordFilterType, String firstExcludeWord,
 			String secondExcludeWord, Expression excludeWordExpression, FilterExclude excludeWordFilterType,
 			boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
-			boolean newsColorOn, String newsColor, boolean windowPopupOn) {
+			boolean newsColorOn, String newsColor, boolean windowPopupOn, String newsLine) {
 		this.id = id;
 		this.name = name;
 		this.onlyRedNews = onlyRedNews;
@@ -36,6 +34,7 @@ public class NewsAlert {
 		this.newsColorOn = newsColorOn;
 		this.newsColor = newsColor;
 		this.windowPopupOn = windowPopupOn;
+		this.newsLine = newsLine;
 	}
 
 	public int getId() {
@@ -214,12 +213,13 @@ public class NewsAlert {
 		this.lastEventDate = lastEventDate;
 	}
 
-	public List<String> getTopicList() {
-		return topicList;
+	public String getNewsLine() {
+		return newsLine;
 	}
 
-	public void setTopicList(List<String> topicList) {
-		this.topicList = topicList;
+	public void setNewsLine(String newsLine) {
+		System.out.println("newsLine: " + newsLine);
+		this.newsLine = newsLine;
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class NewsAlert {
 	 **************************************/
 	private int id = -1;
 	private String name = "";
-	private List<String> topicList = new ArrayList<String>();
+	private String newsLine;
 
 	/**************************************
 	 ************** Новости ***************

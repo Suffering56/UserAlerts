@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import gui.panel.userAlerts.styles.AlertsFrameStyles;
+import gui.panel.userAlerts.constants.AlertsFrameStyles;
 
 @SuppressWarnings("serial")
 public class TableMainRenderer extends JLabel implements TableCellRenderer {

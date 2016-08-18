@@ -6,7 +6,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
-import gui.panel.userAlerts.overridden.model.CheckableTreeNode;
+import gui.panel.userAlerts.overridden.model.PTNewsTreeNode;
 
 @SuppressWarnings("serial")
 public class CheckableTreeRenderer extends JCheckBox implements TreeCellRenderer {
@@ -21,9 +21,9 @@ public class CheckableTreeRenderer extends JCheckBox implements TreeCellRenderer
 			return this;
 		}
 
-		if (value instanceof CheckableTreeNode) {
-			CheckableTreeNode node = (CheckableTreeNode) value;
-			this.setText(node.getText());
+		if (value instanceof PTNewsTreeNode) {
+			PTNewsTreeNode node = (PTNewsTreeNode) value;
+			this.setText(node.getDisplayText());
 			this.setSelected(node.isSelected());
 		} else {
 			this.setText(value.toString());

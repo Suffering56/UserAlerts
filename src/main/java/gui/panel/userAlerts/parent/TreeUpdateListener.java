@@ -1,9 +1,9 @@
 package gui.panel.userAlerts.parent;
 
-import gui.panel.userAlerts.overridden.model.CheckableTreeNode;
+import javax.swing.tree.TreeNode;
 
 public interface TreeUpdateListener {
 
-	public boolean updateTree(CheckableTreeNode root);
+	public boolean updateTree(TreeNode root);
 
 }

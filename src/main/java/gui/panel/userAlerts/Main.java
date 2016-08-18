@@ -8,6 +8,7 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 import gui.panel.userAlerts.control.AlertsMainFrame;
 
 public class Main {
+	
 	public static void main(String[] args) {
 		setLookAndFeel();
 		new AlertsMainFrame().show();
