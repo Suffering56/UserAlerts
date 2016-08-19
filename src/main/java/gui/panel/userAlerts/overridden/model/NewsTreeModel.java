@@ -1,33 +1,37 @@
-package gui.panel.userAlerts.util;
+package gui.panel.userAlerts.overridden.model;
 
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
 
-import gui.panel.userAlerts.overridden.model.PTNewsTreeNode;
+import gui.panel.userAlerts.util.StringHelper;
 
-public class TreeUtils {
+@SuppressWarnings("serial")
+public class NewsTreeModel extends DefaultTreeModel {
 
+	public NewsTreeModel(NewsTreeNode root) {
+		super(root);
+	}
+	
 	/**
 	 * Конвертирует выделенные в дереве значения в строку для отправки на
 	 * сервер.
 	 * 
-	 * @param root - корневой элемент дерева
-	 * @return - строку для отправки на сервер
+	 * @return - строка для отправки на сервер
 	 */
-	public static String rootToLine(PTNewsTreeNode root) {
+	public String convertToNewsLine() {
 		String line = "";
 
-		for (PTNewsTreeNode databaseNode : root.getChildNodesList()) {
+		for (NewsTreeNode databaseNode : ((NewsTreeNode) root).getChildNodesList()) {
 
 			StringBuilder topicListBuilder = new StringBuilder();
 			int selectedDivisionCounter = 0;
 
-			for (PTNewsTreeNode divisionNode : databaseNode.getChildNodesList()) {
+			for (NewsTreeNode divisionNode : databaseNode.getChildNodesList()) {
 
 				int selectedTopicCounter = 0;
-				for (PTNewsTreeNode topicNode : divisionNode.getChildNodesList()) {
+				for (NewsTreeNode topicNode : divisionNode.getChildNodesList()) {
 					if (topicNode.isSelected()) {
 						topicListBuilder.append(topicNode.getId() + TOPIC_SEPARATOR);
 						selectedTopicCounter++;
@@ -60,24 +64,23 @@ public class TreeUtils {
 	 * Заполняет элементы дерева, на основе данных, полученных с сервера в виде
 	 * строки (line)
 	 * 
-	 * @param root - корневой элемент дерева, который будет заполнен
 	 * @param line - строка полученная с сервера
 	 */
-	public static void lineToRoot(PTNewsTreeNode root, String line) {
-		if (line != null && root != null) {
+	public void fillFromNewsLine(String line) {
+		if (line != null) {
 			String[] databases = line.split(DB_SEPARATOR);
 			for (String db : databases) {
 
 				String[] params = db.split(PARAM_SEPARATOR);
 				if (params.length == PARAMS_COUNT) {
-					paramsHandle(root, params);
+					paramsHandle(params);
 				}
 			}
 		}
 	}
 
-	private static void paramsHandle(PTNewsTreeNode root, String[] params) {
-		for (PTNewsTreeNode dbNode : root.getChildNodesList()) {
+	private void paramsHandle(String[] params) {
+		for (NewsTreeNode dbNode : ((NewsTreeNode) root).getChildNodesList()) {
 			if (dbNode.getDbName().equals(params[PARAM_DBNAME])) {
 				if (params[PARAM_TOPICS].equals(ALL)) {
 					dbNode.setSelected(true);
@@ -85,8 +88,8 @@ public class TreeUtils {
 					String[] topicsIdArray = params[PARAM_TOPICS].split(TOPIC_SEPARATOR);
 					List<String> idList = Arrays.asList(topicsIdArray);
 
-					for (PTNewsTreeNode div : dbNode.getChildNodesList()) {
-						for (PTNewsTreeNode topic : div.getChildNodesList()) {
+					for (NewsTreeNode div : dbNode.getChildNodesList()) {
+						for (NewsTreeNode topic : div.getChildNodesList()) {
 							if (idList.contains(String.valueOf(topic.getId()))) {
 								topic.setSelected(true);
 							}
@@ -96,24 +99,17 @@ public class TreeUtils {
 			}
 		}
 	}
-	
-	public static void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
-		for (int i = startingIndex; i < rowCount; ++i) {
-			tree.expandRow(i);
-		}
-		if (tree.getRowCount() != rowCount) {
-			expandAllNodes(tree, rowCount, tree.getRowCount());
-		}
-	}
 
 	private static final String DB_SEPARATOR = ",";
-	private static final String TOPIC_SEPARATOR = ";";
 	private static final String PARAM_SEPARATOR = ":";
-	private static final String ALL = "*";
-	private static final String DELAY = "0";
-	private static final String DIR = "*";
+	private static final String TOPIC_SEPARATOR = ";";
 
-	private static final int PARAMS_COUNT = 4;
+	private static final String ALL = "*";
+
 	private static final int PARAM_DBNAME = 0;
 	private static final int PARAM_TOPICS = 1;
+
+	private static final int PARAMS_COUNT = 4;
+	private static final String DELAY = "0";
+	private static final String DIR = "*";
 }

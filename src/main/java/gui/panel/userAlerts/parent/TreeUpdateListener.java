@@ -4,6 +4,6 @@ import javax.swing.tree.TreeNode;
 
 public interface TreeUpdateListener {
 
-	public boolean updateTree(TreeNode root);
+	public boolean treeUpdateEvent(TreeNode root);
 
 }

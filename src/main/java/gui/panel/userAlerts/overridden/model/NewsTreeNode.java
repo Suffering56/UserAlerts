@@ -7,21 +7,21 @@ import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
-public class PTNewsTreeNode extends AbstractPTNewsTreeNode implements Cloneable {
+public class NewsTreeNode extends NewsTreeNodeAbstract implements Cloneable {
 
-	public PTNewsTreeNode(NodeType type, String displayText) {
+	public NewsTreeNode(NodeType type, String displayText) {
 		super(type, displayText);
 	}
 
-	public PTNewsTreeNode(NodeType type, String displayText, int id) {
+	public NewsTreeNode(NodeType type, String displayText, int id) {
 		super(type, displayText, id);
 	}
 
-	public PTNewsTreeNode(NodeType type, String displayText, String dbName) {
+	public NewsTreeNode(NodeType type, String displayText, String dbName) {
 		super(type, displayText, dbName);
 	}
 
-	public void add(PTNewsTreeNode childNode) {
+	public void add(NewsTreeNode childNode) {
 		if (allowsChildren) {
 			childNodesList.add(childNode);
 			childNode.setParent(this);
@@ -38,7 +38,7 @@ public class PTNewsTreeNode extends AbstractPTNewsTreeNode implements Cloneable 
 	 * @param selected
 	 */
 	public void setSelected(boolean selected) {
-		for (PTNewsTreeNode child : childNodesList) {
+		for (NewsTreeNode child : childNodesList) {
 			child.setSelected(selected);
 		}
 
@@ -59,7 +59,7 @@ public class PTNewsTreeNode extends AbstractPTNewsTreeNode implements Cloneable 
 		if (parent != null) {
 
 			int counter = 0;
-			for (PTNewsTreeNode brother : parent.getChildNodesList()) {
+			for (NewsTreeNode brother : parent.getChildNodesList()) {
 				if (brother.isSelected()) {
 					counter++;
 				}
@@ -80,10 +80,10 @@ public class PTNewsTreeNode extends AbstractPTNewsTreeNode implements Cloneable 
 	 * 
 	 * @param node
 	 */
-	public void updateLevel(PTNewsTreeNode node) {
+	public void updateLevel(NewsTreeNode node) {
 		int parentLevel = (node.getParent() == null) ? -1 : node.getParent().getLevel();
 		node.setLevel(parentLevel + 1);
-		for (PTNewsTreeNode childNode : node.getChildNodesList()) {
+		for (NewsTreeNode childNode : node.getChildNodesList()) {
 			updateLevel(childNode);
 		}
 	}
@@ -116,21 +116,21 @@ public class PTNewsTreeNode extends AbstractPTNewsTreeNode implements Cloneable 
 	}
 
 	@Override
-	public PTNewsTreeNode getParent() {
+	public NewsTreeNode getParent() {
 		return parent;
 	}
 
-	public void setParent(PTNewsTreeNode parent) {
+	public void setParent(NewsTreeNode parent) {
 		this.parent = parent;
 	}
 
-	public List<PTNewsTreeNode> getChildNodesList() {
+	public List<NewsTreeNode> getChildNodesList() {
 		return childNodesList;
 	}
 
 	@Override
-	public Object clone() {
-		PTNewsTreeNode clone = new PTNewsTreeNode(type, displayText);
+	public NewsTreeNode clone() {
+		NewsTreeNode clone = new NewsTreeNode(type, displayText);
 		clone.setId(id);
 		clone.setDbName(dbName);
 
@@ -138,13 +138,13 @@ public class PTNewsTreeNode extends AbstractPTNewsTreeNode implements Cloneable 
 		clone.setAllowsChildren(allowsChildren);
 		clone.setLevel(level);
 
-		for (PTNewsTreeNode child : childNodesList) {
-			PTNewsTreeNode childClone = (PTNewsTreeNode) child.clone();
+		for (NewsTreeNode child : childNodesList) {
+			NewsTreeNode childClone = (NewsTreeNode) child.clone();
 			clone.add(childClone);
 		}
 		return clone;
 	}
 
-	protected PTNewsTreeNode parent;
-	protected final List<PTNewsTreeNode> childNodesList = new ArrayList<PTNewsTreeNode>();
+	protected NewsTreeNode parent;
+	protected final List<NewsTreeNode> childNodesList = new ArrayList<NewsTreeNode>();
 }

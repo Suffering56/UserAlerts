@@ -2,19 +2,21 @@ package gui.panel.userAlerts.overridden.model;
 
 import javax.swing.tree.TreeNode;
 
-public abstract class AbstractPTNewsTreeNode implements TreeNode {
-	
-	public AbstractPTNewsTreeNode(NodeType type, String displayText) {
+import gui.panel.userAlerts.parent.CheckableTreeNode;
+
+public abstract class NewsTreeNodeAbstract implements TreeNode, CheckableTreeNode {
+
+	public NewsTreeNodeAbstract(NodeType type, String displayText) {
 		this.displayText = displayText;
 		this.type = type;
 	}
-	
-	public AbstractPTNewsTreeNode(NodeType type, String displayText, int id) {
+
+	public NewsTreeNodeAbstract(NodeType type, String displayText, int id) {
 		this(type, displayText);
 		this.id = id;
 	}
 
-	public AbstractPTNewsTreeNode(NodeType type, String displayText, String dbName) {
+	public NewsTreeNodeAbstract(NodeType type, String displayText, String dbName) {
 		this(type, displayText);
 		this.dbName = dbName;
 	}
@@ -22,11 +24,11 @@ public abstract class AbstractPTNewsTreeNode implements TreeNode {
 	public NodeType getType() {
 		return type;
 	}
-	
+
 	public String getDisplayText() {
 		return displayText;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -34,7 +36,7 @@ public abstract class AbstractPTNewsTreeNode implements TreeNode {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getDbName() {
 		return dbName;
 	}
@@ -42,7 +44,7 @@ public abstract class AbstractPTNewsTreeNode implements TreeNode {
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
 	}
-	
+
 	public boolean isSelected() {
 		return selected;
 	}
@@ -54,7 +56,7 @@ public abstract class AbstractPTNewsTreeNode implements TreeNode {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	
+
 	@Override
 	public boolean getAllowsChildren() {
 		return allowsChildren;
@@ -68,23 +70,23 @@ public abstract class AbstractPTNewsTreeNode implements TreeNode {
 	public boolean isLeaf() {
 		return leaf;
 	}
-	
+
 	@Override
 	public String toString() {
 		return displayText;
 	}
-	
+
 	protected final NodeType type;
 	protected final String displayText;
 	protected int id = -1;
 	protected String dbName;
-	
+
 	protected boolean selected;
-	
+
 	protected int level = 0;
 	protected boolean allowsChildren = true;
 	protected boolean leaf = true;
-	
+
 	public enum NodeType {
 		ROOT, DATABASE, DIVISION, TOPIC
 	}

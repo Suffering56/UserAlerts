@@ -11,7 +11,7 @@ import gui.panel.userAlerts.remote.NewsTreeDownloader;
 public class Stock {
 
 	public Stock() {
-		newsTreeDownloader = new NewsTreeDownloader(this);
+		new NewsTreeDownloader(this);
 	}
 
 	public void add(NewsAlert alert) {
@@ -57,26 +57,17 @@ public class Stock {
 	}
 
 	public void updateNewsTree(final TreeNode root) {
-		this.newsTreeRoot = root;
+		this.newsRootNode = root;
 		new Runnable() {
 			public void run() {
 				boolean success = false;
 				while (success == false) {
 					if (newsTreeUpdateListener != null) {
-						success = newsTreeUpdateListener.updateTree(root);
+						success = newsTreeUpdateListener.treeUpdateEvent(root);
 					}
-					sleep();
 				}
 			}
 		}.run();
-	}
-
-	private void sleep() {
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public List<NewsAlert> getNewsAlertsList() {
@@ -87,14 +78,11 @@ public class Stock {
 		this.newsTreeUpdateListener = newsTreeUpdateListener;
 	}
 
-	public TreeNode getNewsTreeRoot() {
-		return newsTreeRoot;
+	public TreeNode getNewsRootNode() {
+		return newsRootNode;
 	}
 
-	private final List<NewsAlert> alertsList = new ArrayList<NewsAlert>();
-
-	@SuppressWarnings("unused")
-	private NewsTreeDownloader newsTreeDownloader;
-	private TreeNode newsTreeRoot;
+	private TreeNode newsRootNode;
 	private TreeUpdateListener newsTreeUpdateListener;
+	private final List<NewsAlert> alertsList = new ArrayList<NewsAlert>();
 }

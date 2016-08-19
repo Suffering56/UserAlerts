@@ -14,7 +14,7 @@ import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.Main;
 import gui.panel.userAlerts.constants.AlertsGeneralConstants;
 
-public abstract class SwixFrame {
+public abstract class SwixFrame implements Disablable {
 
 	public SwixFrame() {
 		swix = new SwingEngine(this);

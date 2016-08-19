@@ -3,8 +3,8 @@ package gui.panel.userAlerts.remote;
 import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.data.NewsProperties;
 import gui.panel.userAlerts.data.Stock;
-import gui.panel.userAlerts.overridden.model.AbstractPTNewsTreeNode.NodeType;
-import gui.panel.userAlerts.overridden.model.PTNewsTreeNode;
+import gui.panel.userAlerts.overridden.model.NewsTreeNodeAbstract.NodeType;
+import gui.panel.userAlerts.overridden.model.NewsTreeNode;
 import prime_tass.connect.BadParametersException;
 import prime_tass.connect.client_api.ConnectionClientAPI;
 import prime_tass.connect.client_api.ConnectionClientAPI.TYPE;
@@ -58,7 +58,7 @@ public class NewsTreeDownloader {
 	 */
 	private void createTreeNode(byte[] config) {
 		NewsDatabase[] nd = pTNewsClientAPI.getParseNewsConfig(config);
-		PTNewsTreeNode root = new PTNewsTreeNode(NodeType.ROOT, "Новости");
+		NewsTreeNode root = new NewsTreeNode(NodeType.ROOT, "Новости");
 
 		for (int j = 0; j < nd.length; j++) {
 			NewsDatabase db = nd[j];
@@ -73,19 +73,19 @@ public class NewsTreeDownloader {
 	/**
 	 * 
 	 */
-	private void databaseHandle(NewsDatabase db, PTNewsTreeNode root) {
-		PTNewsTreeNode database;
-		PTNewsTreeNode division;
-		PTNewsTreeNode topic;
+	private void databaseHandle(NewsDatabase db, NewsTreeNode root) {
+		NewsTreeNode database;
+		NewsTreeNode division;
+		NewsTreeNode topic;
 
-		database = new PTNewsTreeNode(NodeType.DATABASE, db.getCommonName(), db.getName());
+		database = new NewsTreeNode(NodeType.DATABASE, db.getCommonName(), db.getName());
 		Div[] dm = db.getDivs();
 		for (int i = 0; i < dm.length; i++) {
-			division = new PTNewsTreeNode(NodeType.DIVISION, dm[i].getName());
+			division = new NewsTreeNode(NodeType.DIVISION, dm[i].getName());
 
 			for (Pair<Integer, String> p : dm[i].getTopics()) {
 				int id = Integer.valueOf("" + p.fst);
-				topic = new PTNewsTreeNode(NodeType.TOPIC, p.snd, id);
+				topic = new NewsTreeNode(NodeType.TOPIC, p.snd, id);
 				division.add(topic);
 			}
 
