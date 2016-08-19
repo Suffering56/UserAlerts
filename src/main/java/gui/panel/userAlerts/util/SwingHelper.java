@@ -24,12 +24,8 @@ public class SwingHelper {
 	public static boolean isEmptyComboText(JComboBox box) {
 		return getComboText(box).isEmpty();
 	}
-
-	public static void addComboItem(JComboBox box, String value) {
-		addComboItem(box, value, true);
-	}
-
-	public static void addComboItem(JComboBox box, String value, boolean enableChecking) {
+	
+	public static void addUniqueComboItem(JComboBox box, String value, boolean enableChecking) {
 		List<Object> itemsList = getComboItemsList(box);
 		if (!itemsList.contains(value)) {
 			if (enableChecking) {

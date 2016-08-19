@@ -23,15 +23,15 @@ public class NewsTreeModel extends DefaultTreeModel {
 	public String convertToNewsLine() {
 		String line = "";
 
-		for (NewsTreeNode databaseNode : ((NewsTreeNode) root).getChildNodesList()) {
+		for (NewsTreeNode databaseNode : ((NewsTreeNode) root).getChilds()) {
 
 			StringBuilder topicListBuilder = new StringBuilder();
 			int selectedDivisionCounter = 0;
 
-			for (NewsTreeNode divisionNode : databaseNode.getChildNodesList()) {
+			for (NewsTreeNode divisionNode : databaseNode.getChilds()) {
 
 				int selectedTopicCounter = 0;
-				for (NewsTreeNode topicNode : divisionNode.getChildNodesList()) {
+				for (NewsTreeNode topicNode : divisionNode.getChilds()) {
 					if (topicNode.isSelected()) {
 						topicListBuilder.append(topicNode.getId() + TOPIC_SEPARATOR);
 						selectedTopicCounter++;
@@ -80,7 +80,7 @@ public class NewsTreeModel extends DefaultTreeModel {
 	}
 
 	private void paramsHandle(String[] params) {
-		for (NewsTreeNode dbNode : ((NewsTreeNode) root).getChildNodesList()) {
+		for (NewsTreeNode dbNode : ((NewsTreeNode) root).getChilds()) {
 			if (dbNode.getDbName().equals(params[PARAM_DBNAME])) {
 				if (params[PARAM_TOPICS].equals(ALL)) {
 					dbNode.setSelected(true);
@@ -88,8 +88,8 @@ public class NewsTreeModel extends DefaultTreeModel {
 					String[] topicsIdArray = params[PARAM_TOPICS].split(TOPIC_SEPARATOR);
 					List<String> idList = Arrays.asList(topicsIdArray);
 
-					for (NewsTreeNode div : dbNode.getChildNodesList()) {
-						for (NewsTreeNode topic : div.getChildNodesList()) {
+					for (NewsTreeNode div : dbNode.getChilds()) {
+						for (NewsTreeNode topic : div.getChilds()) {
 							if (idList.contains(String.valueOf(topic.getId()))) {
 								topic.setSelected(true);
 							}

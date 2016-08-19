@@ -2,9 +2,9 @@ package gui.panel.userAlerts.overridden.model;
 
 import javax.swing.tree.TreeNode;
 
-import gui.panel.userAlerts.parent.CheckableTreeNode;
+import gui.panel.userAlerts.parent.Checkable;
 
-public abstract class NewsTreeNodeAbstract implements TreeNode, CheckableTreeNode {
+public abstract class NewsTreeNodeAbstract implements TreeNode, Checkable {
 
 	public NewsTreeNodeAbstract(NodeType type, String displayText) {
 		this.displayText = displayText;
@@ -49,14 +49,6 @@ public abstract class NewsTreeNodeAbstract implements TreeNode, CheckableTreeNod
 		return selected;
 	}
 
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
 	@Override
 	public boolean getAllowsChildren() {
 		return allowsChildren;
@@ -83,7 +75,6 @@ public abstract class NewsTreeNodeAbstract implements TreeNode, CheckableTreeNod
 
 	protected boolean selected;
 
-	protected int level = 0;
 	protected boolean allowsChildren = true;
 	protected boolean leaf = true;
 

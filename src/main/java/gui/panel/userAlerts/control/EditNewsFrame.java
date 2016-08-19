@@ -49,7 +49,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
 		this(primaryFrame, null);
 	}
-
+	
 	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
 		this.primaryFrame = primaryFrame;
 		stock = primaryFrame.getStock();
@@ -71,7 +71,6 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 
 	@Override
 	protected void beforeRenderInit() {
-		// do nothing
 	}
 
 	@Override
@@ -114,7 +113,6 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		if (tree == null) {
 			return false;
 		}
-		tree.setModel(null);
 		updateTreeModel((NewsTreeNode) root);
 		return true;
 	}
@@ -164,17 +162,17 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	}
 
 	private void addComboItems(NewsAlert alertItem, boolean enableChecking) {
-		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), enableChecking);
+		SwingHelper.addUniqueComboItem(alertNameComboBox, alertItem.getName(), enableChecking);
 
-		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), enableChecking);
-		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), enableChecking);
+		SwingHelper.addUniqueComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), enableChecking);
+		SwingHelper.addUniqueComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), enableChecking);
 
-		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), enableChecking);
-		SwingHelper.addComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), enableChecking);
+		SwingHelper.addUniqueComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), enableChecking);
+		SwingHelper.addUniqueComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), enableChecking);
 
-		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), enableChecking);
-		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), enableChecking);
-		SwingHelper.addComboItem(melodyComboBox, alertItem.getMelody(), enableChecking);
+		SwingHelper.addUniqueComboItem(emailComboBox, alertItem.getEmail(), enableChecking);
+		SwingHelper.addUniqueComboItem(phoneComboBox, alertItem.getPhoneSms(), enableChecking);
+		SwingHelper.addUniqueComboItem(melodyComboBox, alertItem.getMelody(), enableChecking);
 	}
 
 	private void initComboBoxListeners() {
@@ -212,7 +210,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	}
 
 	private void setOnlyRedNews() {
-		boolean enabled = !onlyRedNewsCheckBox.isSelected();
+		final boolean enabled = !onlyRedNewsCheckBox.isSelected();
 
 		firstKeyWordComboBox.setEnabled(enabled);
 		keyWordExpressionComboBox.setEnabled(enabled);
@@ -313,7 +311,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 
 		// записать данные из дерева
 		TreeModel model = tree.getModel();
-		if (model instanceof NewsTreeModel) {
+		if (model != null && model instanceof NewsTreeModel) {
 			NewsTreeModel newsTreeModel = (NewsTreeModel) model;
 			alert.setNewsLine(newsTreeModel.convertToNewsLine());
 		}

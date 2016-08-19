@@ -1,6 +1,6 @@
 package gui.panel.userAlerts.parent;
 
-public interface CheckableTreeNode {
+public interface Checkable {
 	
 	public String getDisplayText();
 

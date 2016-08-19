@@ -26,7 +26,6 @@ public class NewsTreeNode extends NewsTreeNodeAbstract implements Cloneable {
 			childNodesList.add(childNode);
 			childNode.setParent(this);
 			leaf = false;
-			updateLevel(childNode);
 		}
 	}
 
@@ -59,32 +58,17 @@ public class NewsTreeNode extends NewsTreeNodeAbstract implements Cloneable {
 		if (parent != null) {
 
 			int counter = 0;
-			for (NewsTreeNode brother : parent.getChildNodesList()) {
+			for (NewsTreeNode brother : parent.getChilds()) {
 				if (brother.isSelected()) {
 					counter++;
 				}
 			}
 
-			if (counter == parent.getChildNodesList().size()) {
+			if (counter == parent.getChilds().size()) {
 				parent.setSelectedWithoutChildActions(true);
 			} else {
 				parent.setSelectedWithoutChildActions(false);
 			}
-		}
-	}
-
-	/**
-	 * Устанавливает уровень (глубину) для элемента дерева (node). Уровень
-	 * корневого элемента должен быть равен нулю (0). Его дочерних элементов -
-	 * единице (1) и т.д. РЕКУРСИЯ!
-	 * 
-	 * @param node
-	 */
-	public void updateLevel(NewsTreeNode node) {
-		int parentLevel = (node.getParent() == null) ? -1 : node.getParent().getLevel();
-		node.setLevel(parentLevel + 1);
-		for (NewsTreeNode childNode : node.getChildNodesList()) {
-			updateLevel(childNode);
 		}
 	}
 
@@ -124,7 +108,7 @@ public class NewsTreeNode extends NewsTreeNodeAbstract implements Cloneable {
 		this.parent = parent;
 	}
 
-	public List<NewsTreeNode> getChildNodesList() {
+	public List<NewsTreeNode> getChilds() {
 		return childNodesList;
 	}
 
@@ -133,10 +117,9 @@ public class NewsTreeNode extends NewsTreeNodeAbstract implements Cloneable {
 		NewsTreeNode clone = new NewsTreeNode(type, displayText);
 		clone.setId(id);
 		clone.setDbName(dbName);
-
+		
 		clone.setSelected(selected);
 		clone.setAllowsChildren(allowsChildren);
-		clone.setLevel(level);
 
 		for (NewsTreeNode child : childNodesList) {
 			NewsTreeNode childClone = (NewsTreeNode) child.clone();

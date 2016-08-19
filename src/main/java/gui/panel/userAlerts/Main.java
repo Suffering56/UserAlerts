@@ -5,6 +5,7 @@ import java.net.URL;
 import javax.swing.UIManager;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 
+import gui.panel.userAlerts.constants.AlertsGeneralConstants;
 import gui.panel.userAlerts.control.AlertsMainFrame;
 
 public class Main {
@@ -17,7 +18,7 @@ public class Main {
 	private static void setLookAndFeel() {
 		try {
 			SynthLookAndFeel synth = new SynthLookAndFeel();
-			URL resource = Main.class.getResource("/configs/laf.xml");
+			URL resource = Main.class.getResource(AlertsGeneralConstants.LAF_PATH);
 			synth.load(resource);
 			UIManager.setLookAndFeel(synth);
 		} catch (Exception ex) {
