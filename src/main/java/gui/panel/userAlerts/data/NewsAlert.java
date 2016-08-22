@@ -1,5 +1,6 @@
 package gui.panel.userAlerts.data;
 
+import java.awt.Color;
 import java.util.Calendar;
 
 @SuppressWarnings("deprecation")
@@ -13,7 +14,7 @@ public class NewsAlert {
 			Expression keyWordExpression, FilterKey keyWordFilterType, String firstExcludeWord,
 			String secondExcludeWord, Expression excludeWordExpression, FilterExclude excludeWordFilterType,
 			boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
-			boolean newsColorOn, String newsColor, boolean windowPopupOn, String newsLine) {
+			boolean newsColorOn, Color newsColor, boolean windowPopupOn, String newsLine) {
 		this.id = id;
 		this.name = name;
 		this.onlyRedNews = onlyRedNews;
@@ -133,11 +134,11 @@ public class NewsAlert {
 		this.newsColorOn = newsColorOn;
 	}
 
-	public String getNewsColor() {
+	public Color getNewsColor() {
 		return newsColor;
 	}
 
-	public void setNewsColor(String newsColor) {
+	public void setNewsColor(Color newsColor) {
 		this.newsColor = newsColor;
 	}
 
@@ -218,7 +219,6 @@ public class NewsAlert {
 	}
 
 	public void setNewsLine(String newsLine) {
-		System.out.println("newsLine: " + newsLine);
 		this.newsLine = newsLine;
 	}
 
@@ -272,7 +272,7 @@ public class NewsAlert {
 	private String melody = "";
 	// Цвет строки новости
 	private boolean newsColorOn;
-	private String newsColor = "";
+	private Color newsColor;
 	// Всплывающее окно
 	private boolean windowPopupOn;
 

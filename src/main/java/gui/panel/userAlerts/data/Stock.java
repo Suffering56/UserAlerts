@@ -7,6 +7,7 @@ import javax.swing.tree.TreeNode;
 
 import gui.panel.userAlerts.parent.TreeUpdateListener;
 import gui.panel.userAlerts.remote.NewsTreeDownloader;
+import gui.panel.userAlerts.util.IOHelper;
 
 public class Stock {
 
@@ -56,22 +57,26 @@ public class Stock {
 		return false;
 	}
 
+	public List<NewsAlert> getNewsAlertsList() {
+		return alertsList;
+	}
+
 	public void updateNewsTree(final TreeNode root) {
 		this.newsRootNode = root;
 		new Runnable() {
 			public void run() {
-				boolean success = false;
-				while (success == false) {
+				while (true) {
 					if (newsTreeUpdateListener != null) {
-						success = newsTreeUpdateListener.treeUpdateEvent(root);
+						newsTreeUpdateListener.treeUpdateEvent();
+						break;
 					}
+					if (stop) {
+						break;
+					}
+					IOHelper.sleep(1000);
 				}
 			}
 		}.run();
-	}
-
-	public List<NewsAlert> getNewsAlertsList() {
-		return alertsList;
 	}
 
 	public void setNewsTreeUpdateListener(TreeUpdateListener newsTreeUpdateListener) {
@@ -82,7 +87,12 @@ public class Stock {
 		return newsRootNode;
 	}
 
+	public void stopUpdateNewsTree() {
+		this.stop = true;
+	}
+
 	private TreeNode newsRootNode;
 	private TreeUpdateListener newsTreeUpdateListener;
+	private boolean stop = false;
 	private final List<NewsAlert> alertsList = new ArrayList<NewsAlert>();
 }

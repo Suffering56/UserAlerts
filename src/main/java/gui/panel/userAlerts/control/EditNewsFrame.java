@@ -1,5 +1,7 @@
 package gui.panel.userAlerts.control;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,10 +17,15 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,6 +35,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import gui.panel.userAlerts.App;
+import gui.panel.userAlerts.constants.AlertsGeneralConstants;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
@@ -41,6 +49,8 @@ import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.parent.TreeUpdateListener;
 import gui.panel.userAlerts.remote.NewsTreeDownloader;
+import gui.panel.userAlerts.util.ExtendColorChooser;
+import gui.panel.userAlerts.util.IOHelper;
 import gui.panel.userAlerts.util.SwingHelper;
 
 @SuppressWarnings({ "serial", "unused", "deprecation" })
@@ -49,11 +59,10 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
 		this(primaryFrame, null);
 	}
-	
+
 	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
 		this.primaryFrame = primaryFrame;
 		stock = primaryFrame.getStock();
-		stock.setNewsTreeUpdateListener(this);
 
 		if (alert == null) {
 			this.alert = new NewsAlert();
@@ -75,32 +84,25 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 
 	@Override
 	protected void afterRenderInit() {
+		tree.setCellRenderer(treeRenderer);
+
 		initComboBoxModels();
 		initComboBoxListeners();
 		initCheckBoxListeners();
 		initTreeListeners();
 		initOtherListeners();
-		tree.setCellRenderer(new CheckableTreeRenderer());
 
 		if (TYPE == TYPE_EDIT) {
 			extractAlertData();
 		}
 
-		updateTreeModel((NewsTreeNode) stock.getNewsRootNode());
-	}
-
-	void updateTreeModel(NewsTreeNode root) {
-		if (root != null) {
-			root = root.clone();
-			NewsTreeModel model = new NewsTreeModel(root);
-			tree.setModel(model);
-
-			if (TYPE == TYPE_EDIT) {
-				model.fillFromNewsLine(alert.getNewsLine());
-			}
-
-			showTree();
+		if (newsColor == null) {
+			newsColorTextField.setBackground(AlertsGeneralConstants.NULL_COLOR);
+		} else {
+			newsColorTextField.setBackground(newsColor);
 		}
+
+		updateTreeModel();
 	}
 
 	@Override
@@ -109,16 +111,39 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	 * случай если на момент открытия этой формы - данные для дерева (tree) еще
 	 * не были получены с сервера.
 	 */
-	public boolean treeUpdateEvent(TreeNode root) {
-		if (tree == null) {
-			return false;
+	public void treeUpdateEvent() {
+		updateTreeModel();
+	}
+
+	void updateTreeModel() {
+		NewsTreeNode root = (NewsTreeNode) stock.getNewsRootNode();
+		if (root != null) {
+			/**
+			 * Выключаем ожидающий поток updateTreeEvent(), чтобы лишний раз не
+			 * перерисовывать дерево, если в момент первой отрисовки данные для
+			 * него уже были загружены.
+			 */
+			stock.stopUpdateNewsTree();
+
+			root = root.clone();
+			NewsTreeModel model = new NewsTreeModel(root);
+			tree.setModel(model);
+
+			if (TYPE == TYPE_EDIT) {
+				model.fillFromNewsLine(alert.getNewsLine());
+			}
+			showTree();
+		} else {
+			/**
+			 * Если во время создания формы данные для дерева категорий новостей
+			 * (tree) еще не были загружены - запускаем слушатель.
+			 */
+			stock.setNewsTreeUpdateListener(this);
 		}
-		updateTreeModel((NewsTreeNode) root);
-		return true;
 	}
 
 	private void showTree() {
-		SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
+		// SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
 		treeLoadingPanel.setVisible(false);
 		treePanel.setVisible(true);
 		tree.repaint();
@@ -140,7 +165,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 
 		tree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
 				if (path != null) {
 					NewsTreeNode node = (NewsTreeNode) path.getLastPathComponent();
@@ -207,6 +232,13 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 				primaryFrame.enable();
 			}
 		});
+
+		newsColorTextField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				showColorChooser();
+			}
+		});
 	}
 
 	private void setOnlyRedNews() {
@@ -263,7 +295,8 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
 		newsColorCheckBox.setSelected(alert.isNewsColorOn());
-		// set color
+
+		newsColor = alert.getNewsColor();
 		windowPopupCheckBox.setSelected(alert.isWindowPopupOn());
 	}
 
@@ -305,7 +338,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		alert.setMelody(SwingHelper.getComboText(melodyComboBox));
 
 		alert.setNewsColorOn(newsColorCheckBox.isEnabled());
-		alert.setNewsColor("Пока не реализовано");
+		alert.setNewsColor(newsColor);
 
 		alert.setWindowPopupOn(windowPopupCheckBox.isSelected());
 
@@ -375,6 +408,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	private JTree tree;
 	private JPanel treePanel;
 	private JPanel treeLoadingPanel;
+	private CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
 
 	private JComboBox alertNameComboBox;
 	private JCheckBox onlyRedNewsCheckBox;
@@ -404,7 +438,8 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	private JComboBox melodyComboBox;
 
 	private JCheckBox newsColorCheckBox;
-	private JButton newsColorChooseBtn;
+	private JTextField newsColorTextField;
+	private Color newsColor;
 
 	private JCheckBox windowPopupCheckBox;
 
@@ -428,4 +463,20 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 			}
 		}
 	};
+
+	public Action CHOOSE_COLOR = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			showColorChooser();
+		}
+	};
+
+	private void showColorChooser() {
+		ExtendColorChooser chooser = new ExtendColorChooser();
+		Color resultColor = chooser.showBasicLookAndFeelDialog(null, "Выберите цвет для строки новости", newsColor);
+		if (resultColor != null) {
+			newsColor = resultColor;
+			newsColorTextField.setBackground(newsColor);
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package gui.panel.userAlerts.control;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,14 +46,14 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 
 		createAlert(new NewsAlert(1, "Alert_1", false, "key1", "key2", Expression.OR, FilterKey.BY_RELEVANCE,
 				"exclude1", "exclude2", Expression.OR, FilterExclude.EVERYWERE, true, "1@mail.ru", true, "111111", true,
-				"mp3", true, "null_color", true, "BusinessNews:*:0:*,Comments:*:0:*,DJ_ForexStock:*:0:*"));
+				"mp3", true, Color.RED, true, "BusinessNews:*:0:*,Comments:*:0:*,DJ_ForexStock:*:0:*"));
 
 		createAlert(new NewsAlert(2, "Alert_2", true, "", "", Expression.NOT, FilterKey.BY_RELEVANCE, "", "",
 				Expression.NOT, FilterExclude.TITLES_ONLY, false, "2@mail.ru", false, "222222", true, "mp3", false,
-				"null_color", false, "BusinessNews:4;19:0:*,Comments:*:0:*"));
+				Color.GREEN, false, "BusinessNews:4;19:0:*,Comments:*:0:*"));
 
 		createAlert(new NewsAlert(3, "Alert_3", false, "key111", "", Expression.NOT, FilterKey.EXACT_MATCH, "", "",
-				Expression.NOT, FilterExclude.RED_ONLY, false, "", false, "", true, "mp3", false, "null_color", false,
+				Expression.NOT, FilterExclude.RED_ONLY, false, "", false, "", true, "mp3", false, null, false,
 				"DJ_ForexStock:3;4;5;6;11;7;33;32;30;31;35;34;40;41;42;43:0:*"));
 	}
 

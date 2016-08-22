@@ -73,7 +73,12 @@
 		<combobox constraints="3,11" id="melodyComboBox" editable="true" />
 
 		<checkbox constraints="1,13" id="newsColorCheckBox" text="Цвет строки новости" />
-		<button constraints="3,13" id="newsColorChooseBtn" name="alerts.main_button" text="Выбрать цвет" />
+
+		<panel constraints="3,13">
+			<layout type="FormLayout" columns="f:p, 10px, 25px" rows="f:p" />
+			<button constraints="1,1" name="alerts.main_button" text="Выбрать цвет" action="CHOOSE_COLOR" />
+			<textfield constraints="3,1" id="newsColorTextField" editable="false" focusable="false" />
+		</panel>
 
 		<checkbox constraints="1,15" id="windowPopupCheckBox" text="Всплывающее окно" />
 
