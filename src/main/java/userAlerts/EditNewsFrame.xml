@@ -80,7 +80,7 @@
 			<textfield constraints="3,1" id="newsColorTextField" editable="false" focusable="false" />
 		</panel>
 
-		<checkbox constraints="1,15" id="windowPopupCheckBox" text="Всплывающее окно" />
+		<checkbox constraints="1,15" id="notifyWindowCheckBox" text="Всплывающее окно" />
 
 		<separator constraints="1,17,3,1" orientation="HORIZONTAL" />
 

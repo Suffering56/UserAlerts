@@ -129,7 +129,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 	public Action EDIT_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
-				new EditQuotesFrame().show();
+				new EditQuotesFrame(instance).show();
 			}
 		}
 	};
@@ -145,7 +145,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 	public Action CREATE_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
-				new EditQuotesFrame().show();
+				new EditQuotesFrame(instance).show();
 			}
 		}
 	};

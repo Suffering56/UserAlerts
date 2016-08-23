@@ -1,10 +1,8 @@
 package gui.panel.userAlerts.data;
 
 import java.awt.Color;
-import java.util.Calendar;
 
-@SuppressWarnings("deprecation")
-public class NewsAlert {
+public class NewsAlert extends Alert {
 
 	public NewsAlert() {
 		// empty constructor
@@ -36,22 +34,6 @@ public class NewsAlert {
 		this.newsColor = newsColor;
 		this.windowPopupOn = windowPopupOn;
 		this.newsLine = newsLine;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public boolean isOnlyRedNews() {
@@ -142,78 +124,6 @@ public class NewsAlert {
 		this.newsColor = newsColor;
 	}
 
-	public boolean isEmailOn() {
-		return emailOn;
-	}
-
-	public void setEmailOn(boolean emailOn) {
-		this.emailOn = emailOn;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public boolean isPhoneSmsOn() {
-		return phoneSmsOn;
-	}
-
-	public void setPhoneSmsOn(boolean phoneSmsOn) {
-		this.phoneSmsOn = phoneSmsOn;
-	}
-
-	public String getPhoneSms() {
-		return phoneSms;
-	}
-
-	public void setPhoneSms(String phoneSms) {
-		this.phoneSms = phoneSms;
-	}
-
-	public boolean isMelodyOn() {
-		return melodyOn;
-	}
-
-	public void setMelodyOn(boolean melodyOn) {
-		this.melodyOn = melodyOn;
-	}
-
-	public String getMelody() {
-		return melody;
-	}
-
-	public void setMelody(String melody) {
-		this.melody = melody;
-	}
-
-	public boolean isWindowPopupOn() {
-		return windowPopupOn;
-	}
-
-	public void setWindowPopupOn(boolean windowPopupOn) {
-		this.windowPopupOn = windowPopupOn;
-	}
-
-	public String getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	public String getLastEventDate() {
-		return lastEventDate;
-	}
-
-	public void setLastEventDate(String lastEventDate) {
-		this.lastEventDate = lastEventDate;
-	}
-
 	public String getNewsLine() {
 		return newsLine;
 	}
@@ -227,18 +137,10 @@ public class NewsAlert {
 		return "NewsAlert [id=" + id + ", name=" + name + ", creationDate=" + creationDate + "]";
 	}
 
-	/**************************************
-	 ************** Основные **************
-	 **************************************/
-	private int id = -1;
-	private String name = "";
-	private String newsLine;
-
-	/**************************************
-	 ************** Новости ***************
-	 **************************************/
 	// Показать только "красные" новости
 	private boolean onlyRedNews = false;
+	// Строка выбранных категорий новостей.
+	private String newsLine;
 
 	// Ключевая фраза 1
 	private String firstKeyWord = "";
@@ -261,25 +163,11 @@ public class NewsAlert {
 	/**************************************
 	 *************** Общие ****************
 	 **************************************/
-	// Информировать по e-mail
-	private boolean emailOn;
-	private String email = "";
-	// Информировать по SMS
-	private boolean phoneSmsOn;
-	private String phoneSms = "";
-	// Звуковой сигнал
-	private boolean melodyOn;
-	private String melody = "";
+
 	// Цвет строки новости
 	private boolean newsColorOn;
 	private Color newsColor;
-	// Всплывающее окно
-	private boolean windowPopupOn;
-
-	// Дата создания
-	private String creationDate = Calendar.getInstance().getTime().toLocaleString();
-	// Дата последнего срабатывания
-	private String lastEventDate = "-";
+	
 
 	public enum Expression {
 		NOT, OR, AND

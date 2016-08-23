@@ -297,7 +297,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		newsColorCheckBox.setSelected(alert.isNewsColorOn());
 
 		newsColor = alert.getNewsColor();
-		windowPopupCheckBox.setSelected(alert.isWindowPopupOn());
+		notifyWindowCheckBox.setSelected(alert.isWindowPopupOn());
 	}
 
 	private void setAlertData() {
@@ -340,7 +340,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		alert.setNewsColorOn(newsColorCheckBox.isEnabled());
 		alert.setNewsColor(newsColor);
 
-		alert.setWindowPopupOn(windowPopupCheckBox.isSelected());
+		alert.setWindowPopupOn(notifyWindowCheckBox.isSelected());
 
 		// записать данные из дерева
 		TreeModel model = tree.getModel();
@@ -441,7 +441,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	private JTextField newsColorTextField;
 	private Color newsColor;
 
-	private JCheckBox windowPopupCheckBox;
+	private JCheckBox notifyWindowCheckBox;
 
 	public Action APPLY = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
