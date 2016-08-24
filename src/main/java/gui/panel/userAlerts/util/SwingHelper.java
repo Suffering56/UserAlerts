@@ -25,10 +25,10 @@ public class SwingHelper {
 		return getComboText(box).isEmpty();
 	}
 	
-	public static void addUniqueComboItem(JComboBox box, String value, boolean enableChecking) {
+	public static void addComboItem(JComboBox box, String value, boolean isEmptyChecking) {
 		List<Object> itemsList = getComboItemsList(box);
 		if (!itemsList.contains(value)) {
-			if (enableChecking) {
+			if (isEmptyChecking) {
 				if (!value.isEmpty()) {
 					box.addItem(value);
 				}

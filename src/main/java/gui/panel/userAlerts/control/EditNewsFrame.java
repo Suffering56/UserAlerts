@@ -36,6 +36,7 @@ import javax.swing.tree.TreePath;
 
 import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.constants.AlertsGeneralConstants;
+import gui.panel.userAlerts.data.Alert;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
@@ -87,14 +88,12 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		tree.setCellRenderer(treeRenderer);
 
 		initComboBoxModels();
+		extractAlertData();
 		initComboBoxListeners();
+		
 		initCheckBoxListeners();
 		initTreeListeners();
 		initOtherListeners();
-
-		if (TYPE == TYPE_EDIT) {
-			extractAlertData();
-		}
 
 		if (newsColor == null) {
 			newsColorTextField.setBackground(AlertsGeneralConstants.NULL_COLOR);
@@ -115,7 +114,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		updateTreeModel();
 	}
 
-	void updateTreeModel() {
+	private void updateTreeModel() {
 		NewsTreeNode root = (NewsTreeNode) stock.getNewsRootNode();
 		if (root != null) {
 			/**
@@ -175,29 +174,65 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 			}
 		});
 	}
+	
+	private void extractAlertData() {
+		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNews());
+		setOnlyRedNews();
+
+		NewsExpressionComboModel.setValue(keyWordExpressionComboBox, alert.getKeyWordExpression());
+
+		if (alert.getKeyWordFilterType() == FilterKey.BY_RELEVANCE) {
+			byRelevanceRadioBtn.setSelected(true);
+		} else {
+			exactMatchRadioBtn.setSelected(true);
+		}
+
+		NewsExpressionComboModel.setValue(excludeWordExpressionComboBox, alert.getExcludeWordExpression());
+
+		if (alert.getExcludeWordFilterType() == FilterExclude.EVERYWERE) {
+			everywhereRadioBtn.setSelected(true);
+		} else if (alert.getExcludeWordFilterType() == FilterExclude.TITLES_ONLY) {
+			titlesOnlyRadioBtn.setSelected(true);
+		} else {
+			redNewsOnlyRadioBtn.setSelected(true);
+		}
+
+		emailCheckBox.setSelected(alert.isEmailOn());
+		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
+		melodyCheckBox.setSelected(alert.isMelodyOn());
+		newsColorCheckBox.setSelected(alert.isNewsColorOn());
+
+		newsColor = alert.getNewsColor();
+		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
+	}
 
 	private void initComboBoxModels() {
-		addComboItems(alert, false);
+		addCommonComboItems(alert, false);
+		addUniqueComboItems(alert, false);
 
-		for (NewsAlert alertItem : stock.getNewsAlertsList()) {
-			if (alert != alertItem) {
-				addComboItems(alertItem, true);
+		for (Alert commonAlert : stock.getAlertsList()) {
+			if (alert != commonAlert) {
+				addCommonComboItems(commonAlert, true);
+				if (commonAlert instanceof NewsAlert) {
+					NewsAlert newsAlert = (NewsAlert) commonAlert;
+					addUniqueComboItems(newsAlert, true);
+				}
 			}
 		}
 	}
 
-	private void addComboItems(NewsAlert alertItem, boolean enableChecking) {
-		SwingHelper.addUniqueComboItem(alertNameComboBox, alertItem.getName(), enableChecking);
+	private void addCommonComboItems(Alert alertItem, boolean enableChecking) {
+		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), enableChecking);
+		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), enableChecking);
+		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), enableChecking);
+		SwingHelper.addComboItem(melodyComboBox, alertItem.getMelody(), enableChecking);
+	}
 
-		SwingHelper.addUniqueComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), enableChecking);
-		SwingHelper.addUniqueComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), enableChecking);
-
-		SwingHelper.addUniqueComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), enableChecking);
-		SwingHelper.addUniqueComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), enableChecking);
-
-		SwingHelper.addUniqueComboItem(emailComboBox, alertItem.getEmail(), enableChecking);
-		SwingHelper.addUniqueComboItem(phoneComboBox, alertItem.getPhoneSms(), enableChecking);
-		SwingHelper.addUniqueComboItem(melodyComboBox, alertItem.getMelody(), enableChecking);
+	private void addUniqueComboItems(NewsAlert alertItem, boolean enableChecking) {
+		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), enableChecking);
+		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), enableChecking);
+		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), enableChecking);
+		SwingHelper.addComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), enableChecking);
 	}
 
 	private void initComboBoxListeners() {
@@ -269,37 +304,6 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		secondBox.setEnabled(enabled);
 	}
 
-	private void extractAlertData() {
-		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNews());
-		setOnlyRedNews();
-
-		NewsExpressionComboModel.setValue(keyWordExpressionComboBox, alert.getKeyWordExpression());
-
-		if (alert.getKeyWordFilterType() == FilterKey.BY_RELEVANCE) {
-			byRelevanceRadioBtn.setSelected(true);
-		} else {
-			exactMatchRadioBtn.setSelected(true);
-		}
-
-		NewsExpressionComboModel.setValue(excludeWordExpressionComboBox, alert.getExcludeWordExpression());
-
-		if (alert.getExcludeWordFilterType() == FilterExclude.EVERYWERE) {
-			everywhereRadioBtn.setSelected(true);
-		} else if (alert.getExcludeWordFilterType() == FilterExclude.TITLES_ONLY) {
-			titlesOnlyRadioBtn.setSelected(true);
-		} else {
-			redNewsOnlyRadioBtn.setSelected(true);
-		}
-
-		emailCheckBox.setSelected(alert.isEmailOn());
-		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
-		melodyCheckBox.setSelected(alert.isMelodyOn());
-		newsColorCheckBox.setSelected(alert.isNewsColorOn());
-
-		newsColor = alert.getNewsColor();
-		notifyWindowCheckBox.setSelected(alert.isWindowPopupOn());
-	}
-
 	private void setAlertData() {
 		alert.setName(SwingHelper.getComboText(alertNameComboBox));
 		alert.setOnlyRedNews(onlyRedNewsCheckBox.isSelected());
@@ -340,7 +344,7 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		alert.setNewsColorOn(newsColorCheckBox.isEnabled());
 		alert.setNewsColor(newsColor);
 
-		alert.setWindowPopupOn(notifyWindowCheckBox.isSelected());
+		alert.setNotifyWindowOn(notifyWindowCheckBox.isSelected());
 
 		// записать данные из дерева
 		TreeModel model = tree.getModel();

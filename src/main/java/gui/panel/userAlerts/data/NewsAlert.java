@@ -5,7 +5,6 @@ import java.awt.Color;
 public class NewsAlert extends Alert {
 
 	public NewsAlert() {
-		// empty constructor
 	}
 
 	public NewsAlert(int id, String name, boolean onlyRedNews, String firstKeyWord, String secondKeyWord,
@@ -32,7 +31,7 @@ public class NewsAlert extends Alert {
 		this.melody = melody;
 		this.newsColorOn = newsColorOn;
 		this.newsColor = newsColor;
-		this.windowPopupOn = windowPopupOn;
+		this.notifyWindowOn = windowPopupOn;
 		this.newsLine = newsLine;
 	}
 
@@ -153,21 +152,16 @@ public class NewsAlert extends Alert {
 
 	// Исключить слова 1
 	private String firstExcludeWord = "";
-	// Исключить слова 1
+	// Исключить слова 2
 	private String secondExcludeWord = "";
 	// Выражение(нет/или/и)
 	private Expression excludeWordExpression = Expression.NOT;
 	// Фильтр (Искать везде / Искать только в заголовках / ...)
 	private FilterExclude excludeWordFilterType = FilterExclude.EVERYWERE;
 
-	/**************************************
-	 *************** Общие ****************
-	 **************************************/
-
 	// Цвет строки новости
 	private boolean newsColorOn;
 	private Color newsColor;
-	
 
 	public enum Expression {
 		NOT, OR, AND

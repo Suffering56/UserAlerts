@@ -3,7 +3,10 @@ package gui.panel.userAlerts.data;
 import java.util.Calendar;
 
 @SuppressWarnings("deprecation")
-public abstract class Alert {
+public class Alert {
+	
+	protected Alert() {
+	}
 
 	public int getId() {
 		return id;
@@ -85,12 +88,12 @@ public abstract class Alert {
 		this.melody = melody;
 	}
 
-	public boolean isWindowPopupOn() {
-		return windowPopupOn;
+	public boolean isNotifyWindowOn() {
+		return notifyWindowOn;
 	}
 
-	public void setWindowPopupOn(boolean windowPopupOn) {
-		this.windowPopupOn = windowPopupOn;
+	public void setNotifyWindowOn(boolean windowPopupOn) {
+		this.notifyWindowOn = windowPopupOn;
 	}
 
 	// id алерта
@@ -112,5 +115,5 @@ public abstract class Alert {
 	protected boolean melodyOn;
 	protected String melody = "";
 	// Всплывающее окно
-	protected boolean windowPopupOn;
+	protected boolean notifyWindowOn = true;
 }

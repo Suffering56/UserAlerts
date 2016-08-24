@@ -5,4 +5,5 @@ public interface Checkable {
 	public String getDisplayText();
 
 	public boolean isSelected();
+	
 }

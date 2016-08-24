@@ -9,11 +9,17 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import gui.panel.userAlerts.data.Alert;
+import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.QuotesAlert;
+import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel;
+import gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
+import gui.panel.userAlerts.util.SwingHelper;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused" })
 public class EditQuotesFrame extends SwixFrame {
 
 	public EditQuotesFrame(PrimaryFrame primaryFrame) {
@@ -22,6 +28,7 @@ public class EditQuotesFrame extends SwixFrame {
 
 	public EditQuotesFrame(PrimaryFrame primaryFrame, QuotesAlert alert) {
 		this.primaryFrame = primaryFrame;
+		stock = primaryFrame.getStock();
 
 		if (alert == null) {
 			this.alert = new QuotesAlert();
@@ -42,7 +49,35 @@ public class EditQuotesFrame extends SwixFrame {
 
 	@Override
 	protected void afterRenderInit() {
+		initComboBoxModels();
 		extractAlertData();
+	}
+
+	private void initComboBoxModels() {
+		addCommonComboItems(alert, false);
+		addUniqueComboItems(alert, false);
+
+		for (Alert commonAlert : stock.getAlertsList()) {
+			if (alert != commonAlert) {
+				addCommonComboItems(commonAlert, true);
+				if (commonAlert instanceof QuotesAlert) {
+					QuotesAlert newsAlert = (QuotesAlert) commonAlert;
+					addUniqueComboItems(newsAlert, true);
+				}
+			}
+		}
+	}
+
+	private void addCommonComboItems(Alert alertItem, boolean isEmptyChecking) {
+		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), isEmptyChecking);
+		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), isEmptyChecking);
+		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), isEmptyChecking);
+		SwingHelper.addComboItem(melodyComboBox, alertItem.getMelody(), isEmptyChecking);
+	}
+
+	private void addUniqueComboItems(QuotesAlert alertItem, boolean isEmptyChecking) {
+		SwingHelper.addComboItem(instrumentComboBox, alertItem.getInstrument(), isEmptyChecking);
+		SwingHelper.addComboItem(marketPlaceComboBox, alertItem.getMarketPlace(), isEmptyChecking);
 	}
 
 	public Action SHOW_CHART = new AbstractAction() {
@@ -55,39 +90,17 @@ public class EditQuotesFrame extends SwixFrame {
 	};
 
 	private void extractAlertData() {
-		// onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNews());
-		// setOnlyRedNews();
-		//
-		// NewsExpressionComboModel.setValue(keyWordExpressionComboBox,
-		// alert.getKeyWordExpression());
-		//
-		// if (alert.getKeyWordFilterType() == FilterKey.BY_RELEVANCE) {
-		// byRelevanceRadioBtn.setSelected(true);
-		// } else {
-		// exactMatchRadioBtn.setSelected(true);
-		// }
-		//
-		// NewsExpressionComboModel.setValue(excludeWordExpressionComboBox,
-		// alert.getExcludeWordExpression());
-		//
-		// if (alert.getExcludeWordFilterType() == FilterExclude.EVERYWERE) {
-		// everywhereRadioBtn.setSelected(true);
-		// } else if (alert.getExcludeWordFilterType() ==
-		// FilterExclude.TITLES_ONLY) {
-		// titlesOnlyRadioBtn.setSelected(true);
-		// } else {
-		// redNewsOnlyRadioBtn.setSelected(true);
-		// }
-		//
-		// emailCheckBox.setSelected(alert.isEmailOn());
-		// phoneCheckBox.setSelected(alert.isPhoneSmsOn());
-		// melodyCheckBox.setSelected(alert.isMelodyOn());
-		// newsColorCheckBox.setSelected(alert.isNewsColorOn());
-		//
-		// newsColor = alert.getNewsColor();
-		// notifyWindowCheckBox.setSelected(alert.isWindowPopupOn());
+		QuotesDirectionNameComboModel.setValue(directionNameComboBox, alert.getDirectionName());
+		QuotesDirectionExpressionComboModel.setValue(directionExpressionComboBox, alert.getDirectionExpression());
+		directionValueTextField.setText(alert.getDirectionValue());
+
+		emailCheckBox.setSelected(alert.isEmailOn());
+		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
+		melodyCheckBox.setSelected(alert.isMelodyOn());
+		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
 	}
 
+	private Stock stock;
 	private QuotesAlert alert;
 	protected PrimaryFrame primaryFrame;
 
@@ -97,9 +110,9 @@ public class EditQuotesFrame extends SwixFrame {
 	private JComboBox instrumentComboBox;
 	private JComboBox marketPlaceComboBox;
 
-	private JComboBox dirComboBox;
-	private JComboBox dirExpressionComboBox;
-	private JTextField dirValueTextField;
+	private JComboBox directionNameComboBox;
+	private JComboBox directionExpressionComboBox;
+	private JTextField directionValueTextField;
 
 	private JCheckBox emailCheckBox;
 	private JComboBox emailComboBox;

@@ -150,7 +150,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		}
 	};
 
-	public void setSelectedRowNumber(int selectedRowNumber) {
+	private void setSelectedRowNumber(int selectedRowNumber) {
 		this.selectedRowNumber = selectedRowNumber;
 		boolean enabled = selectedRowNumber != -1;
 		removeNewsAlertBtn.setEnabled(enabled);

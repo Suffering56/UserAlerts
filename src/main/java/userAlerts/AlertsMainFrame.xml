@@ -2,7 +2,7 @@
 <panel name="DarkGreyPanel">
 	<layout type="FormLayout" columns="f:p:g" rows="f:p:g" />
 
-	<tabbedpane constraints="1,1" titles="Новости, Котировки">
+	<tabbedpane constraints="1,1" titles="Новости, Котировки" SelectedIndex="1">
 		<!-- ============================ Новости ============================= -->
 		<panel>
 			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />

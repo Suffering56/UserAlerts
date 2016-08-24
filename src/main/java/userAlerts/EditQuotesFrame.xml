@@ -18,16 +18,14 @@
 			<combobox constraints="5,5" id="marketPlaceComboBox" editable="true" />
 
 			<label constraints="1,7" text="Показатель" />
-			<combobox constraints="3,7" id="dirComboBox" />
+			<combobox constraints="3,7" id="directionNameComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel"/>
 
 			<panel constraints="5,7">
 				<layout type="FormLayout" columns="f:50px, 10px:g, f:100px" rows="f:p" />
 
-				<combobox constraints="1,1" id="dirExpressionComboBox" />
-				<textfield constraints="3,1" id="dirValueTextField" name="input" text="1239.90" />
+				<combobox constraints="1,1" id="directionExpressionComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel" />
+				<textfield constraints="3,1" id="directionValueTextField" name="input" />
 			</panel>
-
-
 
 			<label constraints="1,9" text="Линии алерта" />
 			<button constraints="3,9" name="alerts.main_button" text="Выбрать цвет" />

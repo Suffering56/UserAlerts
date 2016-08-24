@@ -19,7 +19,7 @@ public class Stock {
 		int id = alert.getId();
 
 		if (alert.getId() == -1) {
-			id = alertsList.isEmpty() ? 0 : alertsList.get(alertsList.size() - 1).getId();
+			id = newsAlertsList.isEmpty() ? 0 : newsAlertsList.get(newsAlertsList.size() - 1).getId();
 			while (containsId(id)) {
 				id++;
 			}
@@ -31,25 +31,25 @@ public class Stock {
 		}
 
 		alert.setId(id);
-		alertsList.add(alert);
+		newsAlertsList.add(alert);
 	}
 
 	public boolean removeById(int id) {
 		int removeIndex = -1;
-		for (int i = 0; i < alertsList.size(); i++) {
-			if (alertsList.get(i).getId() == id) {
+		for (int i = 0; i < newsAlertsList.size(); i++) {
+			if (newsAlertsList.get(i).getId() == id) {
 				removeIndex = i;
 			}
 		}
 		if (removeIndex != -1) {
-			alertsList.remove(removeIndex);
+			newsAlertsList.remove(removeIndex);
 			return true;
 		}
 		return false;
 	}
 
 	public boolean containsId(int id) {
-		for (NewsAlert alert : alertsList) {
+		for (NewsAlert alert : newsAlertsList) {
 			if (alert.getId() == id) {
 				return true;
 			}
@@ -58,7 +58,18 @@ public class Stock {
 	}
 
 	public List<NewsAlert> getNewsAlertsList() {
-		return alertsList;
+		return newsAlertsList;
+	}
+
+	public List<QuotesAlert> getQuotesAlertsList() {
+		return quotesAlertsList;
+	}
+	
+	public List<Alert> getAlertsList() {
+		List<Alert> result = new ArrayList<Alert>();
+		result.addAll(newsAlertsList);
+		result.addAll(quotesAlertsList);
+		return result;
 	}
 
 	public void updateNewsTree(final TreeNode root) {
@@ -94,5 +105,6 @@ public class Stock {
 	private TreeNode newsRootNode;
 	private TreeUpdateListener newsTreeUpdateListener;
 	private boolean stop = false;
-	private final List<NewsAlert> alertsList = new ArrayList<NewsAlert>();
+	private final List<NewsAlert> newsAlertsList = new ArrayList<NewsAlert>();
+	private final List<QuotesAlert> quotesAlertsList = new ArrayList<QuotesAlert>();
 }
