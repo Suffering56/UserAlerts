@@ -1,41 +1,27 @@
 package gui.panel.userAlerts.control;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import gui.panel.userAlerts.App;
-import gui.panel.userAlerts.constants.AlertsGeneralConstants;
 import gui.panel.userAlerts.data.Alert;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
@@ -45,32 +31,28 @@ import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeNode;
 import gui.panel.userAlerts.overridden.renderer.CheckableTreeRenderer;
-import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
-import gui.panel.userAlerts.parent.SwixFrame;
-import gui.panel.userAlerts.parent.TreeUpdateListener;
-import gui.panel.userAlerts.remote.NewsTreeDownloader;
 import gui.panel.userAlerts.util.ExtendColorChooser;
 import gui.panel.userAlerts.util.IOHelper;
 import gui.panel.userAlerts.util.SwingHelper;
 
-@SuppressWarnings({ "serial", "unused", "deprecation" })
-public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
+@SuppressWarnings({ "serial" })
+public class EditNewsFrame extends AbstractEditFrame {
 
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
 		this(primaryFrame, null);
 	}
 
 	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
-		this.primaryFrame = primaryFrame;
-		stock = primaryFrame.getStock();
+		super(primaryFrame);
 
 		if (alert == null) {
 			this.alert = new NewsAlert();
-			TYPE = TYPE_CREATE;
+			TYPE = Type.CREATE;
 		} else {
 			this.alert = alert;
-			TYPE = TYPE_EDIT;
+			TYPE = Type.EDIT;
 		}
 
 		frame.setTitle("Настройка алерта для новостей");
@@ -80,76 +62,30 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	}
 
 	@Override
-	protected void beforeRenderInit() {
-	}
-
-	@Override
 	protected void afterRenderInit() {
-		tree.setCellRenderer(treeRenderer);
-
-		initComboBoxModels();
-		extractAlertData();
-		initComboBoxListeners();
-		
-		initCheckBoxListeners();
-		initTreeListeners();
-		initOtherListeners();
-
-		if (newsColor == null) {
-			newsColorTextField.setBackground(AlertsGeneralConstants.NULL_COLOR);
-		} else {
-			newsColorTextField.setBackground(newsColor);
-		}
-
+		initListeners();
+		fillComponentsFromAlert();
 		updateTreeModel();
 	}
 
-	@Override
-	/**
-	 * Эта функция ждет, когда данные придут и обновляет модель дерева. На
-	 * случай если на момент открытия этой формы - данные для дерева (tree) еще
-	 * не были получены с сервера.
-	 */
-	public void treeUpdateEvent() {
-		updateTreeModel();
-	}
-
-	private void updateTreeModel() {
-		NewsTreeNode root = (NewsTreeNode) stock.getNewsRootNode();
-		if (root != null) {
-			/**
-			 * Выключаем ожидающий поток updateTreeEvent(), чтобы лишний раз не
-			 * перерисовывать дерево, если в момент первой отрисовки данные для
-			 * него уже были загружены.
-			 */
-			stock.stopUpdateNewsTree();
-
-			root = root.clone();
-			NewsTreeModel model = new NewsTreeModel(root);
-			tree.setModel(model);
-
-			if (TYPE == TYPE_EDIT) {
-				model.fillFromNewsLine(alert.getNewsLine());
+	private void initListeners() {
+		/**************************************************************
+		 * Tree
+		 **************************************************************/
+		tree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+				if (path != null) {
+					if (path.getLastPathComponent() instanceof NewsTreeNode) {
+						NewsTreeNode node = (NewsTreeNode) path.getLastPathComponent();
+						node.setSelected(!node.isSelected());
+						tree.repaint();
+					}
+				}
 			}
-			showTree();
-		} else {
-			/**
-			 * Если во время создания формы данные для дерева категорий новостей
-			 * (tree) еще не были загружены - запускаем слушатель.
-			 */
-			stock.setNewsTreeUpdateListener(this);
-		}
-	}
+		});
 
-	private void showTree() {
-		// SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
-		treeLoadingPanel.setVisible(false);
-		treePanel.setVisible(true);
-		tree.repaint();
-		pack();
-	}
-
-	private void initTreeListeners() {
 		tree.addTreeExpansionListener(new TreeExpansionListener() {
 			@Override
 			public void treeExpanded(TreeExpansionEvent e) {
@@ -162,20 +98,104 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 			}
 		});
 
-		tree.addMouseListener(new MouseAdapter() {
+		/**************************************************************
+		 * ComboBox
+		 **************************************************************/
+		keyWordExpressionComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setSecondComboBoxState(keyWordExpressionComboBox, secondKeyWordComboBox);
+			}
+		});
+
+		excludeWordExpressionComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setSecondComboBoxState(excludeWordExpressionComboBox, secondExcludeWordComboBox);
+			}
+		});
+
+		/**************************************************************
+		 * CheckBox
+		 **************************************************************/
+		onlyRedNewsCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setOnlyRedNews();
+			}
+		});
+
+		newsColorTextField.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-				if (path != null) {
-					NewsTreeNode node = (NewsTreeNode) path.getLastPathComponent();
-					node.setSelected(!node.isSelected());
-					tree.repaint();
-				}
+				showColorChooser();
+			}
+		});
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				primaryFrame.enable();
 			}
 		});
 	}
-	
-	private void extractAlertData() {
+
+	private void updateTreeModel() {
+		NewsTreeNode root = (NewsTreeNode) stock.getNewsRoot();
+		if (root != null) {
+			root = root.clone();
+			NewsTreeModel model = new NewsTreeModel(root);
+			tree.setModel(model);
+			tree.setCellRenderer(treeRenderer);
+
+			if (TYPE == Type.EDIT) {
+				model.fillFromNewsLine(alert.getNewsLine());
+			}
+
+//			SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
+			treeLoadingPanel.setVisible(false);
+			treePanel.setVisible(true);
+			tree.repaint();
+			pack();
+		} else {
+			/**
+			 * Если во время создания формы данные для дерева категорий новостей
+			 * (tree) еще не были загружены - запускаем слушатель.
+			 */
+			runRootUpdateListener();
+		}
+	}
+
+	private void runRootUpdateListener() {
+		new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					if (stock.getNewsRoot() != null) {
+						updateTreeModel();
+						break;
+					}
+					IOHelper.sleep(1000);
+				}
+			}
+		}.start();
+	}
+
+	@Override
+	protected void fillComponentsFromAlert() {
+		addCommonComboItems(alert, false);
+		addUniqueComboItems(alert, false);
+
+		for (Alert commonAlert : stock.getAlertsList()) {
+			if (alert != commonAlert) {
+				addCommonComboItems(commonAlert, true);
+				if (commonAlert instanceof NewsAlert) {
+					NewsAlert newsAlert = (NewsAlert) commonAlert;
+					addUniqueComboItems(newsAlert, true);
+				}
+			}
+		}
+
 		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNews());
 		setOnlyRedNews();
 
@@ -201,110 +221,14 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
 		newsColorCheckBox.setSelected(alert.isNewsColorOn());
+		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
 
 		newsColor = alert.getNewsColor();
-		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
+		newsColorTextField.setBackground(newsColor);
 	}
 
-	private void initComboBoxModels() {
-		addCommonComboItems(alert, false);
-		addUniqueComboItems(alert, false);
-
-		for (Alert commonAlert : stock.getAlertsList()) {
-			if (alert != commonAlert) {
-				addCommonComboItems(commonAlert, true);
-				if (commonAlert instanceof NewsAlert) {
-					NewsAlert newsAlert = (NewsAlert) commonAlert;
-					addUniqueComboItems(newsAlert, true);
-				}
-			}
-		}
-	}
-
-	private void addCommonComboItems(Alert alertItem, boolean enableChecking) {
-		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), enableChecking);
-		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), enableChecking);
-		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), enableChecking);
-		SwingHelper.addComboItem(melodyComboBox, alertItem.getMelody(), enableChecking);
-	}
-
-	private void addUniqueComboItems(NewsAlert alertItem, boolean enableChecking) {
-		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), enableChecking);
-		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), enableChecking);
-		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), enableChecking);
-		SwingHelper.addComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), enableChecking);
-	}
-
-	private void initComboBoxListeners() {
-		keyWordExpressionComboBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setSecondComboBoxState(keyWordExpressionComboBox, secondKeyWordComboBox);
-			}
-		});
-
-		excludeWordExpressionComboBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setSecondComboBoxState(excludeWordExpressionComboBox, secondExcludeWordComboBox);
-			}
-		});
-	}
-
-	private void initCheckBoxListeners() {
-		onlyRedNewsCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setOnlyRedNews();
-			}
-		});
-	}
-
-	private void initOtherListeners() {
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				primaryFrame.enable();
-			}
-		});
-
-		newsColorTextField.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				showColorChooser();
-			}
-		});
-	}
-
-	private void setOnlyRedNews() {
-		final boolean enabled = !onlyRedNewsCheckBox.isSelected();
-
-		firstKeyWordComboBox.setEnabled(enabled);
-		keyWordExpressionComboBox.setEnabled(enabled);
-		firstExcludeWordComboBox.setEnabled(enabled);
-		excludeWordExpressionComboBox.setEnabled(enabled);
-
-		byRelevanceRadioBtn.setEnabled(enabled);
-		exactMatchRadioBtn.setEnabled(enabled);
-		everywhereRadioBtn.setEnabled(enabled);
-		titlesOnlyRadioBtn.setEnabled(enabled);
-		redNewsOnlyRadioBtn.setEnabled(enabled);
-
-		if (enabled) {
-			setSecondComboBoxState(keyWordExpressionComboBox, secondKeyWordComboBox);
-			setSecondComboBoxState(excludeWordExpressionComboBox, secondExcludeWordComboBox);
-		} else {
-			secondKeyWordComboBox.setEnabled(false);
-			secondExcludeWordComboBox.setEnabled(false);
-		}
-	}
-
-	private void setSecondComboBoxState(JComboBox expressionBox, JComboBox secondBox) {
-		boolean enabled = !expressionBox.getSelectedItem().equals(NewsExpressionComboModel.not);
-		secondBox.setEnabled(enabled);
-	}
-
-	private void setAlertData() {
+	@Override
+	protected void fillAlertFromComponents() {
 		alert.setName(SwingHelper.getComboText(alertNameComboBox));
 		alert.setOnlyRedNews(onlyRedNewsCheckBox.isSelected());
 
@@ -352,11 +276,75 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 			NewsTreeModel newsTreeModel = (NewsTreeModel) model;
 			alert.setNewsLine(newsTreeModel.convertToNewsLine());
 		}
+	}
 
-		if (TYPE == TYPE_CREATE) {
-			alert.setCreationDate(Calendar.getInstance().getTime().toLocaleString());
+	private void addUniqueComboItems(NewsAlert alertItem, boolean isEmptyChecking) {
+		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), isEmptyChecking);
+		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), isEmptyChecking);
+		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), isEmptyChecking);
+		SwingHelper.addComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), isEmptyChecking);
+	}
+
+	private void setOnlyRedNews() {
+		final boolean enabled = !onlyRedNewsCheckBox.isSelected();
+
+		firstKeyWordComboBox.setEnabled(enabled);
+		keyWordExpressionComboBox.setEnabled(enabled);
+		firstExcludeWordComboBox.setEnabled(enabled);
+		excludeWordExpressionComboBox.setEnabled(enabled);
+
+		byRelevanceRadioBtn.setEnabled(enabled);
+		exactMatchRadioBtn.setEnabled(enabled);
+		everywhereRadioBtn.setEnabled(enabled);
+		titlesOnlyRadioBtn.setEnabled(enabled);
+		redNewsOnlyRadioBtn.setEnabled(enabled);
+
+		if (enabled) {
+			setSecondComboBoxState(keyWordExpressionComboBox, secondKeyWordComboBox);
+			setSecondComboBoxState(excludeWordExpressionComboBox, secondExcludeWordComboBox);
+		} else {
+			secondKeyWordComboBox.setEnabled(false);
+			secondExcludeWordComboBox.setEnabled(false);
 		}
 	}
+
+	public Action CHOOSE_COLOR = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			showColorChooser();
+		}
+	};
+
+	private void showColorChooser() {
+		ExtendColorChooser chooser = new ExtendColorChooser();
+		Color resultColor = chooser.showBasicLookAndFeelDialog(null, "Выберите цвет для строки новости", newsColor);
+		if (resultColor != null) {
+			newsColor = resultColor;
+			newsColorTextField.setBackground(newsColor);
+		}
+	}
+
+	public Action APPLY = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			if (e != null) {
+				if (inputValidation()) {
+
+					fillAlertFromComponents();
+
+					if (TYPE == Type.CREATE) {
+						primaryFrame.createNewsAlert(alert);
+					} else {
+						primaryFrame.updateNewsAlert(alert);
+					}
+
+					dispose();
+					primaryFrame.enable();
+				} else {
+					App.appLogger.info("error validation");
+				}
+			}
+		}
+	};
 
 	private boolean inputValidation() {
 		if (SwingHelper.isEmptyComboText(alertNameComboBox))
@@ -384,37 +372,8 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 		return true;
 	}
 
-	private boolean apply() {
-		boolean success = inputValidation();
-		if (success) {
-			setAlertData();
-
-			if (TYPE == TYPE_CREATE) {
-				primaryFrame.createAlert(alert);
-			} else {
-				primaryFrame.updateAlert(alert);
-			}
-
-		} else {
-			App.appLogger.info("error validation");
-		}
-		return success;
-	}
-
-	private PrimaryFrame primaryFrame;
 	private NewsAlert alert;
-	private Stock stock;
 
-	private int TYPE;
-	private static final int TYPE_CREATE = 0;
-	private static final int TYPE_EDIT = 1;
-
-	private JTree tree;
-	private JPanel treePanel;
-	private JPanel treeLoadingPanel;
-	private CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
-
-	private JComboBox alertNameComboBox;
 	private JCheckBox onlyRedNewsCheckBox;
 
 	private JComboBox firstKeyWordComboBox;
@@ -432,55 +391,12 @@ public class EditNewsFrame extends SwixFrame implements TreeUpdateListener {
 	private JRadioButton titlesOnlyRadioBtn;
 	private JRadioButton redNewsOnlyRadioBtn;
 
-	private JCheckBox emailCheckBox;
-	private JComboBox emailComboBox;
-
-	private JCheckBox phoneCheckBox;
-	private JComboBox phoneComboBox;
-
-	private JCheckBox melodyCheckBox;
-	private JComboBox melodyComboBox;
-
 	private JCheckBox newsColorCheckBox;
 	private JTextField newsColorTextField;
 	private Color newsColor;
 
-	private JCheckBox notifyWindowCheckBox;
-
-	public Action APPLY = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				boolean success = apply();
-				if (success) {
-					dispose();
-					primaryFrame.enable();
-				}
-			}
-		}
-	};
-
-	public Action CANCEL = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				dispose();
-				primaryFrame.enable();
-			}
-		}
-	};
-
-	public Action CHOOSE_COLOR = new AbstractAction() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			showColorChooser();
-		}
-	};
-
-	private void showColorChooser() {
-		ExtendColorChooser chooser = new ExtendColorChooser();
-		Color resultColor = chooser.showBasicLookAndFeelDialog(null, "Выберите цвет для строки новости", newsColor);
-		if (resultColor != null) {
-			newsColor = resultColor;
-			newsColorTextField.setBackground(newsColor);
-		}
-	}
+	private JTree tree;
+	private JPanel treePanel;
+	private JPanel treeLoadingPanel;
+	private CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
 }

@@ -1,6 +1,7 @@
 package gui.panel.userAlerts.overridden.renderer;
 
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -16,6 +17,7 @@ public class TableHeaderRenderer implements TableCellRenderer {
 		header.setName(AlertsFrameStyles.TABLE_HEADER_RENDERER);
 		renderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
 		renderer.setHorizontalAlignment(JLabel.CENTER);
+		renderer.setPreferredSize(new Dimension(renderer.getPreferredSize().width, 40));
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,

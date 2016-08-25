@@ -4,38 +4,34 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import gui.panel.userAlerts.data.Alert;
-import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.QuotesAlert;
-import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel;
+import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
-import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.SwingHelper;
 
-@SuppressWarnings({ "serial", "unused" })
-public class EditQuotesFrame extends SwixFrame {
+@SuppressWarnings({ "serial" })
+public class EditQuotesFrame extends AbstractEditFrame {
 
 	public EditQuotesFrame(PrimaryFrame primaryFrame) {
 		this(primaryFrame, null);
 	}
 
 	public EditQuotesFrame(PrimaryFrame primaryFrame, QuotesAlert alert) {
-		this.primaryFrame = primaryFrame;
-		stock = primaryFrame.getStock();
+		super(primaryFrame);
 
 		if (alert == null) {
 			this.alert = new QuotesAlert();
-			TYPE = TYPE_CREATE;
+			TYPE = Type.CREATE;
 		} else {
 			this.alert = alert;
-			TYPE = TYPE_EDIT;
+			TYPE = Type.EDIT;
 		}
 
 		frame.setTitle("Настройка алерта для котировок");
@@ -43,14 +39,9 @@ public class EditQuotesFrame extends SwixFrame {
 	}
 
 	@Override
-	protected void beforeRenderInit() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	protected void afterRenderInit() {
 		initComboBoxModels();
-		extractAlertData();
+		fillComponentsFromAlert();
 	}
 
 	private void initComboBoxModels() {
@@ -68,13 +59,6 @@ public class EditQuotesFrame extends SwixFrame {
 		}
 	}
 
-	private void addCommonComboItems(Alert alertItem, boolean isEmptyChecking) {
-		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), isEmptyChecking);
-		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), isEmptyChecking);
-		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), isEmptyChecking);
-		SwingHelper.addComboItem(melodyComboBox, alertItem.getMelody(), isEmptyChecking);
-	}
-
 	private void addUniqueComboItems(QuotesAlert alertItem, boolean isEmptyChecking) {
 		SwingHelper.addComboItem(instrumentComboBox, alertItem.getInstrument(), isEmptyChecking);
 		SwingHelper.addComboItem(marketPlaceComboBox, alertItem.getMarketPlace(), isEmptyChecking);
@@ -89,7 +73,8 @@ public class EditQuotesFrame extends SwixFrame {
 		}
 	};
 
-	private void extractAlertData() {
+	@Override
+	protected void fillComponentsFromAlert() {
 		QuotesDirectionNameComboModel.setValue(directionNameComboBox, alert.getDirectionName());
 		QuotesDirectionExpressionComboModel.setValue(directionExpressionComboBox, alert.getDirectionExpression());
 		directionValueTextField.setText(alert.getDirectionValue());
@@ -99,33 +84,20 @@ public class EditQuotesFrame extends SwixFrame {
 		melodyCheckBox.setSelected(alert.isMelodyOn());
 		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
 	}
+	
+	@Override
+	protected void fillAlertFromComponents() {
 
-	private Stock stock;
+	}
+
 	private QuotesAlert alert;
-	protected PrimaryFrame primaryFrame;
 
-	private JPanel chartJPanel;
-
-	private JComboBox alertNameComboBox;
 	private JComboBox instrumentComboBox;
 	private JComboBox marketPlaceComboBox;
 
 	private JComboBox directionNameComboBox;
 	private JComboBox directionExpressionComboBox;
 	private JTextField directionValueTextField;
-
-	private JCheckBox emailCheckBox;
-	private JComboBox emailComboBox;
-
-	private JCheckBox phoneCheckBox;
-	private JComboBox phoneComboBox;
-
-	private JCheckBox melodyCheckBox;
-	private JComboBox melodyComboBox;
-
-	private JCheckBox notifyWindowCheckBox;
-
-	private int TYPE;
-	private static final int TYPE_CREATE = 0;
-	private static final int TYPE_EDIT = 1;
+	
+	private JPanel chartJPanel;
 }

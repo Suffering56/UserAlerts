@@ -5,9 +5,7 @@ import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
-import gui.panel.userAlerts.parent.TreeUpdateListener;
 import gui.panel.userAlerts.remote.NewsTreeDownloader;
-import gui.panel.userAlerts.util.IOHelper;
 
 public class Stock {
 
@@ -15,26 +13,45 @@ public class Stock {
 		new NewsTreeDownloader(this);
 	}
 
-	public void add(NewsAlert alert) {
-		int id = alert.getId();
+	public void addNewsAlert(NewsAlert newsAlert) {
+		int id = newsAlert.getId();
 
-		if (alert.getId() == -1) {
+		if (newsAlert.getId() == -1) {
 			id = newsAlertsList.isEmpty() ? 0 : newsAlertsList.get(newsAlertsList.size() - 1).getId();
-			while (containsId(id)) {
+			while (containsNewsId(id)) {
 				id++;
 			}
 		} else {
 
-			while (containsId(id)) {
+			while (containsNewsId(id)) {
 				id++;
 			}
 		}
 
-		alert.setId(id);
-		newsAlertsList.add(alert);
+		newsAlert.setId(id);
+		newsAlertsList.add(newsAlert);
+	}
+	
+	public void addQuotesAlert(QuotesAlert quotesAlert) {
+		int id = quotesAlert.getId();
+		
+		if (quotesAlert.getId() == -1) {
+			id = quotesAlertsList.isEmpty() ? 0 : quotesAlertsList.get(quotesAlertsList.size() - 1).getId();
+			while (containsQuotesId(id)) {
+				id++;
+			}
+		} else {
+
+			while (containsQuotesId(id)) {
+				id++;
+			}
+		}
+		
+		quotesAlert.setId(id);
+		quotesAlertsList.add(quotesAlert);
 	}
 
-	public boolean removeById(int id) {
+	public boolean removeNewsAlertById(int id) {
 		int removeIndex = -1;
 		for (int i = 0; i < newsAlertsList.size(); i++) {
 			if (newsAlertsList.get(i).getId() == id) {
@@ -47,8 +64,22 @@ public class Stock {
 		}
 		return false;
 	}
+	
+	public boolean removeQuotesAlertById(int id) {
+		int removeIndex = -1;
+		for (int i = 0; i < quotesAlertsList.size(); i++) {
+			if (quotesAlertsList.get(i).getId() == id) {
+				removeIndex = i;
+			}
+		}
+		if (removeIndex != -1) {
+			quotesAlertsList.remove(removeIndex);
+			return true;
+		}
+		return false;
+	}
 
-	public boolean containsId(int id) {
+	public boolean containsNewsId(int id) {
 		for (NewsAlert alert : newsAlertsList) {
 			if (alert.getId() == id) {
 				return true;
@@ -56,13 +87,30 @@ public class Stock {
 		}
 		return false;
 	}
+	
+	public boolean containsQuotesId(int id) {
+		for (QuotesAlert alert : quotesAlertsList) {
+			if (alert.getId() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-	public List<NewsAlert> getNewsAlertsList() {
+	public List<NewsAlert> getAllNewsAlerts() {
 		return newsAlertsList;
 	}
 
-	public List<QuotesAlert> getQuotesAlertsList() {
+	public List<QuotesAlert> getAllQuotesAlerts() {
 		return quotesAlertsList;
+	}
+
+	public TreeNode getNewsRoot() {
+		return newsRoot;
+	}
+	
+	public void setNewsRoot(final TreeNode newsRoot) {
+		this.newsRoot = newsRoot;
 	}
 	
 	public List<Alert> getAlertsList() {
@@ -72,39 +120,7 @@ public class Stock {
 		return result;
 	}
 
-	public void updateNewsTree(final TreeNode root) {
-		this.newsRootNode = root;
-		new Runnable() {
-			public void run() {
-				while (true) {
-					if (newsTreeUpdateListener != null) {
-						newsTreeUpdateListener.treeUpdateEvent();
-						break;
-					}
-					if (stop) {
-						break;
-					}
-					IOHelper.sleep(1000);
-				}
-			}
-		}.run();
-	}
-
-	public void setNewsTreeUpdateListener(TreeUpdateListener newsTreeUpdateListener) {
-		this.newsTreeUpdateListener = newsTreeUpdateListener;
-	}
-
-	public TreeNode getNewsRootNode() {
-		return newsRootNode;
-	}
-
-	public void stopUpdateNewsTree() {
-		this.stop = true;
-	}
-
-	private TreeNode newsRootNode;
-	private TreeUpdateListener newsTreeUpdateListener;
-	private boolean stop = false;
+	private TreeNode newsRoot;
 	private final List<NewsAlert> newsAlertsList = new ArrayList<NewsAlert>();
 	private final List<QuotesAlert> quotesAlertsList = new ArrayList<QuotesAlert>();
 }

@@ -2,7 +2,7 @@
 <panel name="DarkGreyPanel">
 	<layout type="FormLayout" columns="f:p:g" rows="f:p:g" />
 
-	<tabbedpane constraints="1,1" titles="Новости, Котировки" SelectedIndex="1">
+	<tabbedpane constraints="1,1" titles="Новости, Котировки" SelectedIndex="0">
 		<!-- ============================ Новости ============================= -->
 		<panel>
 			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
@@ -16,7 +16,7 @@
 			</panel>
 
 			<scrollpane constraints="2,4">
-				<table id="newsTable" selectionMode="ListSelectionModel.SINGLE_SELECTION"/>
+				<table id="newsTable" selectionMode="ListSelectionModel.SINGLE_SELECTION" />
 			</scrollpane>
 		</panel>
 
@@ -33,7 +33,7 @@
 			</panel>
 
 			<scrollpane constraints="2,4">
-				<table />
+				<table id="quotesTable" selectionMode="ListSelectionModel.SINGLE_SELECTION" />
 			</scrollpane>
 		</panel>
 	</tabbedpane>

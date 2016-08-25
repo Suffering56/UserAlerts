@@ -2,6 +2,8 @@ package gui.panel.userAlerts.data;
 
 import java.awt.Color;
 
+import gui.panel.userAlerts.constants.AlertsGeneralConstants;
+
 public class NewsAlert extends Alert {
 
 	public NewsAlert() {
@@ -11,7 +13,7 @@ public class NewsAlert extends Alert {
 			Expression keyWordExpression, FilterKey keyWordFilterType, String firstExcludeWord,
 			String secondExcludeWord, Expression excludeWordExpression, FilterExclude excludeWordFilterType,
 			boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
-			boolean newsColorOn, Color newsColor, boolean windowPopupOn, String newsLine) {
+			boolean newsColorOn, boolean windowPopupOn, String newsLine) {
 		this.id = id;
 		this.name = name;
 		this.onlyRedNews = onlyRedNews;
@@ -30,7 +32,6 @@ public class NewsAlert extends Alert {
 		this.melodyOn = melodyOn;
 		this.melody = melody;
 		this.newsColorOn = newsColorOn;
-		this.newsColor = newsColor;
 		this.notifyWindowOn = windowPopupOn;
 		this.newsLine = newsLine;
 	}
@@ -161,7 +162,7 @@ public class NewsAlert extends Alert {
 
 	// Цвет строки новости
 	private boolean newsColorOn;
-	private Color newsColor;
+	private Color newsColor = AlertsGeneralConstants.DEFAULT_COLOR;
 
 	public enum Expression {
 		NOT, OR, AND

@@ -12,5 +12,5 @@ public class AlertsGeneralConstants {
 	
 	public static final String LAF_PATH = "/configs/laf.xml";
 	
-	public static final Color NULL_COLOR = new Color(255, 255, 254);
+	public static final Color DEFAULT_COLOR = Color.YELLOW;	//new Color(255, 255, 254)
 }

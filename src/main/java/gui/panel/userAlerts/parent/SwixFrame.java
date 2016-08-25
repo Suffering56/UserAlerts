@@ -21,8 +21,6 @@ public abstract class SwixFrame implements Disablable {
 		frame = new JFrame();
 	}
 
-	abstract protected void beforeRenderInit();
-
 	abstract protected void afterRenderInit();
 
 	protected void render(String xmlPath) {
@@ -36,9 +34,6 @@ public abstract class SwixFrame implements Disablable {
 	}
 
 	private void render(String xmlPath, boolean pack) {
-
-		beforeRenderInit();
-
 		try {
 			rootPanel = (JPanel) swix.render(xmlPath + ".xml");
 			frame.setContentPane(rootPanel);

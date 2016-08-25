@@ -2,6 +2,29 @@ package gui.panel.userAlerts.data;
 
 public class QuotesAlert extends Alert {
 
+	public QuotesAlert() {
+		// default
+	}
+
+	public QuotesAlert(int id, String name, String instrument, String marketPlace, DirectionName directionName,
+			DirectionExpression directionExpression, String directionValue, boolean emailOn, String email,
+			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean windowPopupOn) {
+		this.id = id;
+		this.name = name;
+		this.instrument = instrument;
+		this.marketPlace = marketPlace;
+		this.directionName = directionName;
+		this.directionExpression = directionExpression;
+		this.directionValue = directionValue;
+		this.emailOn = emailOn;
+		this.email = email;
+		this.phoneSmsOn = phoneSmsOn;
+		this.phoneSms = phoneSms;
+		this.melodyOn = melodyOn;
+		this.melody = melody;
+		this.notifyWindowOn = windowPopupOn;
+	}
+
 	public String getInstrument() {
 		return instrument;
 	}

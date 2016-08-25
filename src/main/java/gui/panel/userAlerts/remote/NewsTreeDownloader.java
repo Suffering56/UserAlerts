@@ -67,7 +67,7 @@ public class NewsTreeDownloader {
 			}
 		}
 		
-		stock.updateNewsTree(root);
+		stock.setNewsRoot(root);
 	}
 
 	/**
