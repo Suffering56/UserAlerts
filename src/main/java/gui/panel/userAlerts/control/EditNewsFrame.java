@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -34,11 +36,10 @@ import gui.panel.userAlerts.overridden.renderer.CheckableTreeRenderer;
 import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.util.ExtendColorChooser;
-import gui.panel.userAlerts.util.IOHelper;
 import gui.panel.userAlerts.util.SwingHelper;
 
 @SuppressWarnings({ "serial" })
-public class EditNewsFrame extends AbstractEditFrame {
+public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 	public EditNewsFrame(PrimaryFrame primaryFrame) {
 		this(primaryFrame, null);
@@ -62,10 +63,42 @@ public class EditNewsFrame extends AbstractEditFrame {
 	}
 
 	@Override
+	public void update(Observable o, Object arg) {
+		updateTreeModel();
+		stock.deleteObserver(this);
+	}
+
+	@Override
 	protected void afterRenderInit() {
 		initListeners();
 		fillComponentsFromAlert();
 		updateTreeModel();
+	}
+
+	private void updateTreeModel() {
+		NewsTreeNode root = (NewsTreeNode) stock.getNewsRoot();
+		if (root != null) {
+			root = root.clone();
+			NewsTreeModel model = new NewsTreeModel(root);
+			tree.setModel(model);
+			tree.setCellRenderer(treeRenderer);
+
+			if (TYPE == Type.EDIT) {
+				model.fillFromNewsLine(alert.getNewsLine());
+			}
+
+			SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
+			treeLoadingPanel.setVisible(false);
+			treePanel.setVisible(true);
+			tree.repaint();
+			pack();
+		} else {
+			/**
+			 * Если во время инициализации root == null (т.е. данные еще не
+			 * загрузились с сервера) => Подписываемся на обновления.
+			 */
+			stock.addObserver(this);
+		}
 	}
 
 	private void initListeners() {
@@ -138,47 +171,6 @@ public class EditNewsFrame extends AbstractEditFrame {
 				primaryFrame.enable();
 			}
 		});
-	}
-
-	private void updateTreeModel() {
-		NewsTreeNode root = (NewsTreeNode) stock.getNewsRoot();
-		if (root != null) {
-			root = root.clone();
-			NewsTreeModel model = new NewsTreeModel(root);
-			tree.setModel(model);
-			tree.setCellRenderer(treeRenderer);
-
-			if (TYPE == Type.EDIT) {
-				model.fillFromNewsLine(alert.getNewsLine());
-			}
-
-			SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
-			treeLoadingPanel.setVisible(false);
-			treePanel.setVisible(true);
-			tree.repaint();
-			pack();
-		} else {
-			/**
-			 * Если во время создания формы данные для дерева категорий новостей
-			 * (tree) еще не были загружены - запускаем слушатель.
-			 */
-			runRootUpdateListener();
-		}
-	}
-
-	private void runRootUpdateListener() {
-		new Thread() {
-			@Override
-			public void run() {
-				while (true) {
-					if (stock.getNewsRoot() != null) {
-						updateTreeModel();
-						break;
-					}
-					IOHelper.sleep(1000);
-				}
-			}
-		}.start();
 	}
 
 	@Override

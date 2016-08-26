@@ -2,12 +2,13 @@ package gui.panel.userAlerts.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import javax.swing.tree.TreeNode;
 
 import gui.panel.userAlerts.remote.NewsTreeDownloader;
 
-public class Stock {
+public class Stock extends Observable {
 
 	public Stock() {
 		new NewsTreeDownloader(this);
@@ -32,12 +33,6 @@ public class Stock {
 		} else if (alert instanceof QuotesAlert) {
 			quotesAlertsList.add((QuotesAlert) alert);
 		}
-		
-//		System.out.println("a id = " + alert.getId());
-//		System.out.println("a alertsList size: " + alertsList.size());
-//		System.out.println("a newsAlertsList size: " + newsAlertsList.size());
-//		System.out.println("a quotesAlertsList size: " + quotesAlertsList.size());
-//		System.out.println("-------------------------------------------");
 	}
 
 	public void removeAlertById(int id) {
@@ -58,14 +53,7 @@ public class Stock {
 			} else if (removeObject instanceof QuotesAlert) {
 				quotesAlertsList.remove(removeObject);
 			}
-//			return true;
 		}
-//		return false;
-//		System.out.println("r id = " + id);
-//		System.out.println("r alertsList size: " + alertsList.size());
-//		System.out.println("r newsAlertsList size: " + newsAlertsList.size());
-//		System.out.println("r quotesAlertsList size: " + quotesAlertsList.size());
-//		System.out.println("-------------------------------------------");
 	}
 
 	private boolean containsId(int id) {
@@ -95,8 +83,10 @@ public class Stock {
 
 	public void setNewsRoot(final TreeNode newsRoot) {
 		this.newsRoot = newsRoot;
+		setChanged();
+		notifyObservers();
 	}
-	
+
 	private TreeNode newsRoot;
 	private final List<NewsAlert> newsAlertsList = new ArrayList<NewsAlert>();
 	private final List<QuotesAlert> quotesAlertsList = new ArrayList<QuotesAlert>();
