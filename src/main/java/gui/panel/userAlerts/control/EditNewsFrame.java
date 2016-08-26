@@ -152,7 +152,7 @@ public class EditNewsFrame extends AbstractEditFrame {
 				model.fillFromNewsLine(alert.getNewsLine());
 			}
 
-//			SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
+			SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
 			treeLoadingPanel.setVisible(false);
 			treePanel.setVisible(true);
 			tree.repaint();
@@ -186,7 +186,7 @@ public class EditNewsFrame extends AbstractEditFrame {
 		addCommonComboItems(alert, false);
 		addUniqueComboItems(alert, false);
 
-		for (Alert commonAlert : stock.getAlertsList()) {
+		for (Alert commonAlert : stock.getAllAlerts()) {
 			if (alert != commonAlert) {
 				addCommonComboItems(commonAlert, true);
 				if (commonAlert instanceof NewsAlert) {
@@ -196,7 +196,7 @@ public class EditNewsFrame extends AbstractEditFrame {
 			}
 		}
 
-		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNews());
+		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNewsOn());
 		setOnlyRedNews();
 
 		NewsExpressionComboModel.setValue(keyWordExpressionComboBox, alert.getKeyWordExpression());
@@ -230,7 +230,7 @@ public class EditNewsFrame extends AbstractEditFrame {
 	@Override
 	protected void fillAlertFromComponents() {
 		alert.setName(SwingHelper.getComboText(alertNameComboBox));
-		alert.setOnlyRedNews(onlyRedNewsCheckBox.isSelected());
+		alert.setOnlyRedNewsOn(onlyRedNewsCheckBox.isSelected());
 
 		alert.setFirstKeyWord(SwingHelper.getComboText(firstKeyWordComboBox));
 		alert.setSecondKeyWord(SwingHelper.getComboText(secondKeyWordComboBox));
@@ -332,9 +332,9 @@ public class EditNewsFrame extends AbstractEditFrame {
 					fillAlertFromComponents();
 
 					if (TYPE == Type.CREATE) {
-						primaryFrame.createNewsAlert(alert);
+						primaryFrame.createAlert(alert);
 					} else {
-						primaryFrame.updateNewsAlert(alert);
+						primaryFrame.updateAlert(alert);
 					}
 
 					dispose();

@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 
+import gui.panel.userAlerts.data.Alert;
 import gui.panel.userAlerts.data.NewsAlert;
 import gui.panel.userAlerts.data.NewsAlert.Expression;
 import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
@@ -44,27 +45,30 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		initNewsTable();
 		initQuotesTable();
 
-		createNewsAlert(new NewsAlert(1, "Alert_1", false, "key1", "key2", Expression.OR, FilterKey.BY_RELEVANCE,
-				"exclude1", "exclude2", Expression.OR, FilterExclude.EVERYWERE, true, "1@mail.ru", true, "111111", true,
-				"mp3", true, true, "BusinessNews:*:0:*,Comments:*:0:*,DJ_ForexStock:*:0:*"));
+		/**
+		 * News
+		 */
+		createAlert(new NewsAlert("Alert_1", "BusinessNews:*:0:*,Comments:*:0:*,DJ_ForexStock:*:0:*", false, "key1",
+				"key2", Expression.OR, FilterKey.BY_RELEVANCE, "exclude1", "exclude2", Expression.OR,
+				FilterExclude.EVERYWERE, true, "1@mail.ru", true, "111111", true, "mp3", true, Color.RED, true));
 
-		createNewsAlert(new NewsAlert(2, "Alert_2", true, "", "", Expression.NOT, FilterKey.BY_RELEVANCE, "", "",
-				Expression.NOT, FilterExclude.TITLES_ONLY, false, "2@mail.ru", false, "222222", true, "mp3", false,
-				false, "BusinessNews:4;19:0:*,Comments:*:0:*"));
+		createAlert(new NewsAlert("Alert_2", "BusinessNews:4;19:0:*,Comments:*:0:*", true, null, null, Expression.NOT,
+				FilterKey.BY_RELEVANCE, null, null, Expression.NOT, FilterExclude.TITLES_ONLY, false, "2@mail.ru",
+				false, "222222", true, "mp3", false, Color.green, false));
 
-		createNewsAlert(new NewsAlert(3, "Alert_3", false, "key111", "", Expression.NOT, FilterKey.EXACT_MATCH, "", "",
-				Expression.NOT, FilterExclude.RED_ONLY, false, "", false, "", true, "mp3", false, false,
-				"DJ_ForexStock:3;4;5;6;11;7;33;32;30;31;35;34;40;41;42;43:0:*"));
+		createAlert(new NewsAlert("Alert_3"));
 
-		createQuotesAlert(new QuotesAlert(4, "Alert 4", "instrument_4", "marketplace_4", DirectionName.LAST,
+		/**
+		 * Quotes
+		 */
+		createAlert(new QuotesAlert("Alert 4", "instrument_4", "marketplace_4", DirectionName.LAST,
 				DirectionExpression.LESS_EQUALS, "400.0", true, "quote4@mail.ru", true, "+7quote4", true, "quote4.mp3",
 				true));
 
-		createQuotesAlert(new QuotesAlert(5, "Alert 5", "instrument_5", "marketplace_5", DirectionName.BID,
+		createAlert(new QuotesAlert("Alert 5", "instrument_5", "marketplace_5", DirectionName.BID,
 				DirectionExpression.LESS, "500.0", true, "quote5@mail.ru", true, "+7quote5", true, "quote5.mp3", true));
 
-		createQuotesAlert(new QuotesAlert(6, "Alert 6", "instrument_6", "marketplace_6", DirectionName.CLOSE,
-				DirectionExpression.MORE, "600.0", false, "", false, "", false, "", false));
+		createAlert(new QuotesAlert("Alert 6"));
 	}
 
 	private void initNewsTable() {
@@ -112,6 +116,14 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		}
 	};
 
+	public Action CREATE_QUOTES_ALERT = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			if (e != null) {
+				new EditQuotesFrame(instance).show();
+			}
+		}
+	};
+
 	public Action EDIT_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
@@ -121,28 +133,20 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		}
 	};
 
+	public Action EDIT_QUOTES_ALERT = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			if (e != null) {
+				QuotesAlert alert = quotesModel.getAlertByRowNumber(selectedQuotesRowNumber);
+				new EditQuotesFrame(instance, alert).show();
+			}
+		}
+	};
 	public Action REMOVE_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (e != null) {
 				NewsAlert alert = newsModel.getAlertByRowNumber(selectedNewsRowNumber);
 				removeNewsAlert(alert);
 				setSelectedNewsRowNumber(-1);
-			}
-		}
-	};
-
-	public Action CREATE_QUOTES_ALERT = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				new EditQuotesFrame(instance).show();
-			}
-		}
-	};
-
-	public Action EDIT_QUOTES_ALERT = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				new EditQuotesFrame(instance).show();
 			}
 		}
 	};
@@ -172,41 +176,38 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 	}
 
 	@Override
-	public void createNewsAlert(NewsAlert alert) {
-		stock.addNewsAlert(alert);
-		newsModel.update(stock.getAllNewsAlerts());
-	}
+	public void createAlert(Alert alert) {
+		stock.addAlert(alert);
 
-	@Override
-	public void updateNewsAlert(NewsAlert alert) {
-		stock.removeNewsAlertById(alert.getId());
-		stock.addNewsAlert(alert);
-		newsModel.update(stock.getAllNewsAlerts());
-	}
-
-	private void removeNewsAlert(NewsAlert alert) {
-		if (alert != null) {
-			stock.removeNewsAlertById(alert.getId());
+		if (alert instanceof NewsAlert) {
 			newsModel.update(stock.getAllNewsAlerts());
+		} else if (alert instanceof QuotesAlert) {
+			quotesModel.update(stock.getAllQuotesAlerts());
 		}
 	}
 
 	@Override
-	public void createQuotesAlert(QuotesAlert alert) {
-		stock.addQuotesAlert(alert);
-		quotesModel.update(stock.getAllQuotesAlerts());
+	public void updateAlert(Alert alert) {
+		stock.removeAlertById(alert.getId());
+		stock.addAlert(alert);
+
+		if (alert instanceof NewsAlert) {
+			newsModel.update(stock.getAllNewsAlerts());
+		} else if (alert instanceof QuotesAlert) {
+			quotesModel.update(stock.getAllQuotesAlerts());
+		}
 	}
 
-	@Override
-	public void updateQuotesAlert(QuotesAlert alert) {
-		stock.removeQuotesAlertById(alert.getId());
-		stock.addQuotesAlert(alert);
-		quotesModel.update(stock.getAllQuotesAlerts());
+	private void removeNewsAlert(NewsAlert alert) {
+		if (alert != null) {
+			stock.removeAlertById(alert.getId());
+			newsModel.update(stock.getAllNewsAlerts());
+		}
 	}
 
 	private void removeQuotesAlert(QuotesAlert alert) {
 		if (alert != null) {
-			stock.removeQuotesAlertById(alert.getId());
+			stock.removeAlertById(alert.getId());
 			quotesModel.update(stock.getAllQuotesAlerts());
 		}
 	}

@@ -2,46 +2,48 @@ package gui.panel.userAlerts.data;
 
 import java.awt.Color;
 
-import gui.panel.userAlerts.constants.AlertsGeneralConstants;
-
 public class NewsAlert extends Alert {
 
 	public NewsAlert() {
+		this(null);
 	}
 
-	public NewsAlert(int id, String name, boolean onlyRedNews, String firstKeyWord, String secondKeyWord,
+	public NewsAlert(String name) {
+		this(name, null, false, null, null, null, null, null, null, null, null, false, null, false, null, false, null,
+				false, null, true);
+	}
+
+	public NewsAlert(String name, String newsLine, boolean onlyRedNewsOn, String firstKeyWord, String secondKeyWord,
 			Expression keyWordExpression, FilterKey keyWordFilterType, String firstExcludeWord,
 			String secondExcludeWord, Expression excludeWordExpression, FilterExclude excludeWordFilterType,
 			boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
-			boolean newsColorOn, boolean windowPopupOn, String newsLine) {
-		this.id = id;
-		this.name = name;
-		this.onlyRedNews = onlyRedNews;
-		this.firstKeyWord = firstKeyWord;
-		this.secondKeyWord = secondKeyWord;
-		this.keyWordExpression = keyWordExpression;
-		this.keyWordFilterType = keyWordFilterType;
-		this.firstExcludeWord = firstExcludeWord;
-		this.secondExcludeWord = secondExcludeWord;
-		this.excludeWordExpression = excludeWordExpression;
-		this.excludeWordFilterType = excludeWordFilterType;
-		this.emailOn = emailOn;
-		this.email = email;
-		this.phoneSmsOn = phoneSmsOn;
-		this.phoneSms = phoneSms;
-		this.melodyOn = melodyOn;
-		this.melody = melody;
+			boolean newsColorOn, Color newsColor, boolean notifyWindowOn) {
+
+		super(name, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
+
+		this.newsLine = (newsLine == null) ? "" : newsLine;
+		this.onlyRedNewsOn = onlyRedNewsOn;
+
+		this.firstKeyWord = (firstKeyWord == null) ? "" : firstKeyWord;
+		this.secondKeyWord = (secondKeyWord == null) ? "" : secondKeyWord;
+		this.keyWordExpression = (keyWordExpression == null) ? Expression.NOT : keyWordExpression;
+		this.keyWordFilterType = (keyWordFilterType == null) ? FilterKey.BY_RELEVANCE : keyWordFilterType;
+
+		this.firstExcludeWord = (firstExcludeWord == null) ? "" : firstExcludeWord;
+		this.secondExcludeWord = (secondExcludeWord == null) ? "" : secondExcludeWord;
+		this.excludeWordExpression = (excludeWordExpression == null) ? Expression.NOT : excludeWordExpression;
+		this.excludeWordFilterType = (excludeWordFilterType == null) ? FilterExclude.EVERYWERE : excludeWordFilterType;
+
 		this.newsColorOn = newsColorOn;
-		this.notifyWindowOn = windowPopupOn;
-		this.newsLine = newsLine;
+		this.newsColor = (newsColor == null) ? DEFAULT_COLOR : newsColor;
 	}
 
-	public boolean isOnlyRedNews() {
-		return onlyRedNews;
+	public boolean isOnlyRedNewsOn() {
+		return onlyRedNewsOn;
 	}
 
-	public void setOnlyRedNews(boolean onlyRedNews) {
-		this.onlyRedNews = onlyRedNews;
+	public void setOnlyRedNewsOn(boolean onlyRedNews) {
+		this.onlyRedNewsOn = onlyRedNews;
 	}
 
 	public String getFirstKeyWord() {
@@ -132,37 +134,34 @@ public class NewsAlert extends Alert {
 		this.newsLine = newsLine;
 	}
 
-	@Override
-	public String toString() {
-		return "NewsAlert [id=" + id + ", name=" + name + ", creationDate=" + creationDate + "]";
-	}
-
 	// Показать только "красные" новости
-	private boolean onlyRedNews = false;
+	private boolean onlyRedNewsOn;
 	// Строка выбранных категорий новостей.
 	private String newsLine;
 
 	// Ключевая фраза 1
-	private String firstKeyWord = "";
+	private String firstKeyWord;
 	// Ключевая фраза 2
-	private String secondKeyWord = "";
+	private String secondKeyWord;
 	// Выражение(нет/или/и)
-	private Expression keyWordExpression = Expression.NOT;
+	private Expression keyWordExpression;
 	// Фильтр (По релевантности / Точное совпадение)
-	private FilterKey keyWordFilterType = FilterKey.BY_RELEVANCE;
+	private FilterKey keyWordFilterType;
 
 	// Исключить слова 1
-	private String firstExcludeWord = "";
+	private String firstExcludeWord;
 	// Исключить слова 2
-	private String secondExcludeWord = "";
+	private String secondExcludeWord;
 	// Выражение(нет/или/и)
-	private Expression excludeWordExpression = Expression.NOT;
+	private Expression excludeWordExpression;
 	// Фильтр (Искать везде / Искать только в заголовках / ...)
-	private FilterExclude excludeWordFilterType = FilterExclude.EVERYWERE;
+	private FilterExclude excludeWordFilterType;
 
 	// Цвет строки новости
 	private boolean newsColorOn;
-	private Color newsColor = AlertsGeneralConstants.DEFAULT_COLOR;
+	private Color newsColor = DEFAULT_COLOR;
+
+	public static final Color DEFAULT_COLOR = Color.YELLOW;
 
 	public enum Expression {
 		NOT, OR, AND

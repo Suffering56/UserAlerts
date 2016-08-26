@@ -8,5 +8,4 @@ public class StringHelper {
 		}
 		return str.substring(0, str.length() - 1);
 	}
-
 }

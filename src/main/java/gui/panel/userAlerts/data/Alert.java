@@ -3,9 +3,23 @@ package gui.panel.userAlerts.data;
 import java.util.Calendar;
 
 @SuppressWarnings("deprecation")
-public class Alert {
-	
-	protected Alert() {
+public abstract class Alert {
+
+	public Alert(String name, String creationDate, String lastEventDate, boolean emailOn, String email,
+			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean notifyWindowOn) {
+
+		this.id = -1;
+		this.name = (name == null) ? "" : name;
+		this.creationDate = (creationDate == null) ? Calendar.getInstance().getTime().toLocaleString() : creationDate;
+		this.lastEventDate = (lastEventDate == null) ? "-" : lastEventDate;
+
+		this.emailOn = emailOn;
+		this.email = (email == null) ? "" : email;
+		this.phoneSmsOn = phoneSmsOn;
+		this.phoneSms = (phoneSms == null) ? "" : phoneSms;
+		this.melodyOn = melodyOn;
+		this.melody = (melody == null) ? "" : melody;
+		this.notifyWindowOn = notifyWindowOn;
 	}
 
 	public int getId() {
@@ -39,7 +53,7 @@ public class Alert {
 	public void setLastEventDate(String lastEventDate) {
 		this.lastEventDate = lastEventDate;
 	}
-	
+
 	public boolean isEmailOn() {
 		return emailOn;
 	}
@@ -96,24 +110,29 @@ public class Alert {
 		this.notifyWindowOn = windowPopupOn;
 	}
 
+	@Override
+	public String toString() {
+		return "NewsAlert [id=" + id + ", name=" + name + ", creationDate=" + creationDate + "]";
+	}
+
 	// id алерта
-	protected int id = -1;
+	protected int id;
 	// Название алерта
-	protected String name = "";
+	protected String name;
 	// Дата создания
-	protected String creationDate = Calendar.getInstance().getTime().toLocaleString();
+	protected String creationDate;
 	// Дата последнего срабатывания
-	protected String lastEventDate = "-";
+	protected String lastEventDate;
 
 	// Информировать по e-mail
 	protected boolean emailOn;
-	protected String email = "";
+	protected String email;
 	// Информировать по SMS
 	protected boolean phoneSmsOn;
-	protected String phoneSms = "";
+	protected String phoneSms;
 	// Звуковой сигнал
 	protected boolean melodyOn;
-	protected String melody = "";
+	protected String melody;
 	// Всплывающее окно
-	protected boolean notifyWindowOn = true;
+	protected boolean notifyWindowOn;
 }

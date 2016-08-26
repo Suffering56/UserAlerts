@@ -13,7 +13,7 @@ public class NewsTreeModel extends DefaultTreeModel {
 	public NewsTreeModel(NewsTreeNode root) {
 		super(root);
 	}
-	
+
 	/**
 	 * Конвертирует выделенные в дереве значения в строку для отправки на
 	 * сервер.
@@ -67,14 +67,12 @@ public class NewsTreeModel extends DefaultTreeModel {
 	 * @param line - строка полученная с сервера
 	 */
 	public void fillFromNewsLine(String line) {
-		if (line != null) {
-			String[] databases = line.split(DB_SEPARATOR);
-			for (String db : databases) {
+		String[] databases = line.split(DB_SEPARATOR);
+		for (String db : databases) {
 
-				String[] params = db.split(PARAM_SEPARATOR);
-				if (params.length == PARAMS_COUNT) {
-					paramsHandle(params);
-				}
+			String[] params = db.split(PARAM_SEPARATOR);
+			if (params.length == PARAMS_COUNT) {
+				paramsHandle(params);
 			}
 		}
 	}

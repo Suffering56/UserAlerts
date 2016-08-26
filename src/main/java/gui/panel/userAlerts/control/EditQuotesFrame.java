@@ -48,7 +48,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		addCommonComboItems(alert, false);
 		addUniqueComboItems(alert, false);
 
-		for (Alert commonAlert : stock.getAlertsList()) {
+		for (Alert commonAlert : stock.getAllAlerts()) {
 			if (alert != commonAlert) {
 				addCommonComboItems(commonAlert, true);
 				if (commonAlert instanceof QuotesAlert) {

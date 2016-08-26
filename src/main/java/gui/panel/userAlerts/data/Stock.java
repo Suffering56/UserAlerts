@@ -13,83 +13,63 @@ public class Stock {
 		new NewsTreeDownloader(this);
 	}
 
-	public void addNewsAlert(NewsAlert newsAlert) {
-		int id = newsAlert.getId();
+	public void addAlert(Alert alert) {
+		int id = alert.getId();
 
-		if (newsAlert.getId() == -1) {
-			id = newsAlertsList.isEmpty() ? 0 : newsAlertsList.get(newsAlertsList.size() - 1).getId();
-			while (containsNewsId(id)) {
-				id++;
-			}
-		} else {
-
-			while (containsNewsId(id)) {
-				id++;
-			}
+		if (id == -1) {
+			id = alertsList.isEmpty() ? 0 : alertsList.get(alertsList.size() - 1).getId();
 		}
 
-		newsAlert.setId(id);
-		newsAlertsList.add(newsAlert);
-	}
-	
-	public void addQuotesAlert(QuotesAlert quotesAlert) {
-		int id = quotesAlert.getId();
-		
-		if (quotesAlert.getId() == -1) {
-			id = quotesAlertsList.isEmpty() ? 0 : quotesAlertsList.get(quotesAlertsList.size() - 1).getId();
-			while (containsQuotesId(id)) {
-				id++;
-			}
-		} else {
+		while (containsId(id)) {
+			id++;
+		}
 
-			while (containsQuotesId(id)) {
-				id++;
-			}
+		alert.setId(id);
+		alertsList.add(alert);
+
+		if (alert instanceof NewsAlert) {
+			newsAlertsList.add((NewsAlert) alert);
+		} else if (alert instanceof QuotesAlert) {
+			quotesAlertsList.add((QuotesAlert) alert);
 		}
 		
-		quotesAlert.setId(id);
-		quotesAlertsList.add(quotesAlert);
+//		System.out.println("a id = " + alert.getId());
+//		System.out.println("a alertsList size: " + alertsList.size());
+//		System.out.println("a newsAlertsList size: " + newsAlertsList.size());
+//		System.out.println("a quotesAlertsList size: " + quotesAlertsList.size());
+//		System.out.println("-------------------------------------------");
 	}
 
-	public boolean removeNewsAlertById(int id) {
+	public void removeAlertById(int id) {
 		int removeIndex = -1;
-		for (int i = 0; i < newsAlertsList.size(); i++) {
-			if (newsAlertsList.get(i).getId() == id) {
+		Alert removeObject = null;
+
+		for (int i = 0; i < alertsList.size(); i++) {
+			if (alertsList.get(i).getId() == id) {
 				removeIndex = i;
+				removeObject = alertsList.get(i);
 			}
 		}
+
 		if (removeIndex != -1) {
-			newsAlertsList.remove(removeIndex);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean removeQuotesAlertById(int id) {
-		int removeIndex = -1;
-		for (int i = 0; i < quotesAlertsList.size(); i++) {
-			if (quotesAlertsList.get(i).getId() == id) {
-				removeIndex = i;
+			alertsList.remove(removeIndex);
+			if (removeObject instanceof NewsAlert) {
+				newsAlertsList.remove(removeObject);
+			} else if (removeObject instanceof QuotesAlert) {
+				quotesAlertsList.remove(removeObject);
 			}
+//			return true;
 		}
-		if (removeIndex != -1) {
-			quotesAlertsList.remove(removeIndex);
-			return true;
-		}
-		return false;
+//		return false;
+//		System.out.println("r id = " + id);
+//		System.out.println("r alertsList size: " + alertsList.size());
+//		System.out.println("r newsAlertsList size: " + newsAlertsList.size());
+//		System.out.println("r quotesAlertsList size: " + quotesAlertsList.size());
+//		System.out.println("-------------------------------------------");
 	}
 
-	public boolean containsNewsId(int id) {
-		for (NewsAlert alert : newsAlertsList) {
-			if (alert.getId() == id) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean containsQuotesId(int id) {
-		for (QuotesAlert alert : quotesAlertsList) {
+	private boolean containsId(int id) {
+		for (Alert alert : alertsList) {
 			if (alert.getId() == id) {
 				return true;
 			}
@@ -105,22 +85,20 @@ public class Stock {
 		return quotesAlertsList;
 	}
 
+	public List<Alert> getAllAlerts() {
+		return alertsList;
+	}
+
 	public TreeNode getNewsRoot() {
 		return newsRoot;
 	}
-	
+
 	public void setNewsRoot(final TreeNode newsRoot) {
 		this.newsRoot = newsRoot;
 	}
 	
-	public List<Alert> getAlertsList() {
-		List<Alert> result = new ArrayList<Alert>();
-		result.addAll(newsAlertsList);
-		result.addAll(quotesAlertsList);
-		return result;
-	}
-
 	private TreeNode newsRoot;
 	private final List<NewsAlert> newsAlertsList = new ArrayList<NewsAlert>();
 	private final List<QuotesAlert> quotesAlertsList = new ArrayList<QuotesAlert>();
+	private final List<Alert> alertsList = new ArrayList<Alert>();
 }
