@@ -7,16 +7,24 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import gui.panel.userAlerts.App;
-import gui.panel.userAlerts.data.NewsAlert;
+import gui.panel.userAlerts.data.ClientNewsAlert;
+import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.util.StringHelper;
 
 @SuppressWarnings("serial")
 public class AlertsNewsTableModel extends AbstractTableModel {
 
-	public void update(List<NewsAlert> rows) {
-		this.rows = rows;
+	public AlertsNewsTableModel(Stock stock) {
+		this.stock = stock;
+		update();
+	}
+
+	public void update() {
+		rows = stock.getAllNewsAlerts();
 		fireTableDataChanged();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (rowIndex < getRowCount()) {
@@ -24,9 +32,9 @@ public class AlertsNewsTableModel extends AbstractTableModel {
 			case NAME:
 				return rows.get(rowIndex).getName();
 			case CREATION_DATE:
-				return rows.get(rowIndex).getCreationDate();
+				return (rows.get(rowIndex).getCreationDate() == null) ? StringHelper.EMPTY : rows.get(rowIndex).getCreationDate().toLocaleString();
 			case LAST_EVENT_DATE:
-				return rows.get(rowIndex).getLastEventDate();
+				return (rows.get(rowIndex).getLastEventDate() == null) ? StringHelper.EMPTY : rows.get(rowIndex).getLastEventDate().toLocaleString();
 			}
 		}
 		return "";
@@ -55,7 +63,7 @@ public class AlertsNewsTableModel extends AbstractTableModel {
 		return false;
 	}
 
-	public NewsAlert getAlertByRowNumber(int rowNumber) {
+	public ClientNewsAlert getAlertByRowNumber(int rowNumber) {
 		if ((rowNumber < rows.size()) && (rowNumber >= 0)) {
 			return rows.get(rowNumber);
 		} else {
@@ -64,7 +72,8 @@ public class AlertsNewsTableModel extends AbstractTableModel {
 		}
 	}
 
-	private List<NewsAlert> rows;
+	private final Stock stock;
+	private List<ClientNewsAlert> rows;
 
 	public static final int NAME = 0;
 	public static final int CREATION_DATE = 1;

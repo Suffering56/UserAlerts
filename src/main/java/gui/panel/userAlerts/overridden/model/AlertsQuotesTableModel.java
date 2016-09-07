@@ -7,16 +7,18 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import gui.panel.userAlerts.App;
-import gui.panel.userAlerts.data.QuotesAlert;
+import gui.panel.userAlerts.data.ClientQuotesAlert;
+import gui.panel.userAlerts.util.StringHelper;
 
 @SuppressWarnings("serial")
 public class AlertsQuotesTableModel extends AbstractTableModel {
 	
-	public void update(List<QuotesAlert> rows) {
+	public void update(List<ClientQuotesAlert> rows) {
 		this.rows = rows;
 		fireTableDataChanged();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (rowIndex < getRowCount()) {
@@ -26,9 +28,9 @@ public class AlertsQuotesTableModel extends AbstractTableModel {
 			case INSTRUMENT:
 				return rows.get(rowIndex).getInstrument();
 			case CREATION_DATE:
-				return rows.get(rowIndex).getCreationDate();
+				return (rows.get(rowIndex).getCreationDate() == null) ? StringHelper.EMPTY : rows.get(rowIndex).getCreationDate().toLocaleString();
 			case LAST_EVENT_DATE:
-				return rows.get(rowIndex).getLastEventDate();
+				return (rows.get(rowIndex).getLastEventDate() == null) ? StringHelper.EMPTY : rows.get(rowIndex).getLastEventDate().toLocaleString();
 			}
 		}
 		return "";
@@ -57,7 +59,7 @@ public class AlertsQuotesTableModel extends AbstractTableModel {
 		return false;
 	}
 
-	public QuotesAlert getAlertByRowNumber(int rowNumber) {
+	public ClientQuotesAlert getAlertByRowNumber(int rowNumber) {
 		if ((rowNumber < rows.size()) && (rowNumber >= 0)) {
 			return rows.get(rowNumber);
 		} else {
@@ -67,7 +69,7 @@ public class AlertsQuotesTableModel extends AbstractTableModel {
 	}
 
 
-	private List<QuotesAlert> rows;
+	private List<ClientQuotesAlert> rows;
 	
 	public static final int NAME = 0;
 	public static final int INSTRUMENT = 1;

@@ -3,7 +3,7 @@ package gui.panel.userAlerts.overridden.model;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.NewsAlert.Expression;
+import gui.panel.userAlerts.data.ClientNewsAlert.Expression;
 
 @SuppressWarnings("serial")
 public class NewsExpressionComboModel extends DefaultComboBoxModel {

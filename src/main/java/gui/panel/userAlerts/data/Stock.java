@@ -6,15 +6,25 @@ import java.util.Observable;
 
 import javax.swing.tree.TreeNode;
 
-import gui.panel.userAlerts.remote.NewsTreeDownloader;
+import gui.panel.userAlerts.parent.PrimaryFrame;
+import p.alerts.client_api.NewsAlert;
 
 public class Stock extends Observable {
 
-	public Stock() {
-		new NewsTreeDownloader(this);
+	public Stock(PrimaryFrame primaryFrame) {
+		this.primaryFrame = primaryFrame;
+		remoteAPI = new RemoteExtendAPI(this);
 	}
 
-	public void addAlert(Alert alert) {
+	public void logout() {
+		remoteAPI.logout();
+	}
+
+	public void createNewsAlert(ClientNewsAlert alert) {
+		remoteAPI.createNewsAlert(alert);
+	}
+
+	public void createQuotesAlert(ClientQuotesAlert alert) {
 		int id = alert.getId();
 
 		if (id == -1) {
@@ -27,17 +37,20 @@ public class Stock extends Observable {
 
 		alert.setId(id);
 		alertsList.add(alert);
-
-		if (alert instanceof NewsAlert) {
-			newsAlertsList.add((NewsAlert) alert);
-		} else if (alert instanceof QuotesAlert) {
-			quotesAlertsList.add((QuotesAlert) alert);
-		}
+		quotesAlertsList.add((ClientQuotesAlert) alert);
+	}
+	
+	public void updateNewsAlert(ClientNewsAlert alert) {
+		remoteAPI.updateNewsAlert(alert);
 	}
 
-	public void removeAlertById(int id) {
+	public void removeNewsAlert(ClientNewsAlert alert) {
+		remoteAPI.removeNewsAlert(alert);
+	}
+
+	public void removeQuotesAlert(int id) {
 		int removeIndex = -1;
-		Alert removeObject = null;
+		ClientAlert removeObject = null;
 
 		for (int i = 0; i < alertsList.size(); i++) {
 			if (alertsList.get(i).getId() == id) {
@@ -47,17 +60,30 @@ public class Stock extends Observable {
 		}
 
 		if (removeIndex != -1) {
-			alertsList.remove(removeIndex);
-			if (removeObject instanceof NewsAlert) {
-				newsAlertsList.remove(removeObject);
-			} else if (removeObject instanceof QuotesAlert) {
+			if (removeObject instanceof ClientQuotesAlert) {
 				quotesAlertsList.remove(removeObject);
+				alertsList.remove(removeIndex);
 			}
 		}
 	}
 
+	public void updateNewsAlertsTable(List<NewsAlert> serverNewsAlertsList) {
+		newsAlertsList.clear();
+		for (NewsAlert serverAlert : serverNewsAlertsList) {
+			ClientNewsAlert clientNewsAlert = new ClientNewsAlert(serverAlert);
+			newsAlertsList.add(clientNewsAlert);
+			alertsList.add(clientNewsAlert);
+		}
+
+		primaryFrame.updateNewsAlertsTableFromStock();
+	}
+
+	public void updateQuotesAlertsTable() {
+		//to be continued.....
+	}
+	
 	private boolean containsId(int id) {
-		for (Alert alert : alertsList) {
+		for (ClientAlert alert : alertsList) {
 			if (alert.getId() == id) {
 				return true;
 			}
@@ -65,15 +91,15 @@ public class Stock extends Observable {
 		return false;
 	}
 
-	public List<NewsAlert> getAllNewsAlerts() {
+	public List<ClientNewsAlert> getAllNewsAlerts() {
 		return newsAlertsList;
 	}
 
-	public List<QuotesAlert> getAllQuotesAlerts() {
+	public List<ClientQuotesAlert> getAllQuotesAlerts() {
 		return quotesAlertsList;
 	}
 
-	public List<Alert> getAllAlerts() {
+	public List<ClientAlert> getAllAlerts() {
 		return alertsList;
 	}
 
@@ -81,14 +107,16 @@ public class Stock extends Observable {
 		return newsRoot;
 	}
 
-	public void setNewsRoot(final TreeNode newsRoot) {
+	public void setNewsRoot(TreeNode newsRoot) {
 		this.newsRoot = newsRoot;
 		setChanged();
 		notifyObservers();
 	}
 
+	private final PrimaryFrame primaryFrame;
 	private TreeNode newsRoot;
-	private final List<NewsAlert> newsAlertsList = new ArrayList<NewsAlert>();
-	private final List<QuotesAlert> quotesAlertsList = new ArrayList<QuotesAlert>();
-	private final List<Alert> alertsList = new ArrayList<Alert>();
+	private final RemoteExtendAPI remoteAPI;
+	private final List<ClientNewsAlert> newsAlertsList = new ArrayList<ClientNewsAlert>();
+	private final List<ClientQuotesAlert> quotesAlertsList = new ArrayList<ClientQuotesAlert>();
+	private final List<ClientAlert> alertsList = new ArrayList<ClientAlert>();
 }

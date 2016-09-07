@@ -1,23 +1,25 @@
 package gui.panel.userAlerts.data;
 
-public class QuotesAlert extends Alert {
+import gui.panel.userAlerts.util.StringHelper;
 
-	public QuotesAlert() {
+public class ClientQuotesAlert extends ClientAlert {
+
+	public ClientQuotesAlert() {
 		this(null);
 	}
 
-	public QuotesAlert(String name) {
+	public ClientQuotesAlert(String name) {
 		this(name, null, null, null, null, null, false, null, false, null, false, null, true);
 	}
 
-	public QuotesAlert(String name, String instrument, String marketPlace, DirectionName directionName,
-			DirectionExpression directionExpression, String directionValue, boolean emailOn, String email,
-			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean notifyWindowOn) {
+	public ClientQuotesAlert(String name, String instrument, String marketPlace, DirectionName directionName, DirectionExpression directionExpression,
+			String directionValue, boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
+			boolean notifyWindowOn) {
 
 		super(name, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
 
-		this.instrument = (instrument == null) ? "" : instrument;
-		this.marketPlace = (marketPlace == null) ? "" : marketPlace;
+		this.instrument = (instrument == null) ? StringHelper.EMPTY : instrument;
+		this.marketPlace = (marketPlace == null) ? StringHelper.EMPTY : marketPlace;
 		this.directionName = (directionName == null) ? DirectionName.LAST : directionName;
 		this.directionExpression = (directionExpression == null) ? DirectionExpression.MORE : directionExpression;
 		this.directionValue = (directionValue == null) ? "0.0" : directionValue;

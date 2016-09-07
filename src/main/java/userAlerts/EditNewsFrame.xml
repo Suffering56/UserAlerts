@@ -27,7 +27,7 @@
 				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" enabled="false" />
 			</panel>
 
-			<panel constraints="1,4">
+			<panel constraints="1,4" visible="false">
 				<layout type="FormLayout" columns="p:g, f:p, 20px, f:p, p:g" rows="10px, f:p, 10px, 1px" />
 
 				<buttongroup>

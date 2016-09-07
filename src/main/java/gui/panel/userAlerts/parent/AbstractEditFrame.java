@@ -7,7 +7,7 @@ import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.Alert;
+import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.util.SwingHelper;
@@ -25,7 +25,7 @@ public abstract class AbstractEditFrame extends SwixFrame {
 		secondBox.setEnabled(enabled);
 	}
 
-	protected void addCommonComboItems(Alert alertItem, boolean isEmptyChecking) {
+	protected void addCommonComboItems(ClientAlert alertItem, boolean isEmptyChecking) {
 		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), isEmptyChecking);
 		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), isEmptyChecking);
 		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), isEmptyChecking);

@@ -24,11 +24,9 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import gui.panel.userAlerts.App;
-import gui.panel.userAlerts.data.Alert;
-import gui.panel.userAlerts.data.NewsAlert;
-import gui.panel.userAlerts.data.NewsAlert.Expression;
-import gui.panel.userAlerts.data.NewsAlert.FilterExclude;
-import gui.panel.userAlerts.data.NewsAlert.FilterKey;
+import gui.panel.userAlerts.data.ClientAlert;
+import gui.panel.userAlerts.data.ClientNewsAlert;
+import gui.panel.userAlerts.data.ClientNewsAlert.RelevanceFilterType;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeNode;
@@ -37,6 +35,7 @@ import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.util.ExtendColorChooser;
 import gui.panel.userAlerts.util.SwingHelper;
+import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 
 @SuppressWarnings({ "serial" })
 public class EditNewsFrame extends AbstractEditFrame implements Observer {
@@ -45,11 +44,11 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		this(primaryFrame, null);
 	}
 
-	public EditNewsFrame(PrimaryFrame primaryFrame, NewsAlert alert) {
+	public EditNewsFrame(PrimaryFrame primaryFrame, ClientNewsAlert alert) {
 		super(primaryFrame);
 
 		if (alert == null) {
-			this.alert = new NewsAlert();
+			this.alert = new ClientNewsAlert();
 			TYPE = Type.CREATE;
 		} else {
 			this.alert = alert;
@@ -178,11 +177,11 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		addCommonComboItems(alert, false);
 		addUniqueComboItems(alert, false);
 
-		for (Alert commonAlert : stock.getAllAlerts()) {
+		for (ClientAlert commonAlert : stock.getAllAlerts()) {
 			if (alert != commonAlert) {
 				addCommonComboItems(commonAlert, true);
-				if (commonAlert instanceof NewsAlert) {
-					NewsAlert newsAlert = (NewsAlert) commonAlert;
+				if (commonAlert instanceof ClientNewsAlert) {
+					ClientNewsAlert newsAlert = (ClientNewsAlert) commonAlert;
 					addUniqueComboItems(newsAlert, true);
 				}
 			}
@@ -193,7 +192,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 		NewsExpressionComboModel.setValue(keyWordExpressionComboBox, alert.getKeyWordExpression());
 
-		if (alert.getKeyWordFilterType() == FilterKey.BY_RELEVANCE) {
+		if (alert.getRelevanceFilterType() == RelevanceFilterType.BY_RELEVANCE) {
 			byRelevanceRadioBtn.setSelected(true);
 		} else {
 			exactMatchRadioBtn.setSelected(true);
@@ -201,9 +200,9 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 		NewsExpressionComboModel.setValue(excludeWordExpressionComboBox, alert.getExcludeWordExpression());
 
-		if (alert.getExcludeWordFilterType() == FilterExclude.EVERYWERE) {
+		if (alert.getEverywhereFilterType() == SEARCH_NEWS_TYPE.EVERYWERE) {
 			everywhereRadioBtn.setSelected(true);
-		} else if (alert.getExcludeWordFilterType() == FilterExclude.TITLES_ONLY) {
+		} else if (alert.getEverywhereFilterType() == SEARCH_NEWS_TYPE.HEADLINES) {
 			titlesOnlyRadioBtn.setSelected(true);
 		} else {
 			redNewsOnlyRadioBtn.setSelected(true);
@@ -213,7 +212,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
 		newsColorCheckBox.setSelected(alert.isNewsColorOn());
-		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
+		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
 
 		newsColor = alert.getNewsColor();
 		newsColorTextField.setBackground(newsColor);
@@ -226,26 +225,24 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 		alert.setFirstKeyWord(SwingHelper.getComboText(firstKeyWordComboBox));
 		alert.setSecondKeyWord(SwingHelper.getComboText(secondKeyWordComboBox));
-
-		Expression keyExpression = NewsExpressionComboModel.getExpressionValue(keyWordExpressionComboBox);
-		alert.setKeyWordExpression(keyExpression);
-
-		if (byRelevanceRadioBtn.isSelected()) {
-			alert.setKeyWordFilterType(FilterKey.BY_RELEVANCE);
-		} else {
-			alert.setKeyWordFilterType(FilterKey.EXACT_MATCH);
-		}
+		alert.setKeyWordExpression(NewsExpressionComboModel.getExpressionValue(keyWordExpressionComboBox));
 
 		alert.setFirstExcludeWord(SwingHelper.getComboText(firstExcludeWordComboBox));
 		alert.setSecondExcludeWord(SwingHelper.getComboText(secondExcludeWordComboBox));
-		Expression excludeExpression = NewsExpressionComboModel.getExpressionValue(excludeWordExpressionComboBox);
-		alert.setExcludeWordExpression(excludeExpression);
-		if (everywhereRadioBtn.isSelected()) {
-			alert.setExcludeWordFilterType(FilterExclude.EVERYWERE);
-		} else if (titlesOnlyRadioBtn.isSelected()) {
-			alert.setExcludeWordFilterType(FilterExclude.TITLES_ONLY);
+		alert.setExcludeWordExpression(NewsExpressionComboModel.getExpressionValue(excludeWordExpressionComboBox));
+
+		if (byRelevanceRadioBtn.isSelected()) {
+			alert.setRelevanceFilterType(RelevanceFilterType.BY_RELEVANCE);
 		} else {
-			alert.setExcludeWordFilterType(FilterExclude.RED_ONLY);
+			alert.setRelevanceFilterType(RelevanceFilterType.EXACT_MATCH);
+		}
+		
+		if (everywhereRadioBtn.isSelected()) {
+			alert.setEverywhereFilterType(SEARCH_NEWS_TYPE.EVERYWERE);
+		} else if (titlesOnlyRadioBtn.isSelected()) {
+			alert.setEverywhereFilterType(SEARCH_NEWS_TYPE.HEADLINES);
+		} else {
+			alert.setEverywhereFilterType(SEARCH_NEWS_TYPE.IMPORTANT_ONLY);
 		}
 
 		alert.setEmailOn(emailCheckBox.isSelected());
@@ -260,7 +257,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		alert.setNewsColorOn(newsColorCheckBox.isEnabled());
 		alert.setNewsColor(newsColor);
 
-		alert.setNotifyWindowOn(notifyWindowCheckBox.isSelected());
+		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
 
 		// записать данные из дерева
 		TreeModel model = tree.getModel();
@@ -270,7 +267,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		}
 	}
 
-	private void addUniqueComboItems(NewsAlert alertItem, boolean isEmptyChecking) {
+	private void addUniqueComboItems(ClientNewsAlert alertItem, boolean isEmptyChecking) {
 		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), isEmptyChecking);
 		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), isEmptyChecking);
 		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), isEmptyChecking);
@@ -324,9 +321,9 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 					fillAlertFromComponents();
 
 					if (TYPE == Type.CREATE) {
-						primaryFrame.createAlert(alert);
+						primaryFrame.createNewsAlert(alert);
 					} else {
-						primaryFrame.updateAlert(alert);
+						primaryFrame.updateNewsAlert(alert);
 					}
 
 					dispose();
@@ -364,7 +361,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		return true;
 	}
 
-	private NewsAlert alert;
+	private ClientNewsAlert alert;
 
 	private JCheckBox onlyRedNewsCheckBox;
 
@@ -372,12 +369,12 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private JComboBox secondKeyWordComboBox;
 	private JComboBox keyWordExpressionComboBox;
 
-	private JRadioButton byRelevanceRadioBtn;
-	private JRadioButton exactMatchRadioBtn;
-
 	private JComboBox firstExcludeWordComboBox;
 	private JComboBox secondExcludeWordComboBox;
 	private JComboBox excludeWordExpressionComboBox;
+	
+	private JRadioButton byRelevanceRadioBtn;
+	private JRadioButton exactMatchRadioBtn;
 
 	private JRadioButton everywhereRadioBtn;
 	private JRadioButton titlesOnlyRadioBtn;
@@ -390,5 +387,5 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private JTree tree;
 	private JPanel treePanel;
 	private JPanel treeLoadingPanel;
-	private CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
+	private final CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
 }

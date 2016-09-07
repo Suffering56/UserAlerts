@@ -8,8 +8,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import gui.panel.userAlerts.data.Alert;
-import gui.panel.userAlerts.data.QuotesAlert;
+import gui.panel.userAlerts.data.ClientAlert;
+import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel;
 import gui.panel.userAlerts.parent.AbstractEditFrame;
@@ -23,11 +23,11 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		this(primaryFrame, null);
 	}
 
-	public EditQuotesFrame(PrimaryFrame primaryFrame, QuotesAlert alert) {
+	public EditQuotesFrame(PrimaryFrame primaryFrame, ClientQuotesAlert alert) {
 		super(primaryFrame);
 
 		if (alert == null) {
-			this.alert = new QuotesAlert();
+			this.alert = new ClientQuotesAlert();
 			TYPE = Type.CREATE;
 		} else {
 			this.alert = alert;
@@ -48,18 +48,18 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		addCommonComboItems(alert, false);
 		addUniqueComboItems(alert, false);
 
-		for (Alert commonAlert : stock.getAllAlerts()) {
+		for (ClientAlert commonAlert : stock.getAllAlerts()) {
 			if (alert != commonAlert) {
 				addCommonComboItems(commonAlert, true);
-				if (commonAlert instanceof QuotesAlert) {
-					QuotesAlert newsAlert = (QuotesAlert) commonAlert;
+				if (commonAlert instanceof ClientQuotesAlert) {
+					ClientQuotesAlert newsAlert = (ClientQuotesAlert) commonAlert;
 					addUniqueComboItems(newsAlert, true);
 				}
 			}
 		}
 	}
 
-	private void addUniqueComboItems(QuotesAlert alertItem, boolean isEmptyChecking) {
+	private void addUniqueComboItems(ClientQuotesAlert alertItem, boolean isEmptyChecking) {
 		SwingHelper.addComboItem(instrumentComboBox, alertItem.getInstrument(), isEmptyChecking);
 		SwingHelper.addComboItem(marketPlaceComboBox, alertItem.getMarketPlace(), isEmptyChecking);
 	}
@@ -82,7 +82,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		emailCheckBox.setSelected(alert.isEmailOn());
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
-		notifyWindowCheckBox.setSelected(alert.isNotifyWindowOn());
+		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 	}
 
-	private QuotesAlert alert;
+	private ClientQuotesAlert alert;
 
 	private JComboBox instrumentComboBox;
 	private JComboBox marketPlaceComboBox;

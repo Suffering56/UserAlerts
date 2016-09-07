@@ -5,21 +5,27 @@
 	<tabbedpane constraints="1,1" titles="Новости, Котировки" SelectedIndex="0">
 		<!-- ============================ Новости ============================= -->
 		<panel>
-			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
+			<panel id="newsAlertsPanel" visible="false">
+				<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
 
-			<panel constraints="2,2">
-				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p" rows="f:p" />
+				<panel constraints="2,2">
+					<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p" rows="f:p" />
 
-				<button constraints="1,1" id="editNewsAlertBtn" name="alerts.main_button" text="Редактировать" action="EDIT_NEWS_ALERT" enabled="false" />
-				<button constraints="3,1" id="removeNewsAlertBtn" name="alerts.main_button" text="Удалить" action="REMOVE_NEWS_ALERT" enabled="false" />
-				<button constraints="5,1" id="createNewsAlertBtn" name="alerts.main_button" text="Создать новый" action="CREATE_NEWS_ALERT" />
+					<button constraints="1,1" id="editNewsAlertBtn" name="alerts.main_button" text="Редактировать" action="EDIT_NEWS_ALERT" enabled="false" />
+					<button constraints="3,1" id="removeNewsAlertBtn" name="alerts.main_button" text="Удалить" action="REMOVE_NEWS_ALERT" enabled="false" />
+					<button constraints="5,1" id="createNewsAlertBtn" name="alerts.main_button" text="Создать новый" action="CREATE_NEWS_ALERT" />
+				</panel>
+
+				<scrollpane constraints="2,4">
+					<table id="newsTable" selectionMode="ListSelectionModel.SINGLE_SELECTION" />
+				</scrollpane>
 			</panel>
 
-			<scrollpane constraints="2,4">
-				<table id="newsTable" selectionMode="ListSelectionModel.SINGLE_SELECTION" />
-			</scrollpane>
+			<panel id="newsAlertsLoadingPanel" visible="true">
+				<layout type="FormLayout" columns="p:g, f:p, p:g" rows="p:g, f:p, p:g" />
+				<label constraints="2,2" name="upper" icon="configs/GRAPHITE/style/img/anim_wait.gif" text="Загрузка.." />
+			</panel>
 		</panel>
-
 		<!-- ============================ Котировки ============================= -->
 		<panel>
 			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />

@@ -1,25 +1,32 @@
 package gui.panel.userAlerts.data;
 
-import java.util.Calendar;
+import java.util.Date;
 
-@SuppressWarnings("deprecation")
-public abstract class Alert {
+import gui.panel.userAlerts.util.StringHelper;
 
-	public Alert(String name, String creationDate, String lastEventDate, boolean emailOn, String email,
-			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean notifyWindowOn) {
+public abstract class ClientAlert {
+
+	public ClientAlert() {
+		this(null, null, null, false, null, false, null, false, null, false);
+	}
+
+	public ClientAlert(String name, Date creationDate, Date lastEventDate, boolean emailOn, String email, boolean phoneSmsOn, String phoneSms,
+			boolean melodyOn, String melody, boolean popupWindowOn) {
 
 		this.id = -1;
-		this.name = (name == null) ? "" : name;
-		this.creationDate = (creationDate == null) ? Calendar.getInstance().getTime().toLocaleString() : creationDate;
-		this.lastEventDate = (lastEventDate == null) ? "-" : lastEventDate;
+		setNewsID("temp");
+		
+		setName(name);
+		setCreationDate(creationDate);
+		setLastEventDate(lastEventDate);
 
-		this.emailOn = emailOn;
-		this.email = (email == null) ? "" : email;
-		this.phoneSmsOn = phoneSmsOn;
-		this.phoneSms = (phoneSms == null) ? "" : phoneSms;
-		this.melodyOn = melodyOn;
-		this.melody = (melody == null) ? "" : melody;
-		this.notifyWindowOn = notifyWindowOn;
+		setEmailOn(emailOn);
+		setEmail(email);
+		setPhoneSmsOn(phoneSmsOn);
+		setPhoneSms(phoneSms);
+		setMelodyOn(melodyOn);
+		setMelody(melody);
+		setPopupWindowOn(popupWindowOn);
 	}
 
 	public int getId() {
@@ -30,27 +37,37 @@ public abstract class Alert {
 		this.id = id;
 	}
 
+	public String getNewsID() {
+		return newsID;
+	}
+
+	public void setNewsID(String newsID) {
+		this.newsID = newsID;
+	}
+
+	// Not null!
 	public String getName() {
 		return name;
 	}
 
+	// Not null!
 	public void setName(String name) {
-		this.name = name;
+		this.name = (name == null) ? StringHelper.EMPTY : name;
 	}
 
-	public String getCreationDate() {
+	public Date getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(String creationDate) {
+	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
-	public String getLastEventDate() {
+	public Date getLastEventDate() {
 		return lastEventDate;
 	}
 
-	public void setLastEventDate(String lastEventDate) {
+	public void setLastEventDate(Date lastEventDate) {
 		this.lastEventDate = lastEventDate;
 	}
 
@@ -62,12 +79,14 @@ public abstract class Alert {
 		this.emailOn = emailOn;
 	}
 
+	// Not null!
 	public String getEmail() {
 		return email;
 	}
 
+	// Not null!
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = (email == null) ? StringHelper.EMPTY : email;
 	}
 
 	public boolean isPhoneSmsOn() {
@@ -78,12 +97,14 @@ public abstract class Alert {
 		this.phoneSmsOn = phoneSmsOn;
 	}
 
+	// Not null!
 	public String getPhoneSms() {
 		return phoneSms;
 	}
 
+	// Not null!
 	public void setPhoneSms(String phoneSms) {
-		this.phoneSms = phoneSms;
+		this.phoneSms = (phoneSms == null) ? StringHelper.EMPTY : phoneSms;
 	}
 
 	public boolean isMelodyOn() {
@@ -94,20 +115,22 @@ public abstract class Alert {
 		this.melodyOn = melodyOn;
 	}
 
+	// Not null!
 	public String getMelody() {
 		return melody;
 	}
 
+	// Not null!
 	public void setMelody(String melody) {
-		this.melody = melody;
+		this.melody = (melody == null) ? StringHelper.EMPTY : melody;
 	}
 
-	public boolean isNotifyWindowOn() {
-		return notifyWindowOn;
+	public boolean isPopupWindowOn() {
+		return popupWindowOn;
 	}
 
-	public void setNotifyWindowOn(boolean windowPopupOn) {
-		this.notifyWindowOn = windowPopupOn;
+	public void setPopupWindowOn(boolean popupWindowOn) {
+		this.popupWindowOn = popupWindowOn;
 	}
 
 	@Override
@@ -117,12 +140,14 @@ public abstract class Alert {
 
 	// id алерта
 	protected int id;
+	protected String newsID;
+
 	// Название алерта
 	protected String name;
 	// Дата создания
-	protected String creationDate;
+	protected Date creationDate;
 	// Дата последнего срабатывания
-	protected String lastEventDate;
+	protected Date lastEventDate;
 
 	// Информировать по e-mail
 	protected boolean emailOn;
@@ -134,5 +159,5 @@ public abstract class Alert {
 	protected boolean melodyOn;
 	protected String melody;
 	// Всплывающее окно
-	protected boolean notifyWindowOn;
+	protected boolean popupWindowOn;
 }

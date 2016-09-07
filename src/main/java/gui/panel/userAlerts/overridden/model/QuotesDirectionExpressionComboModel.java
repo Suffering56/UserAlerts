@@ -3,7 +3,7 @@ package gui.panel.userAlerts.overridden.model;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.QuotesAlert.DirectionExpression;
+import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionExpression;
 
 @SuppressWarnings("serial")
 public class QuotesDirectionExpressionComboModel extends DefaultComboBoxModel {
