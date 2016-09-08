@@ -21,7 +21,7 @@ public class NewsTreeModel extends DefaultTreeModel {
 	 * @return - строка для отправки на сервер
 	 */
 	public String convertToNewsLine() {
-		String line = "";
+		String line = StringHelper.EMPTY;
 
 		for (NewsTreeNode databaseNode : ((NewsTreeNode) root).getChilds()) {
 

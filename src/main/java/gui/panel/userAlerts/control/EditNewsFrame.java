@@ -20,10 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert.RelevanceFilterType;
@@ -34,6 +32,8 @@ import gui.panel.userAlerts.overridden.renderer.CheckableTreeRenderer;
 import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.util.ExtendColorChooser;
+import gui.panel.userAlerts.util.ExtendOptionPane;
+import gui.panel.userAlerts.util.StringHelper;
 import gui.panel.userAlerts.util.SwingHelper;
 import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 
@@ -78,12 +78,12 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		NewsTreeNode root = (NewsTreeNode) stock.getNewsRoot();
 		if (root != null) {
 			root = root.clone();
-			NewsTreeModel model = new NewsTreeModel(root);
-			tree.setModel(model);
+			treeModel = new NewsTreeModel(root);
+			tree.setModel(treeModel);
 			tree.setCellRenderer(treeRenderer);
 
 			if (TYPE == Type.EDIT) {
-				model.fillFromNewsLine(alert.getNewsLine());
+				treeModel.fillFromNewsLine(alert.getNewsLine());
 			}
 
 			SwingHelper.expandAllTreeNodes(tree, 0, tree.getRowCount());
@@ -211,10 +211,10 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		emailCheckBox.setSelected(alert.isEmailOn());
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
-		newsColorCheckBox.setSelected(alert.isNewsColorOn());
+		newsColorCheckBox.setSelected(alert.getNewsColor() != null);
 		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
 
-		newsColor = alert.getNewsColor();
+		newsColor = (alert.getNewsColor() == null) ? DEFAULT_NEWS_COLOR : alert.getNewsColor();
 		newsColorTextField.setBackground(newsColor);
 	}
 
@@ -236,7 +236,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		} else {
 			alert.setRelevanceFilterType(RelevanceFilterType.EXACT_MATCH);
 		}
-		
+
 		if (everywhereRadioBtn.isSelected()) {
 			alert.setEverywhereFilterType(SEARCH_NEWS_TYPE.EVERYWERE);
 		} else if (titlesOnlyRadioBtn.isSelected()) {
@@ -254,16 +254,13 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		alert.setMelodyOn(melodyCheckBox.isSelected());
 		alert.setMelody(SwingHelper.getComboText(melodyComboBox));
 
-		alert.setNewsColorOn(newsColorCheckBox.isEnabled());
-		alert.setNewsColor(newsColor);
+		alert.setNewsColor(!newsColorCheckBox.isSelected() ? null : newsColor);
 
 		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
 
 		// записать данные из дерева
-		TreeModel model = tree.getModel();
-		if (model != null && model instanceof NewsTreeModel) {
-			NewsTreeModel newsTreeModel = (NewsTreeModel) model;
-			alert.setNewsLine(newsTreeModel.convertToNewsLine());
+		if (treeModel != null) {
+			alert.setNewsLine(treeModel.convertToNewsLine());
 		}
 	}
 
@@ -329,7 +326,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 					dispose();
 					primaryFrame.enable();
 				} else {
-					App.appLogger.info("error validation");
+					new ExtendOptionPane().showBasicLookAndFeelMessageError("Заполните обязательные поля!", "Validation error!");
 				}
 			}
 		}
@@ -358,6 +355,10 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			if (SwingHelper.isEmptyComboText(melodyComboBox))
 				return false;
 
+		if (treeModel == null || treeModel.convertToNewsLine().equals(StringHelper.EMPTY)) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -372,7 +373,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private JComboBox firstExcludeWordComboBox;
 	private JComboBox secondExcludeWordComboBox;
 	private JComboBox excludeWordExpressionComboBox;
-	
+
 	private JRadioButton byRelevanceRadioBtn;
 	private JRadioButton exactMatchRadioBtn;
 
@@ -385,7 +386,10 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private Color newsColor;
 
 	private JTree tree;
+	private NewsTreeModel treeModel;
 	private JPanel treePanel;
 	private JPanel treeLoadingPanel;
 	private final CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
+
+	private static final Color DEFAULT_NEWS_COLOR = Color.YELLOW;
 }

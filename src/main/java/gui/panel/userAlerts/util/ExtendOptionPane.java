@@ -11,8 +11,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 @SuppressWarnings("serial")
 public class ExtendOptionPane extends JOptionPane {
 
+	public void showBasicLookAndFeelMessageError(Object message) throws HeadlessException {
+		showBasicLookAndFeelMessageError(message, "Error!");
+	}
+
+	public void showBasicLookAndFeelMessageError(Object message, String title) throws HeadlessException {
+		showBasicLookAndFeelMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+	}
+
 	public void showBasicLookAndFeelMessageDialog(Component parentComponent, Object message, String title, int messageType) throws HeadlessException {
-		
+
 		LookAndFeel old = UIManager.getLookAndFeel();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -21,9 +29,9 @@ public class ExtendOptionPane extends JOptionPane {
 		}
 
 		super.updateUI();
-		
+
 		showMessageDialog(parentComponent, message, title, messageType, null);
-		
+
 		if (old != null) {
 			try {
 				UIManager.setLookAndFeel(old);

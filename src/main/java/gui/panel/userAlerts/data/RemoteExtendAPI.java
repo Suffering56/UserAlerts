@@ -139,8 +139,9 @@ public class RemoteExtendAPI extends RemoteBasicAPI {
 	}
 
 	public void updateNewsAlert(ClientNewsAlert alert) {
-		//		alertsAPI.updateNewsAlert(alert.convertToServerNewsAlert(), updateAlertListener);
+//				alertsAPI.updateNewsAlert(alert.convertToServerNewsAlert(), updateAlertListener);
 		System.out.println("ExtendRemoteAPI. updateNewsAlert: " + alert.getName());
+		createNewsAlert(alert);
 	}
 
 	private final AlertsSMSandMailAPI alertsAPI;

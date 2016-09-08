@@ -14,20 +14,18 @@ public class ClientNewsAlert extends ClientAlert {
 	}
 
 	public ClientNewsAlert(String name) {
-		this(name, null, false, null, null, null, null, null, null, null, null, false, null, false, null, false, null, false, null, true);
+		this(name, null, false, null, null, null, null, null, null, null, null, false, null, false, null, false, null, null, true);
 	}
 
 	public ClientNewsAlert(String name, String newsLine, boolean onlyRedNewsOn, String firstKeyWord, String secondKeyWord,
 			Expression keyWordExpression, RelevanceFilterType relevanceFilterType, String firstExcludeWord, String secondExcludeWord,
 			Expression excludeWordExpression, SEARCH_NEWS_TYPE everywhereFilterType, boolean emailOn, String email, boolean phoneSmsOn,
-			String phoneSms, boolean melodyOn, String melody, boolean newsColorOn, Color newsColor, boolean notifyWindowOn) {
+			String phoneSms, boolean melodyOn, String melody, Color newsColor, boolean notifyWindowOn) {
 
 		super(name, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
 
 		setNewsLine(newsLine);
 		setOnlyRedNewsOn(onlyRedNewsOn);
-
-		setNewsColorOn(newsColorOn);
 		setNewsColor(newsColor);
 
 		setFirstKeyWord(firstKeyWord);
@@ -58,7 +56,6 @@ public class ClientNewsAlert extends ClientAlert {
 		setMelody(serverAlert.getSoundSetup());
 		setMelodyOn(!melody.isEmpty());
 		setNewsColor(serverAlert.getColor());
-		setNewsColorOn(!newsColor.equals(DEFAULT_COLOR)); //????????????????????????????????????????????????????????????????????????????????????????????????????????
 		setPopupWindowOn(serverAlert.getPopupWindow());
 
 		setFirstKeyWord(serverAlert.getSearchWord(0));
@@ -81,7 +78,7 @@ public class ClientNewsAlert extends ClientAlert {
 	public void setNewsLine(String newsLine) {
 		this.newsLine = (newsLine == null) ? StringHelper.EMPTY : newsLine;
 	}
-
+	
 	public boolean isOnlyRedNewsOn() {
 		return onlyRedNewsOn;
 	}
@@ -90,22 +87,12 @@ public class ClientNewsAlert extends ClientAlert {
 		this.onlyRedNewsOn = onlyRedNewsOn;
 	}
 
-	public boolean isNewsColorOn() {
-		return newsColorOn;
-	}
-
-	public void setNewsColorOn(boolean newsColorOn) {
-		this.newsColorOn = newsColorOn;
-	}
-
-	// Not null???????????????????????????????????????????????????????????????????
 	public Color getNewsColor() {
 		return newsColor;
 	}
 
-	// Not null???????????????????????????????????????????????????????????????????
 	public void setNewsColor(Color newsColor) {
-		this.newsColor = (newsColor == null) ? DEFAULT_COLOR : newsColor;
+		this.newsColor = newsColor;
 	}
 
 	// Not null!
@@ -191,14 +178,13 @@ public class ClientNewsAlert extends ClientAlert {
 	public NewsAlert convertToServerNewsAlert() {
 		NewsAlert serverNewsAlert = new NewsAlert();
 		serverNewsAlert.setName(name);
-
-		serverNewsAlert.setUseImportantOnly(onlyRedNewsOn);
-		serverNewsAlert.set_SEARCH_NEWS_TYPE(everywhereFilterType);
-
-		serverNewsAlert.setEmail(email);
-		serverNewsAlert.setPhone(phoneSms);
+		
 		serverNewsAlert.setPTNewsBases(newsLine);
-		serverNewsAlert.setSoundSetup(melody);
+		serverNewsAlert.setUseImportantOnly(onlyRedNewsOn);
+
+		serverNewsAlert.setEmail((emailOn == false) ? StringHelper.EMPTY : email);
+		serverNewsAlert.setPhone((phoneSmsOn == false) ? StringHelper.EMPTY : phoneSms);	
+		serverNewsAlert.setSoundSetup((melodyOn == false) ? StringHelper.EMPTY : melody);
 		serverNewsAlert.setColor(newsColor);
 		serverNewsAlert.setPopupWindow(popupWindowOn);
 
@@ -209,6 +195,8 @@ public class ClientNewsAlert extends ClientAlert {
 		serverNewsAlert.setExcludeWord(0, firstExcludeWord);
 		serverNewsAlert.setExcludeWord(1, secondExcludeWord);
 		serverNewsAlert.setExcludeWordsExpression(convert_Expression_to_NEWS_WORDS_EXPRESSION(excludeWordExpression));
+		
+		serverNewsAlert.set_SEARCH_NEWS_TYPE(everywhereFilterType);
 
 		serverNewsAlert.setCloseAlertAfterFireups(999);
 		serverNewsAlert.setKeepHistory(true);
@@ -249,6 +237,8 @@ public class ClientNewsAlert extends ClientAlert {
 	private boolean onlyRedNewsOn;
 	// Строка выбранных категорий новостей.
 	private String newsLine;
+	// Цвет строки новости
+	private Color newsColor;
 
 	// Ключевая фраза 1
 	private String firstKeyWord;
@@ -268,12 +258,6 @@ public class ClientNewsAlert extends ClientAlert {
 	private RelevanceFilterType relevanceFilterType;
 	// Фильтр (Искать везде / Искать только в заголовках / ...)
 	private SEARCH_NEWS_TYPE everywhereFilterType;
-
-	// Цвет строки новости
-	private boolean newsColorOn;
-	private Color newsColor = DEFAULT_COLOR;
-
-	public static final Color DEFAULT_COLOR = Color.YELLOW;
 
 	public enum Expression {
 		NOT, OR, AND

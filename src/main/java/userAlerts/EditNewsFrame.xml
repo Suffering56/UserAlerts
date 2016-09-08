@@ -3,10 +3,13 @@
 	<layout type="FormLayout" columns="10px:g, f:p, 10px, f:p, 10px:g" rows="10px:g, f:p, 10px:g" />
 
 	<panel constraints="2,2" id="contentPanel">
-		<layout type="FormLayout" columns="f:p, p:g, f:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, 1px, 10px, f:p" />
+		<layout type="FormLayout" columns="f:p:g, 10px, 200px:g" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, 1px, 10px, f:p" />
 
-		<label constraints="1,1" text="Название алерта" />
-		<combobox constraints="3,1" id="alertNameComboBox" editable="true" />
+		<panel constraints="1,1,3,1">
+			<layout type="FormLayout" columns="f:p, 10px, f:p:g" rows="f:p" />
+			<label constraints="1,1" text="Название алерта" />
+			<combobox constraints="3,1" id="alertNameComboBox" editable="true" preferredSize="200, 25"/>
+		</panel>
 
 		<checkbox constraints="1,3" id="onlyRedNewsCheckBox" text="Выводить все 'красные' новости" />
 
@@ -16,7 +19,7 @@
 			<separator constraints="1,1" orientation="HORIZONTAL" />
 
 			<panel constraints="1,3">
-				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p" />
+				<layout type="FormLayout" columns="f:p:g, 10px, f:p, 10px, f:p:g" rows="10px, f:p, 10px, f:p" />
 
 				<label constraints="1,2" text="Ключевая фраза 1" />
 				<combobox constraints="1,4" id="firstKeyWordComboBox" editable="true" />
@@ -39,7 +42,7 @@
 			</panel>
 
 			<panel constraints="1,5">
-				<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px:g, f:p" rows="10px, f:p, 10px, f:p" />
+				<layout type="FormLayout" columns="f:p:g, 10px, f:p, 10px, f:p:g" rows="10px, f:p, 10px, f:p" />
 
 				<label constraints="1,2" text="Исключить слова 1" />
 				<combobox constraints="1,4" id="firstExcludeWordComboBox" editable="true" />
@@ -75,9 +78,9 @@
 		<checkbox constraints="1,13" id="newsColorCheckBox" text="Цвет строки новости" />
 
 		<panel constraints="3,13">
-			<layout type="FormLayout" columns="f:p, 10px, 25px" rows="f:p" />
-			<button constraints="1,1" name="alerts.main_button" text="Выбрать цвет" action="CHOOSE_COLOR" />
-			<textfield constraints="3,1" id="newsColorTextField" editable="false" focusable="false" />
+			<layout type="FormLayout" columns="p:g, f:p, 10px, 25px" rows="f:p" />
+			<button constraints="2,1" name="alerts.main_button" text="Выбрать цвет" action="CHOOSE_COLOR" />
+			<textfield constraints="4,1" id="newsColorTextField" editable="false" focusable="false" />
 		</panel>
 
 		<checkbox constraints="1,15" id="notifyWindowCheckBox" text="Всплывающее окно" />
