@@ -14,15 +14,16 @@ public class ClientNewsAlert extends ClientAlert {
 	}
 
 	public ClientNewsAlert(String name) {
-		this(name, null, false, null, null, null, null, null, null, null, null, false, null, false, null, false, null, null, true);
+		this(name, ETERNITY_LIFETIME, true, null, false, null, null, null, null, null, null, null, null, false, null, false, null, false, null, null,
+				true);
 	}
 
-	public ClientNewsAlert(String name, String newsLine, boolean onlyRedNewsOn, String firstKeyWord, String secondKeyWord,
-			Expression keyWordExpression, RelevanceFilterType relevanceFilterType, String firstExcludeWord, String secondExcludeWord,
-			Expression excludeWordExpression, SEARCH_NEWS_TYPE everywhereFilterType, boolean emailOn, String email, boolean phoneSmsOn,
-			String phoneSms, boolean melodyOn, String melody, Color newsColor, boolean notifyWindowOn) {
+	public ClientNewsAlert(String name, int lifetime, boolean keepHistory, String newsLine, boolean onlyRedNewsOn, String firstKeyWord,
+			String secondKeyWord, Expression keyWordExpression, RelevanceFilterType relevanceFilterType, String firstExcludeWord,
+			String secondExcludeWord, Expression excludeWordExpression, SEARCH_NEWS_TYPE everywhereFilterType, boolean emailOn, String email,
+			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, Color newsColor, boolean notifyWindowOn) {
 
-		super(name, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
+		super(name, lifetime, keepHistory, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
 
 		setNewsLine(newsLine);
 		setOnlyRedNewsOn(onlyRedNewsOn);
@@ -41,10 +42,14 @@ public class ClientNewsAlert extends ClientAlert {
 	}
 
 	public ClientNewsAlert(NewsAlert serverAlert) {
-		setNewsID(serverAlert.getAlertID());
+		setServerId(serverAlert.getAlertID());
 		setName(serverAlert.getName());
+
+		setLifetime(serverAlert.getCloseAlertAfterFireups());
+		setKeepHistory(serverAlert.getKeepHistory());
+
 		setCreationDate(serverAlert.getCreationDate());
-		setLastEventDate(serverAlert.getLastEventDate());
+		setLastEventDate(serverAlert.getLastFireEventDate());
 
 		setNewsLine(serverAlert.getPTNewsBases());
 		setOnlyRedNewsOn(serverAlert.getUseImportantOnly());
@@ -78,7 +83,7 @@ public class ClientNewsAlert extends ClientAlert {
 	public void setNewsLine(String newsLine) {
 		this.newsLine = (newsLine == null) ? StringHelper.EMPTY : newsLine;
 	}
-	
+
 	public boolean isOnlyRedNewsOn() {
 		return onlyRedNewsOn;
 	}
@@ -175,15 +180,19 @@ public class ClientNewsAlert extends ClientAlert {
 		this.everywhereFilterType = (everywhereFilterType == null) ? SEARCH_NEWS_TYPE.EVERYWERE : everywhereFilterType;
 	}
 
-	public NewsAlert convertToServerNewsAlert() {
+	public NewsAlert convertToServerNewsAlert(boolean isCreate) {
 		NewsAlert serverNewsAlert = new NewsAlert();
-		serverNewsAlert.setName(name);
 		
+		if (!isCreate)
+			serverNewsAlert.setAlertID(serverId);
+
+		serverNewsAlert.setName(name);
+
 		serverNewsAlert.setPTNewsBases(newsLine);
 		serverNewsAlert.setUseImportantOnly(onlyRedNewsOn);
 
 		serverNewsAlert.setEmail((emailOn == false) ? StringHelper.EMPTY : email);
-		serverNewsAlert.setPhone((phoneSmsOn == false) ? StringHelper.EMPTY : phoneSms);	
+		serverNewsAlert.setPhone((phoneSmsOn == false) ? StringHelper.EMPTY : phoneSms);
 		serverNewsAlert.setSoundSetup((melodyOn == false) ? StringHelper.EMPTY : melody);
 		serverNewsAlert.setColor(newsColor);
 		serverNewsAlert.setPopupWindow(popupWindowOn);
@@ -195,11 +204,11 @@ public class ClientNewsAlert extends ClientAlert {
 		serverNewsAlert.setExcludeWord(0, firstExcludeWord);
 		serverNewsAlert.setExcludeWord(1, secondExcludeWord);
 		serverNewsAlert.setExcludeWordsExpression(convert_Expression_to_NEWS_WORDS_EXPRESSION(excludeWordExpression));
-		
+
 		serverNewsAlert.set_SEARCH_NEWS_TYPE(everywhereFilterType);
 
-		serverNewsAlert.setCloseAlertAfterFireups(999);
-		serverNewsAlert.setKeepHistory(true);
+		serverNewsAlert.setCloseAlertAfterFireups(lifetime);
+		serverNewsAlert.setKeepHistory(keepHistory);
 
 		return serverNewsAlert;
 	}

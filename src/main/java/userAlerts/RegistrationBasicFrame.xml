@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<panel name="DarkGreyPanel">
+	<layout type="FormLayout" columns="10px:g, f:p, 10px:g" rows="10px:g, f:p, 10px:g" />
+</panel>

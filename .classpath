@@ -26,10 +26,6 @@
 	<classpathentry kind="lib" path="J:/@Projects/UserAlerts/UserAlerts/lib/swixml.jar"/>
 	<classpathentry kind="lib" path="lib/PTNewsClientAPI.jar"/>
 	<classpathentry kind="lib" path="lib/ConnectionClientAPI.jar"/>
-	<classpathentry kind="lib" path="lib/AlertsSMSandMailAPI.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/UserAlerts/lib/AlertsSMSandMailAPI_doc.jar!/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/AlertsSMSandMailAPI.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

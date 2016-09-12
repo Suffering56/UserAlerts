@@ -23,32 +23,32 @@ import gui.panel.userAlerts.data.ClientNewsAlert.Expression;
 import gui.panel.userAlerts.data.ClientNewsAlert.RelevanceFilterType;
 import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionExpression;
 import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionName;
+import gui.panel.userAlerts.data.remote.RemoteBasicAPI;
+import gui.panel.userAlerts.data.remote.Stock;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
-import gui.panel.userAlerts.data.RemoteBasicAPI;
 import gui.panel.userAlerts.overridden.model.AlertsNewsTableModel;
 import gui.panel.userAlerts.overridden.model.AlertsQuotesTableModel;
 import gui.panel.userAlerts.overridden.renderer.TableHeaderRenderer;
 import gui.panel.userAlerts.overridden.renderer.TableMainRenderer;
-import gui.panel.userAlerts.data.Stock;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.IOHelper;
 import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 
 @SuppressWarnings({ "serial", "unused" })
-public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
+public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 
-	public AlertsMainFrame() {
+	public AlertsCommonFrame() {
 		instance = this;
 		stock = new Stock(this);
 
 		frame.setTitle("Алерты");
-		renderPrimary("userAlerts/AlertsMainFrame");
+		renderPrimary("userAlerts/AlertsCommonFrame");
 
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				stock.logout();
+				instance.stock.logout();
 				IOHelper.sleep(2000);
 			}
 		});
@@ -69,11 +69,11 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		/**
 		 * Quotes
 		 */
-		createQuotesAlert(new ClientQuotesAlert("Alert 4", "instrument_4", "marketplace_4", DirectionName.LAST, DirectionExpression.LESS_EQUALS,
-				"400.0", true, "quote4@mail.ru", true, "+7quote4", true, "quote4.mp3", true));
+		createQuotesAlert(new ClientQuotesAlert("Alert 4", ClientAlert.ETERNITY_LIFETIME, true, "instrument_4", "marketplace_4", DirectionName.LAST,
+				DirectionExpression.LESS_EQUALS, "400.0", true, "quote4@mail.ru", true, "+7quote4", true, "quote4.mp3", true));
 
-		createQuotesAlert(new ClientQuotesAlert("Alert 5", "instrument_5", "marketplace_5", DirectionName.BID, DirectionExpression.LESS, "500.0",
-				true, "quote5@mail.ru", true, "+7quote5", true, "quote5.mp3", true));
+		createQuotesAlert(new ClientQuotesAlert("Alert 5", ClientAlert.ETERNITY_LIFETIME, true, "instrument_5", "marketplace_5", DirectionName.BID,
+				DirectionExpression.LESS, "500.0", true, "quote5@mail.ru", true, "+7quote5", true, "quote5.mp3", true));
 
 		createQuotesAlert(new ClientQuotesAlert("Alert 6"));
 	}
@@ -168,6 +168,14 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		}
 	};
 
+	public Action SHOW_HISTORY = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			if (e != null) {
+				new AlertsHistoryFrame(stock).show();
+			}
+		}
+	};
+
 	private void setSelectedNewsRowNumber(int row) {
 		this.selectedNewsRowNumber = row;
 		boolean enabled = row != -1;
@@ -182,12 +190,11 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 		editQuotesAlertBtn.setEnabled(enabled);
 	}
 
-	
 	@Override
 	public void createNewsAlert(ClientNewsAlert alert) {
 		stock.createNewsAlert(alert);
 	}
-	
+
 	@Override
 	public void createQuotesAlert(ClientQuotesAlert alert) {
 		stock.createQuotesAlert(alert);
@@ -212,7 +219,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 			newsModel.update();
 		}
 	}
-	
+
 	private void removeQuotesAlert(ClientQuotesAlert alert) {
 		if (alert != null) {
 			stock.removeQuotesAlert(alert.getId());
@@ -226,7 +233,7 @@ public class AlertsMainFrame extends SwixFrame implements PrimaryFrame {
 	}
 
 	private Stock stock;
-	private AlertsMainFrame instance;
+	private AlertsCommonFrame instance;
 
 	private JTable newsTable;
 	private JTableHeader newsHeader;

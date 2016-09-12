@@ -1,6 +1,7 @@
-package gui.panel.userAlerts.data;
+package gui.panel.userAlerts.data.remote;
 
 import gui.panel.userAlerts.App;
+import gui.panel.userAlerts.data.NewsProperties;
 import gui.panel.userAlerts.overridden.model.NewsTreeNode;
 import gui.panel.userAlerts.overridden.model.NewsTreeNodeAbstract.NodeType;
 import prime_tass.connect.BadParametersException;

@@ -12,7 +12,7 @@ import org.swixml.SwingEngine;
 
 import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.Main;
-import gui.panel.userAlerts.constants.AlertsGeneralConstants;
+import gui.panel.userAlerts.constants.AlertsResourcesConstants;
 
 public abstract class SwixFrame implements Disablable {
 
@@ -55,7 +55,7 @@ public abstract class SwixFrame implements Disablable {
 
 	private void setPrimeIcon() {
 		try {
-			Image iconImage = ImageIO.read(Main.class.getResource(AlertsGeneralConstants.PRIME_ICON_PATH));
+			Image iconImage = ImageIO.read(Main.class.getResource(AlertsResourcesConstants.PRIME_ICON_PATH));
 			frame.setIconImage(iconImage);
 		} catch (IOException e) {
 			App.appLogger.error("Prime icon image download error", e);

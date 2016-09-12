@@ -3,7 +3,7 @@
 	<layout type="FormLayout" columns="10px:g, f:p, 10px:g" rows="10px:g, f:p, 10px:g" />
 
 	<panel constraints="2,2">
-		<layout type="FormLayout" columns="f:p" rows="f:p, 10px, 1px, 10px, f:p, f:p" />
+		<layout type="FormLayout" columns="f:p" rows="f:p, 10px, 1px, 10px, f:p, f:p, f:p" />
 
 		<panel constraints="1,1">
 			<layout type="FormLayout" columns="f:p, 10px, f:p, 10px:g, f:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p" />
@@ -18,7 +18,7 @@
 			<combobox constraints="5,5" id="marketPlaceComboBox" editable="true" />
 
 			<label constraints="1,7" text="Показатель" />
-			<combobox constraints="3,7" id="directionNameComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel"/>
+			<combobox constraints="3,7" id="directionNameComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel" />
 
 			<panel constraints="5,7">
 				<layout type="FormLayout" columns="f:50px, 10px:g, f:100px" rows="f:p" />
@@ -42,7 +42,7 @@
 		</panel>
 
 		<panel constraints="1,6">
-			<layout type="FormLayout" columns="f:p, p:g, r:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p" />
+			<layout type="FormLayout" columns="f:p, p:g, f:p" rows="f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px, f:p" />
 
 			<checkbox constraints="1,1" id="emailCheckBox" text="Информировать по e-mail" />
 			<combobox constraints="3,1" id="emailComboBox" editable="true" />
@@ -54,6 +54,19 @@
 			<combobox constraints="3,5" id="melodyComboBox" editable="true" />
 
 			<checkbox constraints="1,7" id="notifyWindowCheckBox" text="Всплывающее окно" />
+
+			<checkbox constraints="1,9" id="keepHistoryCheckBox" text="Хранить историю" selected="true" />
+	
+			<label constraints="1,11" text="Количество срабатываний" />
+			<textfield constraints="3,11" id="lifetimeTextField" name="input" text="999" />
+		</panel>
+
+		<panel constraints="1,7">
+			<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px, f:p" rows="10px, f:p" />
+
+			<combobox constraints="1,2" id="statusComboBox" initclass="gui.panel.userAlerts.overridden.model.AlertStatusComboModel" />
+			<button constraints="3,2" name="alerts.main_button" text="Применить" action="APPLY" />
+			<button constraints="5,2" name="alerts.main_button" text="Отменить" action="CANCEL" />
 		</panel>
 	</panel>
 </panel>

@@ -2,21 +2,26 @@ package gui.panel.userAlerts.data;
 
 import java.util.Date;
 
+import gui.panel.userAlerts.util.DateHelper;
 import gui.panel.userAlerts.util.StringHelper;
 
 public abstract class ClientAlert {
 
 	public ClientAlert() {
-		this(null, null, null, false, null, false, null, false, null, false);
+		this(null, ETERNITY_LIFETIME, true, null, null, false, null, false, null, false, null, false);
 	}
 
-	public ClientAlert(String name, Date creationDate, Date lastEventDate, boolean emailOn, String email, boolean phoneSmsOn, String phoneSms,
-			boolean melodyOn, String melody, boolean popupWindowOn) {
+	public ClientAlert(String name, int lifetime, boolean keepHistory, Date creationDate, Date lastEventDate, boolean emailOn, String email,
+			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean popupWindowOn) {
 
 		this.id = -1;
-		setNewsID("temp");
-		
+		setServerId("temp");
+		setStatusOn(true);
+
 		setName(name);
+		setLifetime(lifetime);
+		setKeepHistory(keepHistory);
+
 		setCreationDate(creationDate);
 		setLastEventDate(lastEventDate);
 
@@ -37,12 +42,49 @@ public abstract class ClientAlert {
 		this.id = id;
 	}
 
-	public String getNewsID() {
-		return newsID;
+	public String getServerId() {
+		return serverId;
 	}
 
-	public void setNewsID(String newsID) {
-		this.newsID = newsID;
+	public void setServerId(String newsID) {
+		this.serverId = newsID;
+	}
+
+	public boolean isStatusOn() {
+		return statusOn;
+	}
+
+	public void setStatusOn(boolean status) {
+		this.statusOn = status;
+	}
+
+	public int getLifetime() {
+		return lifetime;
+	}
+
+	public String getLifetimeString() {
+		return String.valueOf(lifetime);
+	}
+
+	public void setLifetime(String lifetime) {
+		try {
+			int temp = Integer.valueOf(lifetime);
+			this.lifetime = temp;
+		} catch (NumberFormatException e) {
+			this.lifetime = ETERNITY_LIFETIME;
+		}
+	}
+
+	public void setLifetime(int lifetime) {
+		this.lifetime = lifetime;
+	}
+
+	public boolean isKeepHistory() {
+		return keepHistory;
+	}
+
+	public void setKeepHistory(boolean keepHistory) {
+		this.keepHistory = keepHistory;
 	}
 
 	// Not null!
@@ -55,12 +97,20 @@ public abstract class ClientAlert {
 		this.name = (name == null) ? StringHelper.EMPTY : name;
 	}
 
+	public String getCreationDateString() {
+		return (creationDate == null) ? StringHelper.EMPTY : DateHelper.convertDate(creationDate);
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public String getLastEventDateString() {
+		return (lastEventDate == null) ? StringHelper.EMPTY : DateHelper.convertFull(lastEventDate);
 	}
 
 	public Date getLastEventDate() {
@@ -135,15 +185,20 @@ public abstract class ClientAlert {
 
 	@Override
 	public String toString() {
-		return "NewsAlert [id=" + id + ", name=" + name + ", creationDate=" + creationDate + "]";
+		return "ClientAlert [name=" + name + ", lastEventDate=" + getLastEventDateString() + "]";
 	}
 
 	// id алерта
 	protected int id;
-	protected String newsID;
+	protected String serverId;
+	protected boolean statusOn;
 
 	// Название алерта
 	protected String name;
+	// Количество срабатываний алерта
+	protected int lifetime;
+	// Хранить историю
+	protected boolean keepHistory;
 	// Дата создания
 	protected Date creationDate;
 	// Дата последнего срабатывания
@@ -160,4 +215,6 @@ public abstract class ClientAlert {
 	protected String melody;
 	// Всплывающее окно
 	protected boolean popupWindowOn;
+
+	public static final int ETERNITY_LIFETIME = 99999;
 }

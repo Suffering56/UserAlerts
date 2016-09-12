@@ -1,4 +1,4 @@
-package gui.panel.userAlerts.data;
+package gui.panel.userAlerts.data.remote;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,14 @@ import java.util.Observable;
 
 import javax.swing.tree.TreeNode;
 
+import gui.panel.userAlerts.data.ClientAlert;
+import gui.panel.userAlerts.data.ClientNewsAlert;
+import gui.panel.userAlerts.data.ClientQuotesAlert;
+import gui.panel.userAlerts.data.HistoryEntity;
+import gui.panel.userAlerts.parent.HistoryFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import p.alerts.client_api.NewsAlert;
+import p.alerts.client_api.NewsFireAlert;
 
 public class Stock extends Observable {
 
@@ -39,7 +45,7 @@ public class Stock extends Observable {
 		alertsList.add(alert);
 		quotesAlertsList.add((ClientQuotesAlert) alert);
 	}
-	
+
 	public void updateNewsAlert(ClientNewsAlert alert) {
 		remoteAPI.updateNewsAlert(alert);
 	}
@@ -67,21 +73,10 @@ public class Stock extends Observable {
 		}
 	}
 
-	public void updateNewsAlertsTable(List<NewsAlert> serverNewsAlertsList) {
-		newsAlertsList.clear();
-		for (NewsAlert serverAlert : serverNewsAlertsList) {
-			ClientNewsAlert clientNewsAlert = new ClientNewsAlert(serverAlert);
-			newsAlertsList.add(clientNewsAlert);
-			alertsList.add(clientNewsAlert);
-		}
-
-		primaryFrame.updateNewsAlertsTableFromStock();
-	}
-
 	public void updateQuotesAlertsTable() {
 		//to be continued.....
 	}
-	
+
 	private boolean containsId(int id) {
 		for (ClientAlert alert : alertsList) {
 			if (alert.getId() == id) {
@@ -113,10 +108,56 @@ public class Stock extends Observable {
 		notifyObservers();
 	}
 
+	public void updateHistoryTable(NewsFireAlert[] alerts) {
+		historyList.clear();
+		for (NewsFireAlert serverAlert : alerts) {
+			HistoryEntity historyEntity = new HistoryEntity(serverAlert);
+			historyList.add(historyEntity);
+		}
+
+		if (historyFrame != null) {
+			historyFrame.updateHistoryTableFromStock();
+		}
+	}
+
+	public void updateNewsAlertsTable(NewsAlert[] alerts) {
+		newsAlertsList.clear();
+		for (NewsAlert serverAlert : alerts) {
+			ClientNewsAlert clientNewsAlert = new ClientNewsAlert(serverAlert);
+			newsAlertsList.add(clientNewsAlert);
+			alertsList.add(clientNewsAlert);
+		}
+
+		if (primaryFrame != null) {
+			primaryFrame.updateNewsAlertsTableFromStock();
+		}
+	}
+
+	public List<HistoryEntity> getAllHistory() {
+		return historyList;
+	}
+
+	public void setHistoryFrame(HistoryFrame historyFrame) {
+		this.historyFrame = historyFrame;
+		remoteAPI.downloadHistory();
+	}
+
+	public void removeAllHistory() {
+		remoteAPI.removeAllHistory();
+	}
+
+	public void removeSingleHistory(HistoryEntity entity) {
+		remoteAPI.removeSingleHistory(entity);
+	}
+
 	private final PrimaryFrame primaryFrame;
+	private HistoryFrame historyFrame;
+
 	private TreeNode newsRoot;
 	private final RemoteExtendAPI remoteAPI;
 	private final List<ClientNewsAlert> newsAlertsList = new ArrayList<ClientNewsAlert>();
 	private final List<ClientQuotesAlert> quotesAlertsList = new ArrayList<ClientQuotesAlert>();
 	private final List<ClientAlert> alertsList = new ArrayList<ClientAlert>();
+
+	private final List<HistoryEntity> historyList = new ArrayList<HistoryEntity>();
 }

@@ -9,11 +9,12 @@
 				<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
 
 				<panel constraints="2,2">
-					<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p" rows="f:p" />
+					<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p, 10px:g, f:100px, 10px" rows="f:p" />
 
 					<button constraints="1,1" id="editNewsAlertBtn" name="alerts.main_button" text="Редактировать" action="EDIT_NEWS_ALERT" enabled="false" />
 					<button constraints="3,1" id="removeNewsAlertBtn" name="alerts.main_button" text="Удалить" action="REMOVE_NEWS_ALERT" enabled="false" />
 					<button constraints="5,1" id="createNewsAlertBtn" name="alerts.main_button" text="Создать новый" action="CREATE_NEWS_ALERT" />
+					<button constraints="7,1" name="alerts.main_button" text="История" action="SHOW_HISTORY" />
 				</panel>
 
 				<scrollpane constraints="2,4">
@@ -31,11 +32,12 @@
 			<layout type="FormLayout" columns="10px, f:p, 10px" rows="10px, f:p, 10px, f:p, 10px" />
 
 			<panel constraints="2,2">
-				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p, p:g" rows="f:p" />
+				<layout type="FormLayout" columns="f:p, 10px, f:p, 10px, f:p, 10px:g, f:100px, 10px" rows="f:p" />
 
 				<button constraints="1,1" id="editQuotesAlertBtn" name="alerts.main_button" text="Редактировать" action="EDIT_QUOTES_ALERT" enabled="false" />
 				<button constraints="3,1" id="removeQuotesAlertBtn" name="alerts.main_button" text="Удалить" action="REMOVE_QUOTES_ALERT" enabled="false" />
 				<button constraints="5,1" id="createQuotesAlertBtn" name="alerts.main_button" text="Создать новый" action="CREATE_QUOTES_ALERT" />
+				<button constraints="7,1" name="alerts.main_button" text="История" action="SHOW_HISTORY" />
 			</panel>
 
 			<scrollpane constraints="2,4">

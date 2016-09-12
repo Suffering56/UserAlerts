@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<panel name="DarkGreyPanel">
+	<layout type="FormLayout" columns="10px, f:600px:g, 10px" rows="10px:g, f:p, f:300px, 10px:g" />
+
+	<panel constraints="2,2">
+		<layout type="FormLayout" columns="f:p, 10px, f:p, p:g" rows="f:p, 10px" />
+		<button constraints="1,1" text="Удалить" id="removeSelectedBtn" name="alerts.main_button" action="REMOVE_SELECTED" />
+		<button constraints="3,1" text="Удалить все" name="alerts.main_button" action="REMOVE_ALL" />
+	</panel>
+
+	<scrollpane constraints="2,3" id="historyScrollPane" visible="false">
+		<table id="historyTable" />
+	</scrollpane>
+
+	<panel constraints="2,3" id="historyLoadingPanel" visible="true">
+		<layout type="FormLayout" columns="p:g, f:p, p:g" rows="p:g, f:p, p:g" />
+		<label constraints="2,2" name="upper" icon="configs/GRAPHITE/style/img/anim_wait.gif" text="Загрузка.." />
+	</panel>
+</panel>

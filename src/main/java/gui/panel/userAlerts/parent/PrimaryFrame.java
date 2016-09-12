@@ -2,7 +2,7 @@ package gui.panel.userAlerts.parent;
 
 import gui.panel.userAlerts.data.ClientNewsAlert;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
-import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.data.remote.Stock;
 
 public interface PrimaryFrame extends Disablable {
 

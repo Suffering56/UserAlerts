@@ -7,7 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import gui.panel.userAlerts.App;
-import gui.panel.userAlerts.constants.AlertsGeneralConstants;
+import gui.panel.userAlerts.constants.AlertsResourcesConstants;
 import gui.panel.userAlerts.util.IOHelper;
 
 public class NewsProperties {
@@ -18,14 +18,14 @@ public class NewsProperties {
 	 * файла.
 	 */
 	private NewsProperties() {
-		Properties props = IOHelper.loadPropertiesFile(AlertsGeneralConstants.NEWS_CONFIG);
+		Properties props = IOHelper.loadPropertiesFile(AlertsResourcesConstants.NEWS_CONFIG);
 		String excludeNewsLine = props.getProperty("excludeNewsLine");
 		List<String> tempList = parse(excludeNewsLine);
 		excludeNewsSet.addAll(tempList);
 
 		if (excludeNewsSet.isEmpty()) {
 			App.appLogger.info("NewsProperties.excludeNewsSet is empty. Please check the property file <"
-					+ AlertsGeneralConstants.NEWS_CONFIG + ">");
+					+ AlertsResourcesConstants.NEWS_CONFIG + ">");
 		}
 	}
 

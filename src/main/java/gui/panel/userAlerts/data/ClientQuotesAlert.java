@@ -9,14 +9,14 @@ public class ClientQuotesAlert extends ClientAlert {
 	}
 
 	public ClientQuotesAlert(String name) {
-		this(name, null, null, null, null, null, false, null, false, null, false, null, true);
+		this(name, ETERNITY_LIFETIME, true, null, null, null, null, null, false, null, false, null, false, null, true);
 	}
 
-	public ClientQuotesAlert(String name, String instrument, String marketPlace, DirectionName directionName, DirectionExpression directionExpression,
-			String directionValue, boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody,
-			boolean notifyWindowOn) {
+	public ClientQuotesAlert(String name, int lifetime, boolean keepHistory, String instrument, String marketPlace, DirectionName directionName,
+			DirectionExpression directionExpression, String directionValue, boolean emailOn, String email, boolean phoneSmsOn, String phoneSms,
+			boolean melodyOn, String melody, boolean notifyWindowOn) {
 
-		super(name, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
+		super(name, lifetime, keepHistory, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
 
 		this.instrument = (instrument == null) ? StringHelper.EMPTY : instrument;
 		this.marketPlace = (marketPlace == null) ? StringHelper.EMPTY : marketPlace;

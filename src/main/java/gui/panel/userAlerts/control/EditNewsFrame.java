@@ -187,6 +187,9 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			}
 		}
 
+		lifetimeTextField.setText(alert.getLifetimeString());
+		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
+
 		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNewsOn());
 		setOnlyRedNews();
 
@@ -221,6 +224,9 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	@Override
 	protected void fillAlertFromComponents() {
 		alert.setName(SwingHelper.getComboText(alertNameComboBox));
+		alert.setLifetime(lifetimeTextField.getText());
+		alert.setKeepHistory(keepHistoryCheckBox.isSelected());
+
 		alert.setOnlyRedNewsOn(onlyRedNewsCheckBox.isSelected());
 
 		alert.setFirstKeyWord(SwingHelper.getComboText(firstKeyWordComboBox));
@@ -312,27 +318,27 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 	public Action APPLY = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				if (inputValidation()) {
+			if (inputValidation()) {
 
-					fillAlertFromComponents();
+				fillAlertFromComponents();
 
-					if (TYPE == Type.CREATE) {
-						primaryFrame.createNewsAlert(alert);
-					} else {
-						primaryFrame.updateNewsAlert(alert);
-					}
-
-					dispose();
-					primaryFrame.enable();
+				if (TYPE == Type.CREATE) {
+					primaryFrame.createNewsAlert(alert);
 				} else {
-					new ExtendOptionPane().showBasicLookAndFeelMessageError("Заполните обязательные поля!", "Validation error!");
+					primaryFrame.updateNewsAlert(alert);
 				}
+
+				dispose();
+				primaryFrame.enable();
+			} else {
+				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorText, "Validation error!");
 			}
 		}
 	};
 
 	private boolean inputValidation() {
+		errorText = "Пожалуйста, заполните все обязательные поля.";
+		
 		if (SwingHelper.isEmptyComboText(alertNameComboBox))
 			return false;
 
@@ -359,9 +365,16 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			return false;
 		}
 
+		try {
+			Integer.valueOf(lifetimeTextField.getText());
+		} catch (NumberFormatException e) {
+			errorText = "Некорректное значение поля \"Количество срабатываний\" (должно быть целым числом).";
+			return false;
+		}
+
 		return true;
 	}
-
+	
 	private ClientNewsAlert alert;
 
 	private JCheckBox onlyRedNewsCheckBox;
@@ -390,6 +403,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private JPanel treePanel;
 	private JPanel treeLoadingPanel;
 	private final CheckableTreeRenderer treeRenderer = new CheckableTreeRenderer();
+	private String errorText;
 
 	private static final Color DEFAULT_NEWS_COLOR = Color.YELLOW;
 }

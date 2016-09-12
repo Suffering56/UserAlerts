@@ -6,9 +6,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 import gui.panel.userAlerts.data.ClientAlert;
-import gui.panel.userAlerts.data.Stock;
+import gui.panel.userAlerts.data.remote.Stock;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.util.SwingHelper;
 
@@ -48,6 +49,9 @@ public abstract class AbstractEditFrame extends SwixFrame {
 	protected Type TYPE;
 	protected final Stock stock;
 	protected final PrimaryFrame primaryFrame;
+
+	protected JTextField lifetimeTextField;
+	protected JCheckBox keepHistoryCheckBox;
 
 	protected JComboBox alertNameComboBox;
 	protected JCheckBox emailCheckBox;

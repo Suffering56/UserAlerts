@@ -9,12 +9,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
-import gui.panel.userAlerts.constants.AlertsFrameStyles;
+import gui.panel.userAlerts.constants.AlertsStylesConstants;
 
 public class TableHeaderRenderer implements TableCellRenderer {
 
 	public TableHeaderRenderer(JTableHeader header) {
-		header.setName(AlertsFrameStyles.TABLE_HEADER_RENDERER);
+		header.setName(AlertsStylesConstants.TABLE_HEADER_RENDERER);
 		renderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
 		renderer.setHorizontalAlignment(JLabel.CENTER);
 		renderer.setPreferredSize(new Dimension(renderer.getPreferredSize().width, 40));
