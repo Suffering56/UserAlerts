@@ -70,10 +70,10 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 		 * Quotes
 		 */
 		createQuotesAlert(new ClientQuotesAlert("Alert 4", ClientAlert.ETERNITY_LIFETIME, true, "instrument_4", "marketplace_4", DirectionName.LAST,
-				DirectionExpression.LESS_EQUALS, "400.0", true, "quote4@mail.ru", true, "+7quote4", true, "quote4.mp3", true));
+				DirectionExpression.LESS_EQUALS, "400.0", true, "quote4@mail.ru", true, "+7quote4", true, "quote4.mp3", null, true));
 
 		createQuotesAlert(new ClientQuotesAlert("Alert 5", ClientAlert.ETERNITY_LIFETIME, true, "instrument_5", "marketplace_5", DirectionName.BID,
-				DirectionExpression.LESS, "500.0", true, "quote5@mail.ru", true, "+7quote5", true, "quote5.mp3", true));
+				DirectionExpression.LESS, "500.0", true, "quote5@mail.ru", true, "+7quote5", true, "quote5.mp3", Color.RED, true));
 
 		createQuotesAlert(new ClientQuotesAlert("Alert 6"));
 	}

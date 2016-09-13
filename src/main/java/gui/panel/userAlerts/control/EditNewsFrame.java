@@ -29,7 +29,6 @@ import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeNode;
 import gui.panel.userAlerts.overridden.renderer.CheckableTreeRenderer;
-import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
 import gui.panel.userAlerts.util.ExtendColorChooser;
 import gui.panel.userAlerts.util.ExtendOptionPane;

@@ -17,7 +17,6 @@ import p.alerts.client_api.interf.IDownloadNewsAlertsCallBack;
 import p.alerts.client_api.interf.IDownloadNewsFireAlertsHistoryCallBack;
 import p.alerts.client_api.interf.ILoginCallbackListener;
 import p.alerts.client_api.interf.ILogoutCallBackListener;
-import p.alerts.client_api.interf.IRemoveFireAlertsHistory;
 
 public class RemoteExtendAPI extends RemoteBasicAPI {
 
@@ -111,35 +110,6 @@ public class RemoteExtendAPI extends RemoteBasicAPI {
 		};
 	}
 
-	private void initHistoryListeners() {
-		historyDownloadListener = new IDownloadNewsFireAlertsHistoryCallBack() {
-			@Override
-			public void newsFireAlertsHistoryArrived(NewsFireAlert[] history) {
-				App.appLogger.info("alertsHistoryListener: " + history.length);
-				stock.updateHistoryTable(history);
-			}
-
-			@Override
-			public void failedToDownload(String error) {
-				App.appLogger.error("alertsHistoryListener error: " + error);
-			}
-		};
-
-		removeHistoryListener = new IRemoveFireAlertsHistory() {
-			@Override
-			public void removalWasSuccessful() {
-				App.appLogger.info("removeHistoryListener: success");
-				//				stock.updateHistoryTable(new NewsAlert[] {});
-				downloadHistory();
-			}
-
-			@Override
-			public void removalFailed(String error) {
-				App.appLogger.info("removeHistoryListener: error = " + error);
-			}
-		};
-	}
-
 	private void afterLoginHandle() {
 		alertsAPI.subscribeToAlertEvents(alertActionListener);
 		alertsAPI.downloadActiveNewsAlerts(newsAlertDownloadListener);
@@ -169,17 +139,45 @@ public class RemoteExtendAPI extends RemoteBasicAPI {
 
 	// =========================== History ===========================
 	public void downloadHistory() {
-		alertsAPI.getNewsFireAlertsHistory(100, historyDownloadListener);
+		alertsAPI.getNewsFireAlertsHistory(LIMIT, historyDownloadListener);
 	}
 
 	public void removeAllHistory() {
 		System.out.println("ExtendRemoteAPI: removeAllHistory");
-		//alertsAPI.removeFireAlertsHistory(null, removeHistoryListener);
+		extendAlertsAPI.removeNewsFireAlertsAsync(LIMIT, null, historyRemoveListener);
 	}
 
 	public void removeSingleHistory(HistoryEntity entity) {
 		System.out.println("ExtendRemoteAPI: removeHistoryById = " + entity.getId());
-		alertsAPI.removeFireAlertsHistory(new String[] { entity.getId() }, removeHistoryListener);
+		extendAlertsAPI.removeNewsFireAlertsAsync(LIMIT, new String[] { entity.getId() }, historyRemoveListener);
+	}
+
+	private void initHistoryListeners() {
+		historyDownloadListener = new IDownloadNewsFireAlertsHistoryCallBack() {
+			@Override
+			public void newsFireAlertsHistoryArrived(NewsFireAlert[] history) {
+				App.appLogger.info("historyDownloadListener: " + history.length);
+				stock.updateHistoryTable(history);
+			}
+
+			@Override
+			public void failedToDownload(String error) {
+				App.appLogger.error("historyDownloadListener error: " + error);
+			}
+		};
+
+		historyRemoveListener = new IExtensionOperation<NewsFireAlert>() {
+			@Override
+			public void operationSucceed(NewsFireAlert[] history) {
+				App.appLogger.info("historyRemoveListener: " + history.length);
+				stock.updateHistoryTable(history);
+			}
+
+			@Override
+			public void operationFailed(String error) {
+				App.appLogger.error("historyRemoveListener error: " + error);
+			}
+		};
 	}
 
 	private final AlertsSMSandMailAPI alertsAPI;
@@ -187,8 +185,11 @@ public class RemoteExtendAPI extends RemoteBasicAPI {
 	private ILoginCallbackListener loginListener;
 	private ILogoutCallBackListener logoutListener;
 	private IAlertEventsCallBack alertActionListener;
+	
 	private IDownloadNewsAlertsCallBack newsAlertDownloadListener;
-	private IExtensionOperation<NewsAlert> newsAlertListener;
 	private IDownloadNewsFireAlertsHistoryCallBack historyDownloadListener;
-	private IRemoveFireAlertsHistory removeHistoryListener;
+	private IExtensionOperation<NewsAlert> newsAlertListener;
+	private IExtensionOperation<NewsFireAlert> historyRemoveListener;
+	
+	private static final int LIMIT = 100;
 }

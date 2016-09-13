@@ -1,4 +1,4 @@
-package gui.panel.userAlerts.parent;
+package gui.panel.userAlerts.control;
 
 import java.awt.event.ActionEvent;
 
@@ -11,6 +11,8 @@ import javax.swing.JTextField;
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.remote.Stock;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
+import gui.panel.userAlerts.parent.PrimaryFrame;
+import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.SwingHelper;
 
 @SuppressWarnings("serial")
@@ -39,10 +41,8 @@ public abstract class AbstractEditFrame extends SwixFrame {
 
 	public Action CANCEL = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				dispose();
-				primaryFrame.enable();
-			}
+			dispose();
+			primaryFrame.enable();
 		}
 	};
 

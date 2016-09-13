@@ -1,7 +1,7 @@
 
 
 //		alertsAPI.
-
+							//имя	пароль	подтверждение	телефон	емейл
 //		alertsAPI.registerUser("test", "123", "79228222790", "sp-oren@mail.ru", new IUserRegistrationCallBackListener() {
 //			
 //			@Override

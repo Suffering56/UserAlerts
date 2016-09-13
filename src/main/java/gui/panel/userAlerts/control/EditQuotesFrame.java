@@ -1,6 +1,11 @@
 package gui.panel.userAlerts.control;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -13,8 +18,8 @@ import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.overridden.model.AlertStatusComboModel;
 import gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel;
-import gui.panel.userAlerts.parent.AbstractEditFrame;
 import gui.panel.userAlerts.parent.PrimaryFrame;
+import gui.panel.userAlerts.util.ExtendColorChooser;
 import gui.panel.userAlerts.util.ExtendOptionPane;
 import gui.panel.userAlerts.util.SwingHelper;
 
@@ -38,6 +43,8 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 		frame.setTitle("Настройка алерта для котировок");
 		render("userAlerts/EditQuotesFrame");
+		
+		primaryFrame.disable();
 	}
 
 	@Override
@@ -47,7 +54,19 @@ public class EditQuotesFrame extends AbstractEditFrame {
 	}
 
 	private void initListeners() {
-
+		lineColorTextField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				showColorChooser();
+			}
+		});
+		
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				primaryFrame.enable();
+			}
+		});
 	}
 
 	@Override
@@ -64,13 +83,16 @@ public class EditQuotesFrame extends AbstractEditFrame {
 				}
 			}
 		}
-		
+
 		lifetimeTextField.setText(alert.getLifetimeString());
 		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
 
 		QuotesDirectionNameComboModel.setValue(directionNameComboBox, alert.getDirectionName());
 		QuotesDirectionExpressionComboModel.setValue(directionExpressionComboBox, alert.getDirectionExpression());
 		directionValueTextField.setText(alert.getDirectionValue());
+
+		lineColor = (alert.getLineColor() == null) ? DEFAULT_LINE_COLOR : alert.getLineColor();
+		lineColorTextField.setBackground(lineColor);
 
 		emailCheckBox.setSelected(alert.isEmailOn());
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
@@ -105,7 +127,8 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 		alert.setMelodyOn(melodyCheckBox.isSelected());
 		alert.setMelody(SwingHelper.getComboText(melodyComboBox));
-
+		
+		alert.setLineColor(lineColor);
 		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
 	}
 
@@ -145,7 +168,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 			errorText = "Некорректное значение поля \"Показатель\" (сравниваемое значение) (должно быть числом).";
 			return false;
 		}
-		
+
 		try {
 			Integer.valueOf(lifetimeTextField.getText());
 		} catch (NumberFormatException e) {
@@ -154,6 +177,21 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		}
 
 		return true;
+	}
+
+	public Action CHOOSE_COLOR = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			showColorChooser();
+		}
+	};
+
+	private void showColorChooser() {
+		ExtendColorChooser chooser = new ExtendColorChooser();
+		Color resultColor = chooser.showBasicLookAndFeelDialog(null, "Выберите цвет для строки новости", lineColor);
+		if (resultColor != null) {
+			lineColor = resultColor;
+			lineColorTextField.setBackground(lineColor);
+		}
 	}
 
 	private ClientQuotesAlert alert;
@@ -166,7 +204,11 @@ public class EditQuotesFrame extends AbstractEditFrame {
 	private JTextField directionValueTextField;
 
 	private JPanel chartJPanel;
+	private JTextField lineColorTextField;
 
 	private JComboBox statusComboBox;
 	private String errorText;
+	private Color lineColor;
+
+	private static final Color DEFAULT_LINE_COLOR = Color.YELLOW;
 }
