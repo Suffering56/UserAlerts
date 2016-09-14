@@ -17,13 +17,24 @@ import p.alerts.client_api.NewsFireAlert;
 
 public class Stock extends Observable {
 
-	public Stock(PrimaryFrame primaryFrame) {
-		this.primaryFrame = primaryFrame;
+	public Stock() {
 		remoteAPI = new RemoteExtendAPI(this);
+	}
+
+	public void login(String userName, String password) {
+		remoteAPI.login(userName, password);
 	}
 
 	public void logout() {
 		remoteAPI.logout();
+	}
+
+	public void registerUser(String userName, String pass, String phone, String email) {
+		remoteAPI.registerUser(userName, pass, phone, email);
+	}
+
+	public void confirmRegistration(String userName, String emailCode, String smsCode) {
+		remoteAPI.confirmRegistration(userName, emailCode, smsCode);
 	}
 
 	public void createNewsAlert(ClientNewsAlert alert) {
@@ -150,7 +161,16 @@ public class Stock extends Observable {
 		remoteAPI.removeSingleHistory(entity);
 	}
 
-	private final PrimaryFrame primaryFrame;
+	public void setPrimaryFrame(PrimaryFrame primaryFrame) {
+		this.primaryFrame = primaryFrame;
+		remoteAPI.downloadAlerts();
+	}
+	
+	public void _login(String userName, String password) {
+		remoteAPI._login(userName, password);
+	}
+
+	private PrimaryFrame primaryFrame;
 	private HistoryFrame historyFrame;
 
 	private TreeNode newsRoot;

@@ -43,7 +43,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 		frame.setTitle("Настройка алерта для котировок");
 		render("userAlerts/EditQuotesFrame");
-		
+
 		primaryFrame.disable();
 	}
 
@@ -60,7 +60,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 				showColorChooser();
 			}
 		});
-		
+
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -127,7 +127,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 		alert.setMelodyOn(melodyCheckBox.isSelected());
 		alert.setMelody(SwingHelper.getComboText(melodyComboBox));
-		
+
 		alert.setLineColor(lineColor);
 		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
 	}
@@ -155,29 +155,28 @@ public class EditQuotesFrame extends AbstractEditFrame {
 			}
 		}
 
+		private boolean inputValidation() {
+			errorText = "Пожалуйста, заполните все обязательные поля.";
+
+			if (SwingHelper.isEmptyComboText(alertNameComboBox))
+				return false;
+			try {
+				Double.valueOf(directionValueTextField.getText());
+			} catch (NumberFormatException e) {
+				errorText = "Некорректное значение поля \"Показатель\" (сравниваемое значение) (должно быть числом).";
+				return false;
+			}
+
+			try {
+				Integer.valueOf(lifetimeTextField.getText());
+			} catch (NumberFormatException e) {
+				errorText = "Некорректное значение поля \"Количество срабатываний\" (должно быть целым числом).";
+				return false;
+			}
+
+			return true;
+		}
 	};
-
-	private boolean inputValidation() {
-		errorText = "Пожалуйста, заполните все обязательные поля.";
-
-		if (SwingHelper.isEmptyComboText(alertNameComboBox))
-			return false;
-		try {
-			Double.valueOf(directionValueTextField.getText());
-		} catch (NumberFormatException e) {
-			errorText = "Некорректное значение поля \"Показатель\" (сравниваемое значение) (должно быть числом).";
-			return false;
-		}
-
-		try {
-			Integer.valueOf(lifetimeTextField.getText());
-		} catch (NumberFormatException e) {
-			errorText = "Некорректное значение поля \"Количество срабатываний\" (должно быть целым числом).";
-			return false;
-		}
-
-		return true;
-	}
 
 	public Action CHOOSE_COLOR = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {

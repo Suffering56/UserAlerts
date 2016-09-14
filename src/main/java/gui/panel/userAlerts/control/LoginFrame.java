@@ -1,6 +1,9 @@
 package gui.panel.userAlerts.control;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -12,28 +15,49 @@ import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.ExtendOptionPane;
 
 @SuppressWarnings("serial")
-public class RegistrationBasicFrame extends SwixFrame {
+public class LoginFrame extends SwixFrame {
 
-	public RegistrationBasicFrame(Stock stock) {
+	public LoginFrame(Stock stock) {
 		this.stock = stock;
-		renderPrimary("userAlerts/RegistrationBasicFrame");
-		
-		frame.setTitle("Регистрация");
+		renderPrimary("userAlerts/LoginFrame");
+
+		frame.setTitle("Авторизация");
 	}
 
 	@Override
 	protected void afterRenderInit() {
-		// do nothing...
+		initListeners();
+
+		// test
+		usernameField.setText("test");
+		passField.setText("123");
+	}
+
+	private void initListeners() {
+		KeyListener enterListener = new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 10) {
+					if (usernameField.hasFocus()) {
+						usernameField.transferFocus();
+					} else {
+						APPLY.actionPerformed(null);
+					}
+				}
+			}
+		};
+
+		frame.addKeyListener(enterListener);
+		usernameField.addKeyListener(enterListener);
+		passField.addKeyListener(enterListener);
 	}
 
 	@SuppressWarnings("deprecation")
 	public Action APPLY = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (inputValidation()) {
-				stock.registerUser(usernameField.getText(), passField.getText(), phoneField.getText(), emailField.getText());
+				stock.login(usernameField.getText(), passField.getText());
 				dispose();
-
-				new RegistrationConfirmFrame(stock, usernameField.getText()).show();
 			}
 		}
 
@@ -45,17 +69,6 @@ public class RegistrationBasicFrame extends SwixFrame {
 				result = false;
 			if (passField.getText().isEmpty())
 				result = false;
-			if (passConfirmField.getText().isEmpty())
-				result = false;
-			if (phoneField.getText().isEmpty())
-				result = false;
-			if (emailField.getText().isEmpty())
-				result = false;
-
-			if (!passField.getText().equals(passConfirmField.getText())) {
-				errorMsg = "Введенные пароли не совпадают";
-				result = false;
-			}
 
 			if (!result)
 				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorMsg, "Validation error!");
@@ -71,11 +84,15 @@ public class RegistrationBasicFrame extends SwixFrame {
 		}
 	};
 
-	private Stock stock;
+	public Action REGISTRATION = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			dispose();
+			new RegistrationBasicFrame(stock).show();
+		}
+	};
+
+	private final Stock stock;
 
 	private JTextField usernameField;
 	private JPasswordField passField;
-	private JPasswordField passConfirmField;
-	private JTextField phoneField;
-	private JTextField emailField;
 }

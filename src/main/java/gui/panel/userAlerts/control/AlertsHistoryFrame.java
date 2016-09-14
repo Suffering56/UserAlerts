@@ -84,13 +84,13 @@ public class AlertsHistoryFrame extends SwixFrame implements HistoryFrame {
 	}
 
 	private void updateColumnsWidth() {
-		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.NAME).setWidth(frame.getWidth() * 10 / 100);
+		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.NAME).setWidth(frame.getWidth() * 20 / 100);
 		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.TRIGGER_TIME).setWidth(frame.getWidth() * 20 / 100);
-		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.THEME).setWidth(frame.getWidth() * 70 / 100);
+		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.THEME).setWidth(frame.getWidth() * 60 / 100);
 
-		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.NAME).setMinWidth(frame.getWidth() * 10 / 100);
+		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.NAME).setMinWidth(frame.getWidth() * 20 / 100);
 		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.TRIGGER_TIME).setMinWidth(frame.getWidth() * 20 / 100);
-		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.THEME).setMinWidth(frame.getWidth() * 70 / 100);
+		historyTable.getColumnModel().getColumn(AlertsHistoryTableModel.THEME).setMinWidth(frame.getWidth() * 60 / 100);
 	}
 
 	private void setSelectedRowNumber(int rowNumber) {

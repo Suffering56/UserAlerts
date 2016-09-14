@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<panel name="DarkGreyPanel">
+	<layout type="FormLayout" columns="f:p:g" rows="f:p:g" />
+	<panel constraints="1,1">
+		<layout type="FormLayout" columns="10px:g, f:p, 10px, f:180px, 10px:g" rows="10px:g, f:p, 10px, f:p, 10px, f:p, 10px, f:p, 10px:g" />
+
+		<label constraints="2,4" text="Имя пользователя:" focusable="false" />
+		<textfield constraints="4,4" id="usernameField" name="input" />
+
+		<label constraints="2,6" text="Пароль:" focusable="false" />
+		<passwordField constraints="4,6" id="passField" name="input" />
+
+		<panel constraints="2,2,3,1">
+			<layout type="FormLayout" columns="p:g, f:p, p:g" rows="f:p, 10px" />
+			<button constraints="2,1" name="alerts.main_button" text="Зарегистрироваться" action="REGISTRATION" focusable="false" />
+		</panel>
+
+		<panel constraints="2,8,3,1">
+			<layout type="FormLayout" columns="p:g, f:100px, 10px, f:100px, p:g" rows="f:p" />
+			<button constraints="2,1" name="alerts.main_button" text="Применить" action="APPLY" focusable="false" />
+			<button constraints="4,1" name="alerts.main_button" text="Отменить" action="CANCEL" focusable="false" />
+		</panel>
+	</panel>
+
+</panel>

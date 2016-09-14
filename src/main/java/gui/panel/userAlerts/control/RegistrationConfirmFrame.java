@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import gui.panel.userAlerts.data.remote.Stock;
@@ -12,13 +11,14 @@ import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.ExtendOptionPane;
 
 @SuppressWarnings("serial")
-public class RegistrationBasicFrame extends SwixFrame {
+public class RegistrationConfirmFrame extends SwixFrame {
 
-	public RegistrationBasicFrame(Stock stock) {
+	public RegistrationConfirmFrame(Stock stock, String userName) {
 		this.stock = stock;
-		renderPrimary("userAlerts/RegistrationBasicFrame");
-		
-		frame.setTitle("Регистрация");
+		this.userName = userName;
+		renderPrimary("userAlerts/RegistrationConfirmFrame");
+
+		frame.setTitle("Подтверждение регистрации");
 	}
 
 	@Override
@@ -26,14 +26,12 @@ public class RegistrationBasicFrame extends SwixFrame {
 		// do nothing...
 	}
 
-	@SuppressWarnings("deprecation")
 	public Action APPLY = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			if (inputValidation()) {
-				stock.registerUser(usernameField.getText(), passField.getText(), phoneField.getText(), emailField.getText());
+				stock.confirmRegistration(userName, emailCodeField.getText(), smsCodeField.getText());
 				dispose();
-
-				new RegistrationConfirmFrame(stock, usernameField.getText()).show();
+				new LoginFrame(stock).show();
 			}
 		}
 
@@ -41,21 +39,10 @@ public class RegistrationBasicFrame extends SwixFrame {
 			boolean result = true;
 			String errorMsg = "Пожалуйста заполните все обязательные поля";
 
-			if (usernameField.getText().isEmpty())
+			if (smsCodeField.getText().isEmpty())
 				result = false;
-			if (passField.getText().isEmpty())
+			if (emailCodeField.getText().isEmpty())
 				result = false;
-			if (passConfirmField.getText().isEmpty())
-				result = false;
-			if (phoneField.getText().isEmpty())
-				result = false;
-			if (emailField.getText().isEmpty())
-				result = false;
-
-			if (!passField.getText().equals(passConfirmField.getText())) {
-				errorMsg = "Введенные пароли не совпадают";
-				result = false;
-			}
 
 			if (!result)
 				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorMsg, "Validation error!");
@@ -71,11 +58,9 @@ public class RegistrationBasicFrame extends SwixFrame {
 		}
 	};
 
-	private Stock stock;
+	private final Stock stock;
+	private final String userName;
 
-	private JTextField usernameField;
-	private JPasswordField passField;
-	private JPasswordField passConfirmField;
-	private JTextField phoneField;
-	private JTextField emailField;
+	private JTextField smsCodeField;
+	private JTextField emailCodeField;
 }

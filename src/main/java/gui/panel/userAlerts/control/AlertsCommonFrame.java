@@ -38,9 +38,15 @@ import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 @SuppressWarnings({ "serial", "unused" })
 public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 
-	public AlertsCommonFrame() {
+	public AlertsCommonFrame(Stock stock, boolean isTest) {
+		this(stock);
+		stock._login("test", "123");
+	}
+
+	public AlertsCommonFrame(Stock stock) {
 		instance = this;
-		stock = new Stock(this);
+		this.stock = stock;
+		this.stock.setPrimaryFrame(this);
 
 		frame.setTitle("Алерты");
 		renderPrimary("userAlerts/AlertsCommonFrame");

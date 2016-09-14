@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <panel name="DarkGreyPanel">
-	<layout type="FormLayout" columns="10px:g, f:p, 10px:g" rows="10px:g, f:p, 10px:g" />
+	<layout type="FormLayout" columns="f:p:g" rows="f:p:g" />
+	<panel constraints="1,1">
+		<layout type="FormLayout" columns="10px:g, f:p, 10px, f:180px, 10px:g" rows="10px:g, f:p, 10px, f:p, 10px, f:p, 10px:g" />
+
+		<label constraints="2,2" text="Проверочный код SMS:" />
+		<label constraints="2,4" text="Проверочный код E-mail:" />
+
+		<textfield constraints="4,2" id="smsCodeField" name="input" />
+		<textfield constraints="4,4" id="emailCodeField" name="input" />
+
+		<panel constraints="2,6,3,1">
+			<layout type="FormLayout" columns="p:g, f:100px, 10px, f:100px, p:g" rows="f:p" />
+			<button constraints="2,1" name="alerts.main_button" text="Применить" action="APPLY" />
+			<button constraints="4,1" name="alerts.main_button" text="Отменить" action="CANCEL" />
+		</panel>
+	</panel>
+
 </panel>

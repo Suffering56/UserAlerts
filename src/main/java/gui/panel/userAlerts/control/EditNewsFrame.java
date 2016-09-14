@@ -333,47 +333,47 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorText, "Validation error!");
 			}
 		}
+
+		private boolean inputValidation() {
+			errorText = "Пожалуйста, заполните все обязательные поля.";
+
+			if (SwingHelper.isEmptyComboText(alertNameComboBox))
+				return false;
+
+			if (firstKeyWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(firstKeyWordComboBox))
+				return false;
+			if (secondKeyWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(secondKeyWordComboBox))
+				return false;
+			if (secondExcludeWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(firstExcludeWordComboBox))
+				return false;
+			if (secondExcludeWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(secondExcludeWordComboBox))
+				return false;
+
+			if (emailCheckBox.isSelected())
+				if (SwingHelper.isEmptyComboText(emailComboBox))
+					return false;
+			if (phoneCheckBox.isSelected())
+				if (SwingHelper.isEmptyComboText(phoneComboBox))
+					return false;
+			if (melodyCheckBox.isSelected())
+				if (SwingHelper.isEmptyComboText(melodyComboBox))
+					return false;
+
+			if (treeModel == null || treeModel.convertToNewsLine().equals(StringHelper.EMPTY)) {
+				return false;
+			}
+
+			try {
+				Integer.valueOf(lifetimeTextField.getText());
+			} catch (NumberFormatException e) {
+				errorText = "Некорректное значение поля \"Количество срабатываний\" (должно быть целым числом).";
+				return false;
+			}
+
+			return true;
+		}
 	};
 
-	private boolean inputValidation() {
-		errorText = "Пожалуйста, заполните все обязательные поля.";
-		
-		if (SwingHelper.isEmptyComboText(alertNameComboBox))
-			return false;
-
-		if (firstKeyWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(firstKeyWordComboBox))
-			return false;
-		if (secondKeyWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(secondKeyWordComboBox))
-			return false;
-		if (secondExcludeWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(firstExcludeWordComboBox))
-			return false;
-		if (secondExcludeWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(secondExcludeWordComboBox))
-			return false;
-
-		if (emailCheckBox.isSelected())
-			if (SwingHelper.isEmptyComboText(emailComboBox))
-				return false;
-		if (phoneCheckBox.isSelected())
-			if (SwingHelper.isEmptyComboText(phoneComboBox))
-				return false;
-		if (melodyCheckBox.isSelected())
-			if (SwingHelper.isEmptyComboText(melodyComboBox))
-				return false;
-
-		if (treeModel == null || treeModel.convertToNewsLine().equals(StringHelper.EMPTY)) {
-			return false;
-		}
-
-		try {
-			Integer.valueOf(lifetimeTextField.getText());
-		} catch (NumberFormatException e) {
-			errorText = "Некорректное значение поля \"Количество срабатываний\" (должно быть целым числом).";
-			return false;
-		}
-
-		return true;
-	}
-	
 	private ClientNewsAlert alert;
 
 	private JCheckBox onlyRedNewsCheckBox;
