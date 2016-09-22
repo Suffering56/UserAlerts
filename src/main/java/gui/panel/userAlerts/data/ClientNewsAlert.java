@@ -10,24 +10,21 @@ import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 public class ClientNewsAlert extends ClientAlert {
 
 	public ClientNewsAlert() {
-		this(StringHelper.EMPTY);
+		this(null, true, false, ETERNITY_LIFETIME, true, null, false, null, null, null, null, null, null, null, false, null, false, null, false, null,
+				null, true);
 	}
 
-	public ClientNewsAlert(String name) {
-		this(name, ETERNITY_LIFETIME, true, null, false, null, null, null, null, null, null, null, null, false, null, false, null, false, null, null,
-				true);
-	}
-
-	public ClientNewsAlert(String name, int lifetime, boolean keepHistory, String newsLine, boolean onlyRedNewsOn, String firstKeyWord,
-			String secondKeyWord, Expression keyWordExpression, RelevanceFilterType relevanceFilterType, String firstExcludeWord,
+	public ClientNewsAlert(String name, boolean statusOn, boolean afterTriggerRemove, int lifetime, boolean keepHistory, String newsLine,
+			boolean onlyRedNewsOn, String firstKeyWord, String secondKeyWord, Expression keyWordExpression, String firstExcludeWord,
 			String secondExcludeWord, Expression excludeWordExpression, SEARCH_NEWS_TYPE everywhereFilterType, boolean emailOn, String email,
 			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, Color newsColor, boolean notifyWindowOn) {
 
-		super(name, lifetime, keepHistory, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
+		super(name, statusOn, afterTriggerRemove, keepHistory, null, null, emailOn, email, phoneSmsOn, phoneSms, melodyOn, melody, notifyWindowOn);
+
+		setLifetime(lifetime);
 
 		setNewsLine(newsLine);
 		setOnlyRedNewsOn(onlyRedNewsOn);
-		setNewsColor(newsColor);
 
 		setFirstKeyWord(firstKeyWord);
 		setSecondKeyWord(secondKeyWord);
@@ -37,22 +34,22 @@ public class ClientNewsAlert extends ClientAlert {
 		setSecondExcludeWord(secondExcludeWord);
 		setExcludeWordExpression(excludeWordExpression);
 
-		setRelevanceFilterType(relevanceFilterType);
 		setEverywhereFilterType(everywhereFilterType);
+
+		setNewsColor(newsColor);
 	}
 
 	public ClientNewsAlert(NewsAlert serverAlert) {
-		setServerId(serverAlert.getAlertID());
-		setName(serverAlert.getName());
-
-		setLifetime(serverAlert.getCloseAlertAfterFireups());
-		setKeepHistory(serverAlert.getKeepHistory());
-
 		setCreationDate(serverAlert.getCreationDate());
 		setLastEventDate(serverAlert.getLastFireEventDate());
 
-		setNewsLine(serverAlert.getPTNewsBases());
-		setOnlyRedNewsOn(serverAlert.getUseImportantOnly());
+		setId(serverAlert.getAlertID());
+		setName(serverAlert.getName());
+
+		setKeepHistory(serverAlert.getKeepHistory());
+		setAfterTriggerRemove(serverAlert.getRemoveAfterFireUp());
+		setLifetime(serverAlert.getCloseAlertAfterFireups());
+		setStatusOn(!serverAlert.getDisabledAlert());
 
 		setEmail(serverAlert.getEmail());
 		setEmailOn(!email.isEmpty());
@@ -60,8 +57,11 @@ public class ClientNewsAlert extends ClientAlert {
 		setPhoneSmsOn(!phoneSms.isEmpty());
 		setMelody(serverAlert.getSoundSetup());
 		setMelodyOn(!melody.isEmpty());
-		setNewsColor(serverAlert.getColor());
 		setPopupWindowOn(serverAlert.getPopupWindow());
+
+		setNewsLine(serverAlert.getPTNewsBases());
+		setOnlyRedNewsOn(serverAlert.getUseImportantOnly());
+		setNewsColor(serverAlert.getColor());
 
 		setFirstKeyWord(serverAlert.getSearchWord(0));
 		setSecondKeyWord(serverAlert.getSearchWord(1));
@@ -72,6 +72,92 @@ public class ClientNewsAlert extends ClientAlert {
 		setExcludeWordExpression(convert_NEWS_WORDS_EXPRESSION_to_Expression(serverAlert.getExcludeWordsExpression()));
 
 		setEverywhereFilterType(serverAlert.get_SEARCH_NEWS_TYPE());
+	}
+
+	public NewsAlert convertToServerAlert(boolean isUpdate) {
+		NewsAlert serverAlert = new NewsAlert();
+
+		if (isUpdate)
+			serverAlert.setAlertID(id);
+
+		serverAlert.setName(name);
+
+		serverAlert.setKeepHistory(keepHistory);
+		serverAlert.setRemoveAfterFireUp(afterTriggerRemove);
+		serverAlert.setCloseAlertAfterFireups(lifetime);
+		serverAlert.disableAlert(!statusOn);
+
+		serverAlert.setEmail((emailOn == false) ? StringHelper.EMPTY : email);
+		serverAlert.setPhone((phoneSmsOn == false) ? StringHelper.EMPTY : phoneSms);
+		serverAlert.setSoundSetup((melodyOn == false) ? StringHelper.EMPTY : melody);
+		serverAlert.setPopupWindow(popupWindowOn);
+
+		//
+		serverAlert.setPTNewsBases(newsLine);
+		serverAlert.setUseImportantOnly(onlyRedNewsOn);
+		serverAlert.setColor(newsColor);
+
+		serverAlert.setSearchWord(0, firstKeyWord);
+		serverAlert.setSearchWord(1, secondKeyWord);
+		serverAlert.setSearchWordsExpression(convert_Expression_to_NEWS_WORDS_EXPRESSION(keyWordExpression));
+
+		serverAlert.setExcludeWord(0, firstExcludeWord);
+		serverAlert.setExcludeWord(1, secondExcludeWord);
+		serverAlert.setExcludeWordsExpression(convert_Expression_to_NEWS_WORDS_EXPRESSION(excludeWordExpression));
+
+		serverAlert.set_SEARCH_NEWS_TYPE(everywhereFilterType);
+
+		return serverAlert;
+	}
+
+	private NEWS_WORDS_EXPRESSION convert_Expression_to_NEWS_WORDS_EXPRESSION(Expression expression) {
+		switch (expression) {
+		case NOT:
+			return NEWS_WORDS_EXPRESSION.NOT;
+		case OR:
+			return NEWS_WORDS_EXPRESSION.OR;
+		case AND:
+			return NEWS_WORDS_EXPRESSION.AND;
+		default:
+			return NEWS_WORDS_EXPRESSION.NOT;
+		}
+	}
+
+	private static Expression convert_NEWS_WORDS_EXPRESSION_to_Expression(NEWS_WORDS_EXPRESSION expressionType) {
+		if (expressionType == null)
+			return Expression.NOT;
+
+		switch (expressionType) {
+		case NOT:
+			return Expression.NOT;
+		case OR:
+			return Expression.OR;
+		case AND:
+			return Expression.AND;
+		default:
+			return Expression.NOT;
+		}
+	}
+
+	public int getLifetime() {
+		return lifetime;
+	}
+
+	public String getLifetimeString() {
+		return String.valueOf(lifetime);
+	}
+
+	public void setLifetime(String lifetime) {
+		try {
+			int temp = Integer.valueOf(lifetime);
+			this.lifetime = temp;
+		} catch (NumberFormatException e) {
+			this.lifetime = ETERNITY_LIFETIME;
+		}
+	}
+
+	public void setLifetime(int lifetime) {
+		this.lifetime = lifetime;
 	}
 
 	// Not null!
@@ -161,16 +247,6 @@ public class ClientNewsAlert extends ClientAlert {
 	}
 
 	// Not null!
-	public RelevanceFilterType getRelevanceFilterType() {
-		return relevanceFilterType;
-	}
-
-	// Not null!
-	public void setRelevanceFilterType(RelevanceFilterType relevanceFilterType) {
-		this.relevanceFilterType = (relevanceFilterType == null) ? RelevanceFilterType.BY_RELEVANCE : relevanceFilterType;
-	}
-
-	// Not null!
 	public SEARCH_NEWS_TYPE getEverywhereFilterType() {
 		return everywhereFilterType;
 	}
@@ -180,67 +256,8 @@ public class ClientNewsAlert extends ClientAlert {
 		this.everywhereFilterType = (everywhereFilterType == null) ? SEARCH_NEWS_TYPE.EVERYWERE : everywhereFilterType;
 	}
 
-	public NewsAlert convertToServerNewsAlert(boolean isCreate) {
-		NewsAlert serverNewsAlert = new NewsAlert();
-		
-		if (!isCreate)
-			serverNewsAlert.setAlertID(serverId);
-
-		serverNewsAlert.setName(name);
-
-		serverNewsAlert.setPTNewsBases(newsLine);
-		serverNewsAlert.setUseImportantOnly(onlyRedNewsOn);
-
-		serverNewsAlert.setEmail((emailOn == false) ? StringHelper.EMPTY : email);
-		serverNewsAlert.setPhone((phoneSmsOn == false) ? StringHelper.EMPTY : phoneSms);
-		serverNewsAlert.setSoundSetup((melodyOn == false) ? StringHelper.EMPTY : melody);
-		serverNewsAlert.setColor(newsColor);
-		serverNewsAlert.setPopupWindow(popupWindowOn);
-
-		serverNewsAlert.setSearchWord(0, firstKeyWord);
-		serverNewsAlert.setSearchWord(1, secondKeyWord);
-		serverNewsAlert.setSearchWordsExpression(convert_Expression_to_NEWS_WORDS_EXPRESSION(keyWordExpression));
-
-		serverNewsAlert.setExcludeWord(0, firstExcludeWord);
-		serverNewsAlert.setExcludeWord(1, secondExcludeWord);
-		serverNewsAlert.setExcludeWordsExpression(convert_Expression_to_NEWS_WORDS_EXPRESSION(excludeWordExpression));
-
-		serverNewsAlert.set_SEARCH_NEWS_TYPE(everywhereFilterType);
-
-		serverNewsAlert.setCloseAlertAfterFireups(lifetime);
-		serverNewsAlert.setKeepHistory(keepHistory);
-
-		return serverNewsAlert;
-	}
-
-	private NEWS_WORDS_EXPRESSION convert_Expression_to_NEWS_WORDS_EXPRESSION(Expression expression) {
-		switch (expression) {
-		case NOT:
-			return NEWS_WORDS_EXPRESSION.NOT;
-		case OR:
-			return NEWS_WORDS_EXPRESSION.OR;
-		case AND:
-			return NEWS_WORDS_EXPRESSION.AND;
-		default:
-			return NEWS_WORDS_EXPRESSION.NOT;
-		}
-	}
-
-	private static Expression convert_NEWS_WORDS_EXPRESSION_to_Expression(NEWS_WORDS_EXPRESSION expressionType) {
-		if (expressionType == null)
-			return Expression.NOT;
-
-		switch (expressionType) {
-		case NOT:
-			return Expression.NOT;
-		case OR:
-			return Expression.OR;
-		case AND:
-			return Expression.AND;
-		default:
-			return Expression.NOT;
-		}
-	}
+	// Количество срабатываний алерта
+	private int lifetime;
 
 	// Показать только "красные" новости
 	private boolean onlyRedNewsOn;
@@ -263,8 +280,6 @@ public class ClientNewsAlert extends ClientAlert {
 	// Выражение(нет/или/и)
 	private Expression excludeWordExpression;
 
-	// Фильтр (По релевантности / Точное совпадение)
-	private RelevanceFilterType relevanceFilterType;
 	// Фильтр (Искать везде / Искать только в заголовках / ...)
 	private SEARCH_NEWS_TYPE everywhereFilterType;
 
@@ -272,7 +287,5 @@ public class ClientNewsAlert extends ClientAlert {
 		NOT, OR, AND
 	}
 
-	public enum RelevanceFilterType {
-		BY_RELEVANCE, EXACT_MATCH
-	}
+	public static final int ETERNITY_LIFETIME = 100;
 }

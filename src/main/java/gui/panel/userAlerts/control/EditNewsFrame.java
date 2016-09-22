@@ -24,12 +24,12 @@ import javax.swing.tree.TreePath;
 
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert;
-import gui.panel.userAlerts.data.ClientNewsAlert.RelevanceFilterType;
+import gui.panel.userAlerts.overridden.model.AlertStatusComboModel;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeNode;
 import gui.panel.userAlerts.overridden.renderer.CheckableTreeRenderer;
-import gui.panel.userAlerts.parent.PrimaryFrame;
+import gui.panel.userAlerts.parent.CommonFrame;
 import gui.panel.userAlerts.util.ExtendColorChooser;
 import gui.panel.userAlerts.util.ExtendOptionPane;
 import gui.panel.userAlerts.util.StringHelper;
@@ -39,11 +39,11 @@ import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 @SuppressWarnings({ "serial" })
 public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
-	public EditNewsFrame(PrimaryFrame primaryFrame) {
+	public EditNewsFrame(CommonFrame primaryFrame) {
 		this(primaryFrame, null);
 	}
 
-	public EditNewsFrame(PrimaryFrame primaryFrame, ClientNewsAlert alert) {
+	public EditNewsFrame(CommonFrame primaryFrame, ClientNewsAlert alert) {
 		super(primaryFrame);
 
 		if (alert == null) {
@@ -169,6 +169,13 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 				primaryFrame.enable();
 			}
 		});
+
+		afterTriggerRemoveCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lifetimeTextField.setEnabled(!afterTriggerRemoveCheckBox.isSelected());
+			}
+		});
 	}
 
 	@Override
@@ -186,20 +193,10 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			}
 		}
 
-		lifetimeTextField.setText(alert.getLifetimeString());
-		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
-
 		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNewsOn());
 		setOnlyRedNews();
 
 		NewsExpressionComboModel.setValue(keyWordExpressionComboBox, alert.getKeyWordExpression());
-
-		if (alert.getRelevanceFilterType() == RelevanceFilterType.BY_RELEVANCE) {
-			byRelevanceRadioBtn.setSelected(true);
-		} else {
-			exactMatchRadioBtn.setSelected(true);
-		}
-
 		NewsExpressionComboModel.setValue(excludeWordExpressionComboBox, alert.getExcludeWordExpression());
 
 		if (alert.getEverywhereFilterType() == SEARCH_NEWS_TYPE.EVERYWERE) {
@@ -213,18 +210,27 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		emailCheckBox.setSelected(alert.isEmailOn());
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
-		newsColorCheckBox.setSelected(alert.getNewsColor() != null);
-		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
 
+		newsColorCheckBox.setSelected(alert.getNewsColor() != null);
 		newsColor = (alert.getNewsColor() == null) ? DEFAULT_NEWS_COLOR : alert.getNewsColor();
 		newsColorTextField.setBackground(newsColor);
+		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
+
+		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
+		afterTriggerRemoveCheckBox.setSelected(alert.isAfterTriggerRemove());
+		lifetimeTextField.setText(alert.getLifetimeString());
+		lifetimeTextField.setEnabled(!afterTriggerRemoveCheckBox.isSelected());
+		AlertStatusComboModel.setValue(statusComboBox, alert.isStatusOn());
 	}
 
 	@Override
 	protected void fillAlertFromComponents() {
 		alert.setName(SwingHelper.getComboText(alertNameComboBox));
-		alert.setLifetime(lifetimeTextField.getText());
-		alert.setKeepHistory(keepHistoryCheckBox.isSelected());
+
+		// записать данные из дерева
+		if (treeModel != null) {
+			alert.setNewsLine(treeModel.convertToNewsLine());
+		}
 
 		alert.setOnlyRedNewsOn(onlyRedNewsCheckBox.isSelected());
 
@@ -235,12 +241,6 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		alert.setFirstExcludeWord(SwingHelper.getComboText(firstExcludeWordComboBox));
 		alert.setSecondExcludeWord(SwingHelper.getComboText(secondExcludeWordComboBox));
 		alert.setExcludeWordExpression(NewsExpressionComboModel.getExpressionValue(excludeWordExpressionComboBox));
-
-		if (byRelevanceRadioBtn.isSelected()) {
-			alert.setRelevanceFilterType(RelevanceFilterType.BY_RELEVANCE);
-		} else {
-			alert.setRelevanceFilterType(RelevanceFilterType.EXACT_MATCH);
-		}
 
 		if (everywhereRadioBtn.isSelected()) {
 			alert.setEverywhereFilterType(SEARCH_NEWS_TYPE.EVERYWERE);
@@ -263,10 +263,10 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
 
-		// записать данные из дерева
-		if (treeModel != null) {
-			alert.setNewsLine(treeModel.convertToNewsLine());
-		}
+		alert.setKeepHistory(keepHistoryCheckBox.isSelected());
+		alert.setAfterTriggerRemove(afterTriggerRemoveCheckBox.isSelected());
+		alert.setLifetime(lifetimeTextField.getText());
+		alert.setStatusOn(AlertStatusComboModel.getBooleanValue(statusComboBox));
 	}
 
 	private void addUniqueComboItems(ClientNewsAlert alertItem, boolean isEmptyChecking) {
@@ -284,8 +284,6 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		firstExcludeWordComboBox.setEnabled(enabled);
 		excludeWordExpressionComboBox.setEnabled(enabled);
 
-		byRelevanceRadioBtn.setEnabled(enabled);
-		exactMatchRadioBtn.setEnabled(enabled);
 		everywhereRadioBtn.setEnabled(enabled);
 		titlesOnlyRadioBtn.setEnabled(enabled);
 		redNewsOnlyRadioBtn.setEnabled(enabled);
@@ -316,24 +314,6 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	}
 
 	public Action APPLY = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			if (inputValidation()) {
-
-				fillAlertFromComponents();
-
-				if (TYPE == Type.CREATE) {
-					primaryFrame.createNewsAlert(alert);
-				} else {
-					primaryFrame.updateNewsAlert(alert);
-				}
-
-				dispose();
-				primaryFrame.enable();
-			} else {
-				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorText, "Validation error!");
-			}
-		}
-
 		private boolean inputValidation() {
 			errorText = "Пожалуйста, заполните все обязательные поля.";
 
@@ -372,6 +352,24 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 			return true;
 		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (inputValidation()) {
+
+				fillAlertFromComponents();
+
+				if (TYPE == Type.CREATE) {
+					primaryFrame.createNewsAlert(alert);
+				} else {
+					primaryFrame.updateNewsAlert(alert);
+				}
+
+				dispose();
+				primaryFrame.enable();
+			} else {
+				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorText, "Validation error!");
+			}
+		}
 	};
 
 	private ClientNewsAlert alert;
@@ -386,9 +384,6 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private JComboBox secondExcludeWordComboBox;
 	private JComboBox excludeWordExpressionComboBox;
 
-	private JRadioButton byRelevanceRadioBtn;
-	private JRadioButton exactMatchRadioBtn;
-
 	private JRadioButton everywhereRadioBtn;
 	private JRadioButton titlesOnlyRadioBtn;
 	private JRadioButton redNewsOnlyRadioBtn;
@@ -396,6 +391,8 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	private JCheckBox newsColorCheckBox;
 	private JTextField newsColorTextField;
 	private Color newsColor;
+
+	private JTextField lifetimeTextField;
 
 	private JTree tree;
 	private NewsTreeModel treeModel;

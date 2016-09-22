@@ -8,17 +8,21 @@ import javax.swing.table.AbstractTableModel;
 
 import gui.panel.userAlerts.App;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
-import gui.panel.userAlerts.util.StringHelper;
+import gui.panel.userAlerts.data.remote.Stock;
 
 @SuppressWarnings("serial")
 public class AlertsQuotesTableModel extends AbstractTableModel {
-	
-	public void update(List<ClientQuotesAlert> rows) {
-		this.rows = rows;
+
+	public AlertsQuotesTableModel(Stock stock) {
+		this.stock = stock;
+		update();
+	}
+
+	public void update() {
+		rows = stock.getAllQuotesAlerts();
 		fireTableDataChanged();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (rowIndex < getRowCount()) {
@@ -28,9 +32,9 @@ public class AlertsQuotesTableModel extends AbstractTableModel {
 			case INSTRUMENT:
 				return rows.get(rowIndex).getInstrument();
 			case CREATION_DATE:
-				return (rows.get(rowIndex).getCreationDate() == null) ? StringHelper.EMPTY : rows.get(rowIndex).getCreationDate().toLocaleString();
+				return rows.get(rowIndex).getCreationDateString();
 			case LAST_EVENT_DATE:
-				return (rows.get(rowIndex).getLastEventDate() == null) ? StringHelper.EMPTY : rows.get(rowIndex).getLastEventDate().toLocaleString();
+				return rows.get(rowIndex).getLastEventDateString();
 			}
 		}
 		return "";
@@ -68,9 +72,9 @@ public class AlertsQuotesTableModel extends AbstractTableModel {
 		}
 	}
 
-
+	private final Stock stock;
 	private List<ClientQuotesAlert> rows;
-	
+
 	public static final int NAME = 0;
 	public static final int INSTRUMENT = 1;
 	public static final int CREATION_DATE = 2;

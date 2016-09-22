@@ -9,7 +9,7 @@ import java.util.Properties;
 import gui.panel.userAlerts.App;
 
 public class IOHelper {
-	
+
 	public static void closeStream(InputStream in) {
 		if (in != null) {
 			try {
@@ -40,7 +40,7 @@ public class IOHelper {
 		}
 		return null;
 	}
-	
+
 	public static void sleep(long delay) {
 		try {
 			Thread.sleep(delay);

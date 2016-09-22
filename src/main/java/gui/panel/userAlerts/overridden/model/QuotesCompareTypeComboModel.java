@@ -3,42 +3,42 @@ package gui.panel.userAlerts.overridden.model;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionExpression;
+import p.alerts.client_api.QuoteAlert.COMPARE_TYPE;
 
 @SuppressWarnings("serial")
-public class QuotesDirectionExpressionComboModel extends DefaultComboBoxModel {
-	
-	public QuotesDirectionExpressionComboModel() {
+public class QuotesCompareTypeComboModel extends DefaultComboBoxModel {
+
+	public QuotesCompareTypeComboModel() {
 		addElement(more);
 		addElement(less);
 		addElement(more_equals);
 		addElement(less_equals);
 	}
 
-	public static DirectionExpression getDirectionValue(JComboBox box) {
+	public static COMPARE_TYPE getDirectionValue(JComboBox box) {
 		String displayValue = box.getSelectedItem().toString();
 
 		if (displayValue.equals(more)) {
-			return DirectionExpression.MORE;
+			return COMPARE_TYPE.GREATER;
 		} else if (displayValue.equals(less)) {
-			return DirectionExpression.LESS;
+			return COMPARE_TYPE.LESSER;
 		} else if (displayValue.equals(more_equals)) {
-			return DirectionExpression.MORE_EQUALS;
+			return COMPARE_TYPE.GREATER_EQUALS;
 		} else if (displayValue.equals(less_equals)) {
-			return DirectionExpression.LESS_EQUALS;
+			return COMPARE_TYPE.LESSER_EQUALS;
 		} else {
-			return DirectionExpression.MORE;
+			return COMPARE_TYPE.GREATER;
 		}
 	}
 
-	public static void setValue(JComboBox box, DirectionExpression directionValue) {
-		if (directionValue == DirectionExpression.MORE) {
+	public static void setValue(JComboBox box, COMPARE_TYPE directionValue) {
+		if (directionValue == COMPARE_TYPE.GREATER) {
 			box.setSelectedIndex(more_index);
-		} else if (directionValue == DirectionExpression.LESS) {
+		} else if (directionValue == COMPARE_TYPE.LESSER) {
 			box.setSelectedIndex(less_index);
-		} else if (directionValue == DirectionExpression.MORE_EQUALS) {
+		} else if (directionValue == COMPARE_TYPE.GREATER_EQUALS) {
 			box.setSelectedIndex(more_equals_index);
-		} else if (directionValue == DirectionExpression.LESS_EQUALS) {
+		} else if (directionValue == COMPARE_TYPE.LESSER_EQUALS) {
 			box.setSelectedIndex(less_equals_index);
 		} else {
 			box.setSelectedIndex(more_index);

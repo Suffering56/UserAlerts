@@ -6,19 +6,18 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JTextField;
 
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.remote.Stock;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
-import gui.panel.userAlerts.parent.PrimaryFrame;
+import gui.panel.userAlerts.parent.CommonFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.SwingHelper;
 
 @SuppressWarnings("serial")
 public abstract class AbstractEditFrame extends SwixFrame {
 
-	public AbstractEditFrame(PrimaryFrame primaryFrame) {
+	public AbstractEditFrame(CommonFrame primaryFrame) {
 		this.primaryFrame = primaryFrame;
 		stock = primaryFrame.getStock();
 	}
@@ -48,10 +47,11 @@ public abstract class AbstractEditFrame extends SwixFrame {
 
 	protected Type TYPE;
 	protected final Stock stock;
-	protected final PrimaryFrame primaryFrame;
+	protected final CommonFrame primaryFrame;
 
-	protected JTextField lifetimeTextField;
 	protected JCheckBox keepHistoryCheckBox;
+	protected JCheckBox afterTriggerRemoveCheckBox;
+	protected JComboBox statusComboBox;
 
 	protected JComboBox alertNameComboBox;
 	protected JCheckBox emailCheckBox;

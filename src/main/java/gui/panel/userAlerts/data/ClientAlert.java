@@ -8,18 +8,15 @@ import gui.panel.userAlerts.util.StringHelper;
 public abstract class ClientAlert {
 
 	public ClientAlert() {
-		this(null, ETERNITY_LIFETIME, true, null, null, false, null, false, null, false, null, false);
+		this(null, true, false, true, null, null, false, null, false, null, false, null, true);
 	}
 
-	public ClientAlert(String name, int lifetime, boolean keepHistory, Date creationDate, Date lastEventDate, boolean emailOn, String email,
-			boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean popupWindowOn) {
-
-		this.id = -1;
-		setServerId("temp");
-		setStatusOn(true);
+	public ClientAlert(String name, boolean statusOn, boolean afterTriggerRemove, boolean keepHistory, Date creationDate, Date lastEventDate,
+			boolean emailOn, String email, boolean phoneSmsOn, String phoneSms, boolean melodyOn, String melody, boolean popupWindowOn) {
 
 		setName(name);
-		setLifetime(lifetime);
+		setStatusOn(statusOn);
+		setAfterTriggerRemove(afterTriggerRemove);
 		setKeepHistory(keepHistory);
 
 		setCreationDate(creationDate);
@@ -34,20 +31,20 @@ public abstract class ClientAlert {
 		setPopupWindowOn(popupWindowOn);
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String newsID) {
+		this.id = newsID;
 	}
 
-	public String getServerId() {
-		return serverId;
+	public boolean isAfterTriggerRemove() {
+		return afterTriggerRemove;
 	}
 
-	public void setServerId(String newsID) {
-		this.serverId = newsID;
+	public void setAfterTriggerRemove(boolean afterTriggerRemove) {
+		this.afterTriggerRemove = afterTriggerRemove;
 	}
 
 	public boolean isStatusOn() {
@@ -56,27 +53,6 @@ public abstract class ClientAlert {
 
 	public void setStatusOn(boolean status) {
 		this.statusOn = status;
-	}
-
-	public int getLifetime() {
-		return lifetime;
-	}
-
-	public String getLifetimeString() {
-		return String.valueOf(lifetime);
-	}
-
-	public void setLifetime(String lifetime) {
-		try {
-			int temp = Integer.valueOf(lifetime);
-			this.lifetime = temp;
-		} catch (NumberFormatException e) {
-			this.lifetime = ETERNITY_LIFETIME;
-		}
-	}
-
-	public void setLifetime(int lifetime) {
-		this.lifetime = lifetime;
 	}
 
 	public boolean isKeepHistory() {
@@ -189,14 +165,12 @@ public abstract class ClientAlert {
 	}
 
 	// id алерта
-	protected int id;
-	protected String serverId;
+	protected String id;
 	protected boolean statusOn;
+	protected boolean afterTriggerRemove;
 
 	// Название алерта
 	protected String name;
-	// Количество срабатываний алерта
-	protected int lifetime;
 	// Хранить историю
 	protected boolean keepHistory;
 	// Дата создания
@@ -215,6 +189,4 @@ public abstract class ClientAlert {
 	protected String melody;
 	// Всплывающее окно
 	protected boolean popupWindowOn;
-
-	public static final int ETERNITY_LIFETIME = 99999;
 }

@@ -16,9 +16,9 @@ import javax.swing.JTextField;
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.overridden.model.AlertStatusComboModel;
-import gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel;
-import gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel;
-import gui.panel.userAlerts.parent.PrimaryFrame;
+import gui.panel.userAlerts.overridden.model.QuotesCompareTypeComboModel;
+import gui.panel.userAlerts.overridden.model.QuotesFieldNameComboModel;
+import gui.panel.userAlerts.parent.CommonFrame;
 import gui.panel.userAlerts.util.ExtendColorChooser;
 import gui.panel.userAlerts.util.ExtendOptionPane;
 import gui.panel.userAlerts.util.SwingHelper;
@@ -26,11 +26,11 @@ import gui.panel.userAlerts.util.SwingHelper;
 @SuppressWarnings({ "serial" })
 public class EditQuotesFrame extends AbstractEditFrame {
 
-	public EditQuotesFrame(PrimaryFrame primaryFrame) {
+	public EditQuotesFrame(CommonFrame primaryFrame) {
 		this(primaryFrame, null);
 	}
 
-	public EditQuotesFrame(PrimaryFrame primaryFrame, ClientQuotesAlert alert) {
+	public EditQuotesFrame(CommonFrame primaryFrame, ClientQuotesAlert alert) {
 		super(primaryFrame);
 
 		if (alert == null) {
@@ -84,12 +84,9 @@ public class EditQuotesFrame extends AbstractEditFrame {
 			}
 		}
 
-		lifetimeTextField.setText(alert.getLifetimeString());
-		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
-
-		QuotesDirectionNameComboModel.setValue(directionNameComboBox, alert.getDirectionName());
-		QuotesDirectionExpressionComboModel.setValue(directionExpressionComboBox, alert.getDirectionExpression());
-		directionValueTextField.setText(alert.getDirectionValue());
+		QuotesFieldNameComboModel.setValue(directionNameComboBox, alert.getField());
+		QuotesCompareTypeComboModel.setValue(directionExpressionComboBox, alert.getCompareType());
+		directionValueTextField.setText(alert.getValue());
 
 		lineColor = (alert.getLineColor() == null) ? DEFAULT_LINE_COLOR : alert.getLineColor();
 		lineColorTextField.setBackground(lineColor);
@@ -99,6 +96,8 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		melodyCheckBox.setSelected(alert.isMelodyOn());
 		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
 
+		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
+		afterTriggerRemoveCheckBox.setSelected(alert.isAfterTriggerRemove());
 		AlertStatusComboModel.setValue(statusComboBox, alert.isStatusOn());
 	}
 
@@ -110,14 +109,12 @@ public class EditQuotesFrame extends AbstractEditFrame {
 	@Override
 	protected void fillAlertFromComponents() {
 		alert.setName(SwingHelper.getComboText(alertNameComboBox));
-		alert.setLifetime(lifetimeTextField.getText());
-		alert.setKeepHistory(keepHistoryCheckBox.isSelected());
 
 		alert.setInstrument(SwingHelper.getComboText(instrumentComboBox));
 		alert.setMarketPlace(SwingHelper.getComboText(marketPlaceComboBox));
-		alert.setDirectionName(QuotesDirectionNameComboModel.getDirectionValue(directionNameComboBox));
-		alert.setDirectionExpression(QuotesDirectionExpressionComboModel.getDirectionValue(directionExpressionComboBox));
-		alert.setDirectionValue(directionValueTextField.getText());
+		alert.setField(QuotesFieldNameComboModel.getDirectionValue(directionNameComboBox));
+		alert.setCompareType(QuotesCompareTypeComboModel.getDirectionValue(directionExpressionComboBox));
+		alert.setValue(directionValueTextField.getText());
 
 		alert.setEmailOn(emailCheckBox.isSelected());
 		alert.setEmail(SwingHelper.getComboText(emailComboBox));
@@ -130,6 +127,10 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 		alert.setLineColor(lineColor);
 		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
+
+		alert.setKeepHistory(keepHistoryCheckBox.isSelected());
+		alert.setAfterTriggerRemove(afterTriggerRemoveCheckBox.isSelected());
+		alert.setStatusOn(AlertStatusComboModel.getBooleanValue(statusComboBox));
 	}
 
 	public Action SHOW_CHART = new AbstractAction() {
@@ -167,13 +168,6 @@ public class EditQuotesFrame extends AbstractEditFrame {
 				return false;
 			}
 
-			try {
-				Integer.valueOf(lifetimeTextField.getText());
-			} catch (NumberFormatException e) {
-				errorText = "Некорректное значение поля \"Количество срабатываний\" (должно быть целым числом).";
-				return false;
-			}
-
 			return true;
 		}
 	};
@@ -205,7 +199,6 @@ public class EditQuotesFrame extends AbstractEditFrame {
 	private JPanel chartJPanel;
 	private JTextField lineColorTextField;
 
-	private JComboBox statusComboBox;
 	private String errorText;
 	private Color lineColor;
 

@@ -62,7 +62,7 @@ public class AlertsHistoryFrame extends SwixFrame implements HistoryFrame {
 
 		historyTable.setDefaultRenderer(Object.class, new TableMainRenderer());
 		historyTable.setDefaultRenderer(JTextArea.class, new TableTextAreaRenderer());
-		
+
 		historyTable.setModel(historyModel);
 
 		updateColumnsWidth();

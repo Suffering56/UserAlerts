@@ -4,7 +4,7 @@ import gui.panel.userAlerts.data.ClientNewsAlert;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.data.remote.Stock;
 
-public interface PrimaryFrame extends Disablable {
+public interface CommonFrame extends Disablable {
 
 	public void createNewsAlert(ClientNewsAlert alert);
 
@@ -16,6 +16,7 @@ public interface PrimaryFrame extends Disablable {
 
 	public void updateNewsAlertsTableFromStock();
 
-	public Stock getStock();
+	public void updateQuotesAlertsTableFromStock();
 
+	public Stock getStock();
 }

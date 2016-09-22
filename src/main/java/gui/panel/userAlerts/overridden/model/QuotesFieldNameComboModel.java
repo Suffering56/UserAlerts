@@ -3,42 +3,42 @@ package gui.panel.userAlerts.overridden.model;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionName;
+import gui.panel.userAlerts.data.ClientQuotesAlert.Field;
 
 @SuppressWarnings("serial")
-public class QuotesDirectionNameComboModel extends DefaultComboBoxModel {
+public class QuotesFieldNameComboModel extends DefaultComboBoxModel {
 
-	public QuotesDirectionNameComboModel() {
+	public QuotesFieldNameComboModel() {
 		addElement(last);
 		addElement(close);
 		addElement(bid);
 		addElement(ask);
 	}
 
-	public static DirectionName getDirectionValue(JComboBox box) {
+	public static Field getDirectionValue(JComboBox box) {
 		String displayValue = box.getSelectedItem().toString();
 
 		if (displayValue.equals(last)) {
-			return DirectionName.LAST;
+			return Field.LAST;
 		} else if (displayValue.equals(close)) {
-			return DirectionName.CLOSE;
+			return Field.CLOSE;
 		} else if (displayValue.equals(bid)) {
-			return DirectionName.BID;
+			return Field.BID;
 		} else if (displayValue.equals(ask)) {
-			return DirectionName.ASK;
+			return Field.ASK;
 		} else {
-			return DirectionName.LAST;
+			return Field.LAST;
 		}
 	}
 
-	public static void setValue(JComboBox box, DirectionName directionValue) {
-		if (directionValue == DirectionName.LAST) {
+	public static void setValue(JComboBox box, Field directionValue) {
+		if (directionValue == Field.LAST) {
 			box.setSelectedIndex(last_index);
-		} else if (directionValue == DirectionName.CLOSE) {
+		} else if (directionValue == Field.CLOSE) {
 			box.setSelectedIndex(close_index);
-		} else if (directionValue == DirectionName.BID) {
+		} else if (directionValue == Field.BID) {
 			box.setSelectedIndex(bid_index);
-		} else if (directionValue == DirectionName.ASK) {
+		} else if (directionValue == Field.ASK) {
 			box.setSelectedIndex(ask_index);
 		} else {
 			box.setSelectedIndex(last_index);

@@ -17,13 +17,13 @@
 			<label constraints="1,5" text="Площадка" />
 			<combobox constraints="5,5" id="marketPlaceComboBox" editable="true" />
 
-			<label constraints="1,7" text="Показатель" />
-			<combobox constraints="3,7" id="directionNameComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesDirectionNameComboModel" />
+			<label constraints="1,7" text="Поле" />
+			<combobox constraints="3,7" id="directionNameComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesFieldNameComboModel" />
 
 			<panel constraints="5,7">
 				<layout type="FormLayout" columns="f:50px, 10px:g, f:100px" rows="f:p" />
 
-				<combobox constraints="1,1" id="directionExpressionComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesDirectionExpressionComboModel" />
+				<combobox constraints="1,1" id="directionExpressionComboBox" initclass="gui.panel.userAlerts.overridden.model.QuotesCompareTypeComboModel" />
 				<textfield constraints="3,1" id="directionValueTextField" name="input" />
 			</panel>
 
@@ -63,12 +63,11 @@
 
 			<checkbox constraints="1,9" id="keepHistoryCheckBox" text="Хранить историю" selected="true" />
 
-			<label constraints="1,11" text="Количество срабатываний" />
-			<textfield constraints="3,11" id="lifetimeTextField" name="input" text="999" />
+			<checkbox constraints="1,11" id="afterTriggerRemoveCheckBox" text="Удалять после срабатывания" />
 		</panel>
 
 		<panel constraints="1,7">
-			<layout type="FormLayout" columns="f:p, 10px:g, f:p, 10px, f:p" rows="10px, f:p" />
+			<layout type="FormLayout" columns="f:p, 10px:g, f:100px, 10px, f:100px" rows="10px, f:p" />
 
 			<combobox constraints="1,2" id="statusComboBox" initclass="gui.panel.userAlerts.overridden.model.AlertStatusComboModel" />
 			<button constraints="3,2" name="alerts.main_button" text="Применить" action="APPLY" />

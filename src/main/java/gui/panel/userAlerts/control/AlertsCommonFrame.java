@@ -20,9 +20,7 @@ import javax.swing.table.JTableHeader;
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert.Expression;
-import gui.panel.userAlerts.data.ClientNewsAlert.RelevanceFilterType;
-import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionExpression;
-import gui.panel.userAlerts.data.ClientQuotesAlert.DirectionName;
+import gui.panel.userAlerts.data.ClientQuotesAlert.Field;
 import gui.panel.userAlerts.data.remote.RemoteBasicAPI;
 import gui.panel.userAlerts.data.remote.Stock;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
@@ -30,13 +28,13 @@ import gui.panel.userAlerts.overridden.model.AlertsNewsTableModel;
 import gui.panel.userAlerts.overridden.model.AlertsQuotesTableModel;
 import gui.panel.userAlerts.overridden.renderer.TableHeaderRenderer;
 import gui.panel.userAlerts.overridden.renderer.TableMainRenderer;
-import gui.panel.userAlerts.parent.PrimaryFrame;
+import gui.panel.userAlerts.parent.CommonFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.IOHelper;
 import p.alerts.client_api.NewsAlert.SEARCH_NEWS_TYPE;
 
 @SuppressWarnings({ "serial", "unused" })
-public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
+public class AlertsCommonFrame extends SwixFrame implements CommonFrame {
 
 	public AlertsCommonFrame(Stock stock, boolean isTest) {
 		this(stock);
@@ -46,7 +44,7 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 	public AlertsCommonFrame(Stock stock) {
 		instance = this;
 		this.stock = stock;
-		this.stock.setPrimaryFrame(this);
+		this.stock.setCommonFrame(this);
 
 		frame.setTitle("Алерты");
 		renderPrimary("userAlerts/AlertsCommonFrame");
@@ -65,23 +63,21 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 		newsModel.update();
 		newsAlertsLoadingPanel.setVisible(false);
 		newsAlertsPanel.setVisible(true);
+		pack();
+	}
+
+	@Override
+	public void updateQuotesAlertsTableFromStock() {
+		quotesModel.update();
+		quotesAlertsLoadingPanel.setVisible(false);
+		quotesAlertsPanel.setVisible(true);
+		pack();
 	}
 
 	@Override
 	protected void afterRenderInit() {
 		initNewsTable();
 		initQuotesTable();
-
-		/**
-		 * Quotes
-		 */
-		createQuotesAlert(new ClientQuotesAlert("Alert 4", ClientAlert.ETERNITY_LIFETIME, true, "instrument_4", "marketplace_4", DirectionName.LAST,
-				DirectionExpression.LESS_EQUALS, "400.0", true, "quote4@mail.ru", true, "+7quote4", true, "quote4.mp3", null, true));
-
-		createQuotesAlert(new ClientQuotesAlert("Alert 5", ClientAlert.ETERNITY_LIFETIME, true, "instrument_5", "marketplace_5", DirectionName.BID,
-				DirectionExpression.LESS, "500.0", true, "quote5@mail.ru", true, "+7quote5", true, "quote5.mp3", Color.RED, true));
-
-		createQuotesAlert(new ClientQuotesAlert("Alert 6"));
 	}
 
 	private void initNewsTable() {
@@ -98,12 +94,15 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					setSelectedNewsRowNumber(newsTable.rowAtPoint(e.getPoint()));
 				}
+				if (e.getClickCount() > 1) {
+					EDIT_NEWS_ALERT.actionPerformed(null);
+				}
 			}
 		});
 	}
 
 	private void initQuotesTable() {
-		quotesModel = new AlertsQuotesTableModel();
+		quotesModel = new AlertsQuotesTableModel(stock);
 		quotesHeader = quotesTable.getTableHeader();
 
 		quotesHeader.setDefaultRenderer(new TableHeaderRenderer(quotesHeader));
@@ -116,69 +115,58 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					setSelectedQuotesRowNumber(quotesTable.rowAtPoint(e.getPoint()));
 				}
+				if (e.getClickCount() > 1) {
+					EDIT_QUOTES_ALERT.actionPerformed(null);
+				}
 			}
 		});
-
 	}
 
 	public Action CREATE_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				new EditNewsFrame(instance).show();
-			}
+			new EditNewsFrame(instance).show();
 		}
 	};
 
 	public Action CREATE_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				new EditQuotesFrame(instance).show();
-			}
+			new EditQuotesFrame(instance).show();
 		}
 	};
 
 	public Action EDIT_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				ClientNewsAlert alert = newsModel.getAlertByRowNumber(selectedNewsRowNumber);
-				new EditNewsFrame(instance, alert).show();
-			}
+			ClientNewsAlert alert = newsModel.getAlertByRowNumber(selectedNewsRowNumber);
+			new EditNewsFrame(instance, alert).show();
 		}
 	};
 
 	public Action EDIT_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				ClientQuotesAlert alert = quotesModel.getAlertByRowNumber(selectedQuotesRowNumber);
-				new EditQuotesFrame(instance, alert).show();
-			}
+			ClientQuotesAlert alert = quotesModel.getAlertByRowNumber(selectedQuotesRowNumber);
+			new EditQuotesFrame(instance, alert).show();
 		}
 	};
+
 	public Action REMOVE_NEWS_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				ClientNewsAlert alert = newsModel.getAlertByRowNumber(selectedNewsRowNumber);
-				removeNewsAlert(alert);
-				setSelectedNewsRowNumber(-1);
-			}
+			ClientNewsAlert alert = newsModel.getAlertByRowNumber(selectedNewsRowNumber);
+			removeNewsAlert(alert);
+			setSelectedNewsRowNumber(-1);
 		}
 	};
 
 	public Action REMOVE_QUOTES_ALERT = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				ClientQuotesAlert alert = quotesModel.getAlertByRowNumber(selectedQuotesRowNumber);
-				removeQuotesAlert(alert);
-				setSelectedQuotesRowNumber(-1);
-			}
+			ClientQuotesAlert alert = quotesModel.getAlertByRowNumber(selectedQuotesRowNumber);
+			removeQuotesAlert(alert);
+			setSelectedQuotesRowNumber(-1);
 		}
 	};
 
 	public Action SHOW_HISTORY = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
-			if (e != null) {
-				new AlertsHistoryFrame(stock).show();
-			}
+			new AlertsHistoryFrame(stock).show();
 		}
 	};
 
@@ -202,34 +190,29 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 	}
 
 	@Override
-	public void createQuotesAlert(ClientQuotesAlert alert) {
-		stock.createQuotesAlert(alert);
-		quotesModel.update(stock.getAllQuotesAlerts());
-	}
-
-	@Override
 	public void updateNewsAlert(ClientNewsAlert alert) {
 		stock.updateNewsAlert(alert);
-	}
-
-	@Override
-	public void updateQuotesAlert(ClientQuotesAlert alert) {
-		stock.removeQuotesAlert(alert.getId());
-		stock.createQuotesAlert(alert);
-		quotesModel.update(stock.getAllQuotesAlerts());
 	}
 
 	private void removeNewsAlert(ClientNewsAlert alert) {
 		if (alert != null) {
 			stock.removeNewsAlert(alert);
-			newsModel.update();
 		}
+	}
+
+	@Override
+	public void createQuotesAlert(ClientQuotesAlert alert) {
+		stock.createQuotesAlert(alert);
+	}
+
+	@Override
+	public void updateQuotesAlert(ClientQuotesAlert alert) {
+		stock.updateQuotesAlert(alert);
 	}
 
 	private void removeQuotesAlert(ClientQuotesAlert alert) {
 		if (alert != null) {
-			stock.removeQuotesAlert(alert.getId());
-			quotesModel.update(stock.getAllQuotesAlerts());
+			stock.removeQuotesAlert(alert);
 		}
 	}
 
@@ -250,6 +233,8 @@ public class AlertsCommonFrame extends SwixFrame implements PrimaryFrame {
 	private JTable quotesTable;
 	private JTableHeader quotesHeader;
 	private AlertsQuotesTableModel quotesModel;
+	private JPanel quotesAlertsPanel;
+	private JPanel quotesAlertsLoadingPanel;
 
 	private int selectedNewsRowNumber = -1;
 	private int selectedQuotesRowNumber = -1;

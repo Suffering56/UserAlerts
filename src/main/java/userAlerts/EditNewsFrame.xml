@@ -7,8 +7,8 @@
 			rows="f:p, 10px, f:p, 10px, f:p,
 			 		10px, f:p, 10px, f:p, 10px,
 			  			f:p, 10px, f:p, 10px, f:p,
-			   				10px, f:p, 10px, f:25px, 10px, 
-			   								1px, 10px, f:p" />
+			   				10px, f:p, 10px, f:p, 10px, 
+			   					f:25px, 10px, 1px, 10px, f:p" />
 
 		<panel constraints="1,1,3,1">
 			<layout type="FormLayout" columns="f:p, 10px, f:p:g" rows="f:p" />
@@ -34,19 +34,6 @@
 				<label constraints="5,2" text="Ключевая фраза 2" />
 				<combobox constraints="5,4" id="secondKeyWordComboBox" editable="true" enabled="false" />
 			</panel>
-
-			<!-- Removed -->
-			<panel constraints="1,4" visible="false">
-				<layout type="FormLayout" columns="p:g, f:p, 20px, f:p, p:g" rows="10px, f:p, 10px, 1px" />
-
-				<buttongroup>
-					<radiobutton constraints="2,2" id="byRelevanceRadioBtn" text="По релевантности" selected="true" />
-					<radiobutton constraints="4,2" id="exactMatchRadioBtn" text="Точное совпадение" />
-				</buttongroup>
-
-				<separator constraints="1,4,5,1" orientation="HORIZONTAL" />
-			</panel>
-			<!-- _______ -->
 
 			<panel constraints="1,5">
 				<layout type="FormLayout" columns="f:p:g, 10px, f:p, 10px, f:p:g" rows="10px, f:p, 10px, f:p" />
@@ -91,17 +78,21 @@
 		</panel>
 
 		<checkbox constraints="1,15" id="notifyWindowCheckBox" text="Всплывающее окно" />
-		<checkbox constraints="1,17" id="keepHistoryCheckBox" text="Хранить историю" selected="true" />
+		<checkbox constraints="1,17" id="keepHistoryCheckBox" text="Хранить историю" />
 
-		<label constraints="1,19" text="Количество срабатываний" />
-		<textfield constraints="3,19" id="lifetimeTextField" name="input" text="999" />
+		<checkbox constraints="1,19" id="afterTriggerRemoveCheckBox" text="Удалять после срабатывания" />
 
-		<separator constraints="1,21,3,1" orientation="HORIZONTAL" />
+		<label constraints="1,21" text="Количество срабатываний" />
+		<textfield constraints="3,21" id="lifetimeTextField" name="input" text="999" />
 
-		<panel constraints="1,23,3,1">
-			<layout type="FormLayout" columns="p:g, f:p, 10px, f:p, p:g" rows="f:p" />
-			<button constraints="2,1" name="alerts.main_button" text="Применить" action="APPLY" />
-			<button constraints="4,1" name="alerts.main_button" text="Отменить" action="CANCEL" />
+		<separator constraints="1,23,3,1" orientation="HORIZONTAL" />
+
+		<panel constraints="1,25,3,1">
+			<layout type="FormLayout" columns="f:p, 10px:g, f:100px, 10px, f:100px" rows="10px, f:p" />
+
+			<combobox constraints="1,2" id="statusComboBox" initclass="gui.panel.userAlerts.overridden.model.AlertStatusComboModel" />
+			<button constraints="3,2" name="alerts.main_button" text="Применить" action="APPLY" />
+			<button constraints="5,2" name="alerts.main_button" text="Отменить" action="CANCEL" />
 		</panel>
 
 	</panel>
