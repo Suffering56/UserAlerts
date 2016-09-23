@@ -225,6 +225,7 @@ public class RemoteExtendAPI extends RemoteBasicAPI {
 
 	// =========================== NewsAlert ===========================
 	public void createNewsAlert(ClientNewsAlert alert) {
+		//		System.out.println("phone=" + alert.getPhoneSms() + " email=" + alert.getEmail() + " melody=" + alert.getMelody());//convertToServerAlert(false).getSoundSetup()
 		extendAlertsAPI.createAlertAsync(alert.convertToServerAlert(false), newsAlertExtensionListener);
 	}
 
@@ -238,6 +239,7 @@ public class RemoteExtendAPI extends RemoteBasicAPI {
 
 	// =========================== QuotesAlert ===========================
 	public void createQuotesAlert(ClientQuotesAlert alert) {
+		//		System.out.println("phone=" + alert.getPhoneSms() + " email=" + alert.getEmail());
 		extendAlertsAPI.createAlertAsync(alert.convertToServerAlert(false), quotesAlertExtensionListener);
 	}
 

@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import gui.panel.userAlerts.data.ClientAlert;
+import gui.panel.userAlerts.data.ClientNewsAlert;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.overridden.model.AlertStatusComboModel;
 import gui.panel.userAlerts.overridden.model.QuotesCompareTypeComboModel;
@@ -49,6 +50,7 @@ public class EditQuotesFrame extends AbstractEditFrame {
 
 	@Override
 	protected void afterRenderInit() {
+		initCommonListeners();
 		initListeners();
 		fillComponentsFromAlert();
 	}
@@ -72,17 +74,20 @@ public class EditQuotesFrame extends AbstractEditFrame {
 	@Override
 	protected void fillComponentsFromAlert() {
 		addCommonComboItems(alert, false);
-		addUniqueComboItems(alert, false);
+		addQuotesComboItems(alert, false);
 
-		for (ClientAlert commonAlert : stock.getAllAlerts()) {
-			if (alert != commonAlert) {
-				addCommonComboItems(commonAlert, true);
-				if (commonAlert instanceof ClientQuotesAlert) {
-					ClientQuotesAlert newsAlert = (ClientQuotesAlert) commonAlert;
-					addUniqueComboItems(newsAlert, true);
-				}
+		for (ClientQuotesAlert quotesAlert : stock.getAllQuotesAlerts()) {
+			if (alert != quotesAlert) {
+				addCommonComboItems(quotesAlert, true);
+				addQuotesComboItems(quotesAlert, true);
 			}
 		}
+
+		for (ClientNewsAlert newsAlert : stock.getAllNewsAlerts()) {
+			addCommonComboItems(newsAlert, true);
+		}
+
+		addEmailPhoneAndMelodyComboItems();
 
 		QuotesFieldNameComboModel.setValue(directionNameComboBox, alert.getField());
 		QuotesCompareTypeComboModel.setValue(directionExpressionComboBox, alert.getCompareType());
@@ -94,6 +99,11 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		emailCheckBox.setSelected(alert.isEmailOn());
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
+
+		emailCheckBoxListener.actionPerformed(null);
+		melodyCheckBoxListener.actionPerformed(null);
+		phoneCheckBoxListener.actionPerformed(null);
+
 		notifyWindowCheckBox.setSelected(alert.isPopupWindowOn());
 
 		keepHistoryCheckBox.setSelected(alert.isKeepHistory());
@@ -101,7 +111,11 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		AlertStatusComboModel.setValue(statusComboBox, alert.isStatusOn());
 	}
 
-	private void addUniqueComboItems(ClientQuotesAlert alertItem, boolean isEmptyChecking) {
+	private void addCommonComboItems(ClientAlert alertItem, boolean isEmptyChecking) {
+		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), isEmptyChecking);
+	}
+
+	private void addQuotesComboItems(ClientQuotesAlert alertItem, boolean isEmptyChecking) {
 		SwingHelper.addComboItem(instrumentComboBox, alertItem.getInstrument(), isEmptyChecking);
 		SwingHelper.addComboItem(marketPlaceComboBox, alertItem.getMarketPlace(), isEmptyChecking);
 	}
@@ -117,13 +131,13 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		alert.setValue(directionValueTextField.getText());
 
 		alert.setEmailOn(emailCheckBox.isSelected());
-		alert.setEmail(SwingHelper.getComboText(emailComboBox));
+		alert.setEmail(emailComboBox.getSelectedItem().toString());
 
 		alert.setPhoneSmsOn(phoneCheckBox.isSelected());
-		alert.setPhoneSms(SwingHelper.getComboText(phoneComboBox));
+		alert.setPhoneSms(phoneComboBox.getSelectedItem().toString());
 
 		alert.setMelodyOn(melodyCheckBox.isSelected());
-		alert.setMelody(SwingHelper.getComboText(melodyComboBox));
+		alert.setMelody(melodyComboBox.getSelectedItem().toString());
 
 		alert.setLineColor(lineColor);
 		alert.setPopupWindowOn(notifyWindowCheckBox.isSelected());
@@ -137,38 +151,6 @@ public class EditQuotesFrame extends AbstractEditFrame {
 		public void actionPerformed(ActionEvent e) {
 			chartJPanel.setVisible(!chartJPanel.isVisible());
 			pack();
-		}
-	};
-
-	public Action APPLY = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			if (inputValidation()) {
-				fillAlertFromComponents();
-				if (TYPE == Type.CREATE) {
-					primaryFrame.createQuotesAlert(alert);
-				} else {
-					primaryFrame.updateQuotesAlert(alert);
-				}
-				dispose();
-				primaryFrame.enable();
-			} else {
-				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorText, "Validation error!");
-			}
-		}
-
-		private boolean inputValidation() {
-			errorText = "Пожалуйста, заполните все обязательные поля.";
-
-			if (SwingHelper.isEmptyComboText(alertNameComboBox))
-				return false;
-			try {
-				Double.valueOf(directionValueTextField.getText());
-			} catch (NumberFormatException e) {
-				errorText = "Некорректное значение поля \"Показатель\" (сравниваемое значение) (должно быть числом).";
-				return false;
-			}
-
-			return true;
 		}
 	};
 
@@ -186,6 +168,42 @@ public class EditQuotesFrame extends AbstractEditFrame {
 			lineColorTextField.setBackground(lineColor);
 		}
 	}
+
+	public Action APPLY = new AbstractAction() {
+
+		private boolean inputValidation() {
+			errorText = "Пожалуйста, заполните все обязательные поля.";
+
+			if (SwingHelper.isEmptyComboText(alertNameComboBox))
+				return false;
+			try {
+				Double.valueOf(directionValueTextField.getText());
+			} catch (NumberFormatException e) {
+				errorText = "Некорректное значение поля \"Показатель\" (сравниваемое значение) (должно быть числом).";
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * APPLY
+		 */
+		public void actionPerformed(ActionEvent e) {
+			if (inputValidation()) {
+				fillAlertFromComponents();
+				if (TYPE == Type.CREATE) {
+					primaryFrame.createQuotesAlert(alert);
+				} else {
+					primaryFrame.updateQuotesAlert(alert);
+				}
+				dispose();
+				primaryFrame.enable();
+			} else {
+				new ExtendOptionPane().showBasicLookAndFeelMessageError(errorText, "Validation error!");
+			}
+		}
+	};
 
 	private ClientQuotesAlert alert;
 

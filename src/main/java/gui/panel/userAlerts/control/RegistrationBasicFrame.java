@@ -1,9 +1,12 @@
 package gui.panel.userAlerts.control;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -17,13 +20,22 @@ public class RegistrationBasicFrame extends SwixFrame {
 	public RegistrationBasicFrame(Stock stock) {
 		this.stock = stock;
 		renderPrimary("userAlerts/RegistrationBasicFrame");
-		
+
 		frame.setTitle("Регистрация");
 	}
 
 	@Override
 	protected void afterRenderInit() {
-		// do nothing...
+		agreeCheckBoxListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				applyBtn.setEnabled(agreeCheckBox.isSelected());
+			}
+		};
+
+		agreeCheckBox.addActionListener(agreeCheckBoxListener);
+
+		agreeCheckBoxListener.actionPerformed(null);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -78,4 +90,8 @@ public class RegistrationBasicFrame extends SwixFrame {
 	private JPasswordField passConfirmField;
 	private JTextField phoneField;
 	private JTextField emailField;
+
+	private JCheckBox agreeCheckBox;
+	private JButton applyBtn;
+	private ActionListener agreeCheckBoxListener;
 }

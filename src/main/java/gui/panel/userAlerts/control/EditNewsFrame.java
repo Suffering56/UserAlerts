@@ -24,6 +24,7 @@ import javax.swing.tree.TreePath;
 
 import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert;
+import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.overridden.model.AlertStatusComboModel;
 import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.overridden.model.NewsTreeModel;
@@ -68,6 +69,7 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 
 	@Override
 	protected void afterRenderInit() {
+		initCommonListeners();
 		initListeners();
 		fillComponentsFromAlert();
 		updateTreeModel();
@@ -181,17 +183,20 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 	@Override
 	protected void fillComponentsFromAlert() {
 		addCommonComboItems(alert, false);
-		addUniqueComboItems(alert, false);
+		addNewsComboItems(alert, false);
 
-		for (ClientAlert commonAlert : stock.getAllAlerts()) {
-			if (alert != commonAlert) {
-				addCommonComboItems(commonAlert, true);
-				if (commonAlert instanceof ClientNewsAlert) {
-					ClientNewsAlert newsAlert = (ClientNewsAlert) commonAlert;
-					addUniqueComboItems(newsAlert, true);
-				}
+		for (ClientNewsAlert newsAlert : stock.getAllNewsAlerts()) {
+			if (alert != newsAlert) {
+				addCommonComboItems(newsAlert, true);
+				addNewsComboItems(newsAlert, true);
 			}
 		}
+
+		for (ClientQuotesAlert quotesAlert : stock.getAllQuotesAlerts()) {
+			addCommonComboItems(quotesAlert, true);
+		}
+
+		addEmailPhoneAndMelodyComboItems();
 
 		onlyRedNewsCheckBox.setSelected(alert.isOnlyRedNewsOn());
 		setOnlyRedNews();
@@ -210,6 +215,10 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		emailCheckBox.setSelected(alert.isEmailOn());
 		phoneCheckBox.setSelected(alert.isPhoneSmsOn());
 		melodyCheckBox.setSelected(alert.isMelodyOn());
+		
+		emailCheckBoxListener.actionPerformed(null);
+		melodyCheckBoxListener.actionPerformed(null);
+		phoneCheckBoxListener.actionPerformed(null);
 
 		newsColorCheckBox.setSelected(alert.getNewsColor() != null);
 		newsColor = (alert.getNewsColor() == null) ? DEFAULT_NEWS_COLOR : alert.getNewsColor();
@@ -221,6 +230,17 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		lifetimeTextField.setText(alert.getLifetimeString());
 		lifetimeTextField.setEnabled(!afterTriggerRemoveCheckBox.isSelected());
 		AlertStatusComboModel.setValue(statusComboBox, alert.isStatusOn());
+	}
+
+	private void addCommonComboItems(ClientAlert alertItem, boolean isEmptyChecking) {
+		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), isEmptyChecking);
+	}
+
+	private void addNewsComboItems(ClientNewsAlert alertItem, boolean isEmptyChecking) {
+		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), isEmptyChecking);
+		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), isEmptyChecking);
+		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), isEmptyChecking);
+		SwingHelper.addComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), isEmptyChecking);
 	}
 
 	@Override
@@ -251,13 +271,11 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		}
 
 		alert.setEmailOn(emailCheckBox.isSelected());
-		alert.setEmail(SwingHelper.getComboText(emailComboBox));
-
+		alert.setEmail(emailComboBox.getSelectedItem().toString()); 
 		alert.setPhoneSmsOn(phoneCheckBox.isSelected());
-		alert.setPhoneSms(SwingHelper.getComboText(phoneComboBox));
-
+		alert.setPhoneSms(phoneComboBox.getSelectedItem().toString());
 		alert.setMelodyOn(melodyCheckBox.isSelected());
-		alert.setMelody(SwingHelper.getComboText(melodyComboBox));
+		alert.setMelody(melodyComboBox.getSelectedItem().toString());
 
 		alert.setNewsColor(!newsColorCheckBox.isSelected() ? null : newsColor);
 
@@ -267,13 +285,6 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 		alert.setAfterTriggerRemove(afterTriggerRemoveCheckBox.isSelected());
 		alert.setLifetime(lifetimeTextField.getText());
 		alert.setStatusOn(AlertStatusComboModel.getBooleanValue(statusComboBox));
-	}
-
-	private void addUniqueComboItems(ClientNewsAlert alertItem, boolean isEmptyChecking) {
-		SwingHelper.addComboItem(firstKeyWordComboBox, alertItem.getFirstKeyWord(), isEmptyChecking);
-		SwingHelper.addComboItem(secondKeyWordComboBox, alertItem.getSecondKeyWord(), isEmptyChecking);
-		SwingHelper.addComboItem(firstExcludeWordComboBox, alertItem.getFirstExcludeWord(), isEmptyChecking);
-		SwingHelper.addComboItem(secondExcludeWordComboBox, alertItem.getSecondExcludeWord(), isEmptyChecking);
 	}
 
 	private void setOnlyRedNews() {
@@ -295,6 +306,11 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			secondKeyWordComboBox.setEnabled(false);
 			secondExcludeWordComboBox.setEnabled(false);
 		}
+	}
+
+	private void setSecondComboBoxState(JComboBox expressionBox, JComboBox secondBox) {
+		boolean enabled = !expressionBox.getSelectedItem().equals(NewsExpressionComboModel.not);
+		secondBox.setEnabled(enabled);
 	}
 
 	public Action CHOOSE_COLOR = new AbstractAction() {
@@ -329,16 +345,6 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			if (secondExcludeWordComboBox.isEnabled() && SwingHelper.isEmptyComboText(secondExcludeWordComboBox))
 				return false;
 
-			if (emailCheckBox.isSelected())
-				if (SwingHelper.isEmptyComboText(emailComboBox))
-					return false;
-			if (phoneCheckBox.isSelected())
-				if (SwingHelper.isEmptyComboText(phoneComboBox))
-					return false;
-			if (melodyCheckBox.isSelected())
-				if (SwingHelper.isEmptyComboText(melodyComboBox))
-					return false;
-
 			if (treeModel == null || treeModel.convertToNewsLine().equals(StringHelper.EMPTY)) {
 				return false;
 			}
@@ -353,6 +359,9 @@ public class EditNewsFrame extends AbstractEditFrame implements Observer {
 			return true;
 		}
 
+		/**
+		 * APPLY
+		 */
 		public void actionPerformed(ActionEvent e) {
 			if (inputValidation()) {
 

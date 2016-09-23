@@ -61,13 +61,13 @@
 		</panel>
 
 		<checkbox constraints="1,7" id="emailCheckBox" text="Информировать по e-mail" />
-		<combobox constraints="3,7" id="emailComboBox" editable="true" />
+		<combobox constraints="3,7" id="emailComboBox" />
 
 		<checkbox constraints="1,9" id="phoneCheckBox" text="Информировать по SMS" />
-		<combobox constraints="3,9" id="phoneComboBox" editable="true" />
+		<combobox constraints="3,9" id="phoneComboBox" />
 
 		<checkbox constraints="1,11" id="melodyCheckBox" text="Звуковой сигнал" />
-		<combobox constraints="3,11" id="melodyComboBox" editable="true" />
+		<combobox constraints="3,11" id="melodyComboBox" />
 
 		<checkbox constraints="1,13" id="newsColorCheckBox" text="Цвет строки новости" />
 

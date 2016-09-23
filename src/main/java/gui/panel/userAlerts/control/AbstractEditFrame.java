@@ -1,15 +1,14 @@
 package gui.panel.userAlerts.control;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
-import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.remote.Stock;
-import gui.panel.userAlerts.overridden.model.NewsExpressionComboModel;
 import gui.panel.userAlerts.parent.CommonFrame;
 import gui.panel.userAlerts.parent.SwixFrame;
 import gui.panel.userAlerts.util.SwingHelper;
@@ -22,16 +21,43 @@ public abstract class AbstractEditFrame extends SwixFrame {
 		stock = primaryFrame.getStock();
 	}
 
-	protected void setSecondComboBoxState(JComboBox expressionBox, JComboBox secondBox) {
-		boolean enabled = !expressionBox.getSelectedItem().equals(NewsExpressionComboModel.not);
-		secondBox.setEnabled(enabled);
+	protected void initCommonListeners() {
+		emailCheckBoxListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				emailComboBox.setEnabled(emailCheckBox.isSelected());
+			}
+		};
+
+		phoneCheckBoxListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				phoneComboBox.setEnabled(phoneCheckBox.isSelected());
+			}
+		};
+
+		melodyCheckBoxListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				melodyComboBox.setEnabled(melodyCheckBox.isSelected());
+			}
+		};
+
+		emailCheckBox.addActionListener(emailCheckBoxListener);
+		phoneCheckBox.addActionListener(phoneCheckBoxListener);
+		melodyCheckBox.addActionListener(melodyCheckBoxListener);
 	}
 
-	protected void addCommonComboItems(ClientAlert alertItem, boolean isEmptyChecking) {
-		SwingHelper.addComboItem(alertNameComboBox, alertItem.getName(), isEmptyChecking);
-		SwingHelper.addComboItem(emailComboBox, alertItem.getEmail(), isEmptyChecking);
-		SwingHelper.addComboItem(phoneComboBox, alertItem.getPhoneSms(), isEmptyChecking);
-		SwingHelper.addComboItem(melodyComboBox, alertItem.getMelody(), isEmptyChecking);
+	protected void addEmailPhoneAndMelodyComboItems() {
+		for (String email : stock.getEmailList()) {
+			SwingHelper.addComboItem(emailComboBox, email, true);
+		}
+		for (String phone : stock.getPhoneList()) {
+			SwingHelper.addComboItem(phoneComboBox, phone, true);
+		}
+		for (String melody : stock.getMelodyList()) {
+			SwingHelper.addComboItem(melodyComboBox, melody, true);
+		}
 	}
 
 	abstract protected void fillComponentsFromAlert();
@@ -56,10 +82,13 @@ public abstract class AbstractEditFrame extends SwixFrame {
 	protected JComboBox alertNameComboBox;
 	protected JCheckBox emailCheckBox;
 	protected JComboBox emailComboBox;
+	protected ActionListener emailCheckBoxListener;
 	protected JCheckBox phoneCheckBox;
 	protected JComboBox phoneComboBox;
+	protected ActionListener phoneCheckBoxListener;
 	protected JCheckBox melodyCheckBox;
 	protected JComboBox melodyComboBox;
+	protected ActionListener melodyCheckBoxListener;
 	protected JCheckBox notifyWindowCheckBox;
 
 	public enum Type {

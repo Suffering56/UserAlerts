@@ -6,12 +6,11 @@ import java.util.Observable;
 
 import javax.swing.tree.TreeNode;
 
-import gui.panel.userAlerts.data.ClientAlert;
 import gui.panel.userAlerts.data.ClientNewsAlert;
 import gui.panel.userAlerts.data.ClientQuotesAlert;
 import gui.panel.userAlerts.data.HistoryEntity;
-import gui.panel.userAlerts.parent.HistoryFrame;
 import gui.panel.userAlerts.parent.CommonFrame;
+import gui.panel.userAlerts.parent.HistoryFrame;
 import p.alerts.client_api.NewsAlert;
 import p.alerts.client_api.NewsFireAlert;
 import p.alerts.client_api.QuoteAlert;
@@ -54,10 +53,6 @@ public class Stock extends Observable {
 		remoteAPI.confirmRegistration(userName, emailCode, smsCode);
 	}
 
-	public List<ClientAlert> getAllAlerts() {
-		return alertsList;
-	}
-
 	// ==================== NewsAlert ======================
 	public List<ClientNewsAlert> getAllNewsAlerts() {
 		return newsAlertsList;
@@ -76,14 +71,11 @@ public class Stock extends Observable {
 	}
 
 	public void updateNewsAlertsTable(NewsAlert[] newsAlerts) {
-		alertsList.clear();
 		newsAlertsList.clear();
 		for (NewsAlert serverAlert : newsAlerts) {
 			ClientNewsAlert clientNewsAlert = new ClientNewsAlert(serverAlert);
 			newsAlertsList.add(clientNewsAlert);
-			alertsList.add(clientNewsAlert);
 		}
-		alertsList.addAll(newsAlertsList);
 
 		if (commonFrame != null) {
 			commonFrame.updateNewsAlertsTableFromStock();
@@ -108,14 +100,11 @@ public class Stock extends Observable {
 	}
 
 	public void updateQuotesAlertsTable(QuoteAlert[] quotesAlerts) {
-		alertsList.clear();
 		quotesAlertsList.clear();
 		for (QuoteAlert serverAlert : quotesAlerts) {
 			ClientQuotesAlert clientQuotesAlert = new ClientQuotesAlert(serverAlert);
 			quotesAlertsList.add(clientQuotesAlert);
-			alertsList.add(clientQuotesAlert);
 		}
-		alertsList.addAll(newsAlertsList);
 
 		if (commonFrame != null) {
 			commonFrame.updateQuotesAlertsTableFromStock();
@@ -158,6 +147,19 @@ public class Stock extends Observable {
 		notifyObservers();
 	}
 
+	// =============== Email/Phone/Melody ================
+	public List<String> getEmailList() {
+		return emailList;
+	}
+
+	public List<String> getPhoneList() {
+		return phoneList;
+	}
+
+	public List<String> getMelodyList() {
+		return melodyList;
+	}
+
 	// ===================================================
 	private CommonFrame commonFrame;
 	private HistoryFrame historyFrame;
@@ -166,7 +168,20 @@ public class Stock extends Observable {
 	private final RemoteExtendAPI remoteAPI;
 	private final List<ClientNewsAlert> newsAlertsList = new ArrayList<ClientNewsAlert>();
 	private final List<ClientQuotesAlert> quotesAlertsList = new ArrayList<ClientQuotesAlert>();
-	private final List<ClientAlert> alertsList = new ArrayList<ClientAlert>();
-
 	private final List<HistoryEntity> historyList = new ArrayList<HistoryEntity>();
+
+	private final List<String> emailList = new ArrayList<String>();
+	{
+		emailList.add("sp-oren@mail.ru");
+	}
+	private final List<String> phoneList = new ArrayList<String>();
+	{
+		phoneList.add("79228222790");
+	}
+	private final List<String> melodyList = new ArrayList<String>();
+	{
+		melodyList.add("melody1.mp3");
+		melodyList.add("melody2.mp3");
+		melodyList.add("melody3.mp3");
+	}
 }

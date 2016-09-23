@@ -51,9 +51,9 @@ public class ClientNewsAlert extends ClientAlert {
 		setLifetime(serverAlert.getCloseAlertAfterFireups());
 		setStatusOn(!serverAlert.getDisabledAlert());
 
-		setEmail(serverAlert.getEmail());
+		setEmail(serverAlert.getEmail().equals(NONE) ? StringHelper.EMPTY : serverAlert.getEmail());
 		setEmailOn(!email.isEmpty());
-		setPhoneSms(serverAlert.getPhone());
+		setPhoneSms(serverAlert.getPhone().equals(NONE) ? StringHelper.EMPTY : serverAlert.getPhone());
 		setPhoneSmsOn(!phoneSms.isEmpty());
 		setMelody(serverAlert.getSoundSetup());
 		setMelodyOn(!melody.isEmpty());
@@ -87,8 +87,8 @@ public class ClientNewsAlert extends ClientAlert {
 		serverAlert.setCloseAlertAfterFireups(lifetime);
 		serverAlert.disableAlert(!statusOn);
 
-		serverAlert.setEmail((emailOn == false) ? StringHelper.EMPTY : email);
-		serverAlert.setPhone((phoneSmsOn == false) ? StringHelper.EMPTY : phoneSms);
+		serverAlert.setEmail((emailOn == false) ? NONE : email);
+		serverAlert.setPhone((phoneSmsOn == false) ? NONE : phoneSms);
 		serverAlert.setSoundSetup((melodyOn == false) ? StringHelper.EMPTY : melody);
 		serverAlert.setPopupWindow(popupWindowOn);
 

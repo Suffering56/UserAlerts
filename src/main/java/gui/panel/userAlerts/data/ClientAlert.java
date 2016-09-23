@@ -4,6 +4,7 @@ import java.util.Date;
 
 import gui.panel.userAlerts.util.DateHelper;
 import gui.panel.userAlerts.util.StringHelper;
+import p.alerts.client_api.AlertsSMSandMailAPI;
 
 public abstract class ClientAlert {
 
@@ -189,4 +190,6 @@ public abstract class ClientAlert {
 	protected String melody;
 	// Всплывающее окно
 	protected boolean popupWindowOn;
+
+	protected static final String NONE = AlertsSMSandMailAPI.NOT_SPECIFIED;
 }

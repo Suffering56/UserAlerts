@@ -13,8 +13,8 @@ public class Main {
 	public static void main(String[] args) {
 		setLookAndFeel();
 		Stock stock = new Stock();
-		//		new gui.panel.userAlerts.control.LoginFrame(stock).show();
-		new gui.panel.userAlerts.control.AlertsCommonFrame(stock, true).show();
+		new gui.panel.userAlerts.control.LoginFrame(stock).show();
+		//		new gui.panel.userAlerts.control.AlertsCommonFrame(stock, true).show();
 	}
 
 	private static void setLookAndFeel() {
